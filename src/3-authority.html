@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./css/0-header.css" rel="stylesheet" type="text/css">
-    <link href="./css/4-courses.css" rel="stylesheet" type="text/css"> 
+    <link href="./css/0-header.css" rel="stylesheet" type="text/css"> 
+    <link href="./css/3-authority.css" rel="stylesheet" type="text/css"> 
     <script src="./js/jquery.min.js"></script>
-    <title>0-start</title>
+    <title>3-authority</title>
+    <script> 
+        console.log("进入 3-authority page .....");
+    </script>
+
 
 </head>
-<body id="allCourses">
-    <!-- header -->
-    <nav id="header_index">
-        
-<!--우리 팀 -->         
+<body>
+     <!-- header -->
+    <nav id="header_index">   
+        <!--우리 팀 -->         
         <ul class="nav-menu">
             <a href="0-start.html">
             <li class="header-logo">
@@ -27,7 +30,8 @@
             </li>
             </a>
         </ul>
-<!--  show  button-->
+        
+        <!--  show  button-->
         <ul class="nav-menu">
             <button class="show-button" id="ShowAddressInf">
                 <div id="now-font">show</div>
@@ -39,44 +43,54 @@
             </button>
         </ul>
 
-        <ul class="nav-menu">
 
-<!--모두 학생 -->            
-            <li class="header-choose"> 
-                <a href="1-all_students.html"><div id="header-font">모두 학생</div></a>
-            </li>
-
-<!--권한 관리 -->            
-            <li class="header-choose"> 
-                <a href="3-authority.html"><div id="header-font">관리자</div></a>
-            </li>
-
-<!--코스 관리 -->
-            <li class="header-choose">
-                <a href="4-courses.html"><div id="header-font">교수의 집</div></a>   
-            </li>  
-
-        </ul>
 
     </nav>
-
-      <!-- header -->
-
-
+        
+<!-- header -->
 
 
-<!-- 
-    <div class="card-button">
-        <input type="button" class="view-css" id="ShowAllCourses" value="View" >
+    <div class="shell">
+        <div class="main-top2">
+            <p class="login_">권한 설정</p>
 
+            <input type="text" class="input_" id="set_address" placeholder="input address">
+            <!-- <input type="text" class="input_" id="input_authorization" placeholder="input authorization"> -->
+ 
+            <div class="main-top-radio">
+                <!-- 单选框选择权限 -->
+                <label>
+                        <input type="radio" name="authority"  value="1" checked>학생
+                </label>
+            
+                <label>
+                        <input type="radio" name="authority"  value="2">교수
+                </label>
+            
+                <label>
+                        <input type="radio" name="authority" value="3">권리자
+                </label>
+            </div>
+
+            <!--弹窗提示创建-->
+            <input type="button" class="go-button" id="SetPermission" value="OK">
+        </div>
+        
     </div>
--->
+
+    <div class="shell">
+        <div class="main-top2">
+            <p class="login_">권한 제거</p>
+
+            <input type="text" class="input_" id="remove_address" placeholder="input address">
+
+            <!--弹窗提示创建-->
+            <input type="button" class="go-button" id="RemovePermission" value="OK">
 
 
-
-
-
-    <!---
+        </div>
+    </div>
+<!---
 
   Core structure(核心结构)
   
@@ -102,7 +116,6 @@
 <!-- truffle: 提供了solidity封装, 实现了合约的开发,测试,部署的解决方案 -->
 <script src="js/truffle-contract.js"></script>
 <!-- xxx.js: 自己编写业务罗技的js文件 -->
-<script src="js/app-0-start.js"></script> 
-
+<script src="js/app-3-authority.js"></script> 
 </body>
 </html>

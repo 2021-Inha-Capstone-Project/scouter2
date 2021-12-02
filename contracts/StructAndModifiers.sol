@@ -76,8 +76,7 @@ pragma solidity >=0.4.22 <0.9.0;
 
     getCourseInfByCourseId()        // 得到指定course id下的所有信息
 
-
-
+    getTopStudentsByCourseId()      // 得到指定course id下的成绩排名前n名的学生
 
 
     // pro
@@ -605,7 +604,69 @@ contract StructAndModifiers{
     }
 
 
+    // 得到指定course id下的成绩排名前n名的学生
+    function getTopStudentsByCourseId(uint _courseid,uint _getTops) public view returns(uint,string memory,address,uint,address[] memory,uint[] memory){
+        // 设置想要得到前几名学生
+        uint getTops = _getTops;
+        
+        // 先得到课程的索引
+        uint courseIndex = getIndexByCourseId(_courseid);
 
+        // courseId_, courseName_,proBlockAddress_,courseStudentCounts_
+        uint courseId_ = courseInfs[courseIndex].courseId;          
+        string memory courseName_ = courseInfs[courseIndex].courseName;      
+        address proBlockAddress_ = courseInfs[courseIndex].proBlockAddress;
+        uint courseStudentCounts_ = courseInfs[courseIndex].courseStudentCounts;  
+
+        // 当学生人数不足要求时，取当前拥有的人数
+        if(courseStudentCounts_ < getTops){
+            getTops = courseStudentCounts_;
+        }
+        // 得到指定course id下的所有学生信息
+        // 创建两个临时数组
+        
+        address[] memory stuAddressTemp = new address[](getTops); 
+        uint[] memory stuGradeTemp = new uint[](getTops); 
+
+
+        // 先进行排名，将成绩记录在临时数组，再取数组的前三个值
+        uint[] memory gradeOfStuGradeSort = new uint[](courseStudentCounts_);
+        // 先将全部成绩放入 1 -- courseStudentCounts_
+        for(uint i=1;i<=courseStudentCounts_;i++){ // 总轮次 
+            gradeOfStuGradeSort[i-1] = courseInfs[courseIndex].courseStudents[i].stuGrade;
+        }
+
+        // 调整顺序根据学生成绩 冒泡排序
+        for(uint i=0;i<courseStudentCounts_;i++){ // 总轮次 
+            for(uint j=1;j<courseStudentCounts_;j++){ // 每轮比较
+                if(gradeOfStuGradeSort[j] > gradeOfStuGradeSort[j-1]){
+                    // 交换位置
+                    uint temp = gradeOfStuGradeSort[j-1];
+                    gradeOfStuGradeSort[j-1] = gradeOfStuGradeSort[j];
+                    gradeOfStuGradeSort[j] = temp;
+                }
+            }
+        }
+        // 根据indexOfStuGradeSort，找到索引对应的前三个人
+        // 设置一个变量进行累加， 只取前三个
+        uint flag = 0;
+        for(uint i=0;i<courseStudentCounts_;i++){ // 总轮次 
+            if(flag == getTops){
+                break;
+            }
+            // 成绩只需取前三个就可以
+            stuGradeTemp[i] = gradeOfStuGradeSort[i];
+            // 地址需要通过成绩找到对应的地址
+            for(uint j=1;j<=courseStudentCounts_;j++){ // 总轮次 
+                if(stuGradeTemp[i] == courseInfs[courseIndex].courseStudents[j].stuGrade){
+                    stuAddressTemp[i] = courseInfs[courseIndex].courseStudents[j].stuBlockAddress;
+                }
+            }
+            flag++;
+        }
+  
+        return (courseId_,courseName_,proBlockAddress_,courseStudentCounts_,stuAddressTemp,stuGradeTemp);
+    }
 
 
 

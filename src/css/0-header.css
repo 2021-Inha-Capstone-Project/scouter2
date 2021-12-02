@@ -22,7 +22,7 @@
     /* 左右padding */
     padding: 0 5vw;
     height: 100px;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(113, 130, 184, 0.8);
     box-shadow:0 8px 29px rgba(0, 0, 0, 0.8);
     z-index: 1;
   }
@@ -93,7 +93,7 @@
       transform: translate(30px,-30px);
       background-image: url('../img/login2.png');
       background-size: cover;
-      border: 10px solid rgba(0, 0, 0, 0);
+      border: 10px solid rgba(113, 130, 184, 0.8);
   }
 
   .logo-information{

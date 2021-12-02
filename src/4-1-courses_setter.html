@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./css/0-header.css" rel="stylesheet" type="text/css"> 
+    <link href="./css/4-1-course_setter.css" rel="stylesheet" type="text/css"> 
+    <script src="./js/jquery.min.js"></script>
+    <title>-1-courses_setter</title>
+    <script> 
+        console.log("进入 4-1-courses_setter .....");
+
+    </script>
+
+</head>
+<body>
+
+    <!-- header -->
+    <nav id="header_index">
+        
+        <!--우리 팀 -->         
+                <ul class="nav-menu">
+                    <a href="0-start.html">
+                    <li class="header-logo">
+                        <ul class="logo-information">
+                            <li><div id="header-font">종합설계</div></li>
+                            <li><div id="header-font">교수:신병석</div></li>
+                            <li><div id="header-font">팀명:</div></li>
+                            <li><div id="header-font">Humble and Bold</div></li>
+                        </ul>
+                    </li>
+                    </a>
+                </ul>
+        <!--  show  button-->
+        <ul class="nav-menu">
+            <li> 
+                <input id="pro_id"  class="now-font" placeholder="input pro id">
+                
+                <button id="ShowCourseStudentCounts">ShowCourse studentCounts</button><br>
+                <div id="now_course_student_counts" class="now-font"></div>
+
+
+                <button id="ShowCourseId">ShowCourse id</button>
+                <div id="now_conrse_id" class="now-font"></div>
+                
+                <button id="ShowCourseCounts">ShowCourse counts</button><br>
+                <div id="now_course_count" class="now-font"></div>
+            </li>
+        </ul>
+
+
+<!--코스 관리 -->            
+        <ul class="nav-menu">
+            <li class="header-choose">
+                <a href="4-courses.html"><div id="header-font">코스 보기</div></a>
+                    
+            </li>  
+        </ul>
+    </nav>
+        
+              <!-- header -->
+
+    <div class="shell">
+        <div class="main-top2">
+            <p class="login_">코스 만들기</p>
+            <input type="text" class="input_"  id="create_course_id"  placeholder="course id">
+            <input type="text" class="input_"  id="create_course_name"  placeholder="course name">
+
+            <!--弹窗提示创建-->
+            <input type="button" class="ok-button" id="CreateCourse" value="OK">
+        </div>
+    </div>
+
+    <div class="shell">
+        <div class="main-top2">
+            <p class="login_">학생 추가</p>
+            <input type="text" class="input_" id="apply_course_id" placeholder="course id">
+            <input type="text" class="input_" id="apply_student_address" placeholder="student address">
+
+            <!--弹窗提示创建-->
+            <input type="button" class="ok-button" id="ApplyCourse" value="OK">
+        </div>
+    </div>
+
+    <div class="shell">
+        <div class="main-top2">
+            <p class="login_">성적 추가</p>
+
+            <input type="text" class="input_" id="grade_courseId" placeholder="courseId">
+            <input type="text" class="input_" id="grade_stuBlockAddress"   placeholder="stuBlockAddress">
+            <input type="text" class="input_" id="grade_stuGrade"   placeholder="stuGrade">
+
+            <!--弹窗提示创建-->
+            <input type="button" class="ok-button" id="CreateCourseGrade" value="OK">
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+<!---
+
+  Core structure(核心结构)
+  
+        jQuery + boostrap + html/css/js (vue, react)  30-40%
+                          |
+                          V 
+                  truffle + web3.js        30-40%
+                          |
+                          V
+                      solidity              10-20%
+                          |
+                          V
+      Ethereum public chain / tested private chain      
+              (以太坊公有链 / 测试的私有链)
+
+
+-->
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery.min.js"></script>
+<!-- web3.js: 提供了智能合约实例化, 和合约调用的功能(RPC 远程调用) -->
+<script src="js/web3.min.js"></script>
+<!-- truffle: 提供了solidity封装, 实现了合约的开发,测试,部署的解决方案 -->
+<script src="js/truffle-contract.js"></script>
+<!-- xxx.js: 自己编写业务罗技的js文件 -->
+<script src="js/app-4-courses.js"></script> 
+
+
+
+
+</body>
+</html>

@@ -185,7 +185,7 @@ contract Professor is Admin{
         
     }
     
-
+/*
     // 查看某门科目的全体学生的成绩  View the scores of all students in a subject
     // If it is a professor, it can view the scores of students in his course
     function getGradeByProAddress(uint _courseId, address _proBlockAddress) public view onlyProfessor returns(address[] memory, uint[] memory){
@@ -222,7 +222,11 @@ contract Professor is Admin{
         return (myStudentAddress,myStudentsGrade) ;  // 完毕 complete
           
     }
+
     
+*/   
+
+
 /*
     // 查看某门科目某个学生的成绩 View the results of a student in a subject
     function getGradeByProAddrAndStuAddr(uint _courseId,address _proBlockAddress,address _stuBlockAddress) public view onlyProfessor returns(uint){
