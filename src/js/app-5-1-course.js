@@ -49,7 +49,7 @@ App = {
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
     
-        });
+        }).done(App.ShowMyCourses);
         
         return App.bindEvents();
     },
@@ -58,7 +58,7 @@ App = {
     // 绑定事件， 点击按钮出发授权函数
     bindEvents: function() {
      // 
-      $(document).on('click', '#ShowMyCourses', App.ShowMyCourses);
+    //   $(document).on('click', '#ShowMyCourses', App.ShowMyCourses);
       $(document).on('click', '#CreateCourse', App.CreateCourse);
       $(document).on('click', '#ApplyCourse', App.ApplyCourse);
       $(document).on('click', '#CreateCourseGrade', App.CreateCourseGrade);  
