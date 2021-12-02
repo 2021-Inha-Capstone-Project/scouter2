@@ -46,7 +46,7 @@ App = {
             App.contracts.Professor = TruffleContract(data);
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
-        });
+        }).done(App.ShowCourseInf);
         return App.bindEvents();
     },
   
@@ -55,8 +55,7 @@ App = {
     bindEvents: function() {
      // 留出一个位置
       console.log('enter ==> bindEvents()');
-      //return App.ShowCourseInf();
-      $('#ShowCourseInf').on('click', App.ShowCourseInf);
+      $('#submitGrade').on('click', App.CreateCourseGrade);
     },
   
     // 实现创建课程
@@ -66,11 +65,8 @@ App = {
         console.log('enter ==> ShowCourseInf()');
         var account = web3.eth.accounts[0]; // msg.sender
         console.log('account===> : ' + account);
- 
-        // 得到值
-        var show_course_id = $('#show_course_id').val();
-        console.log('show_course_id===> : ' + show_course_id);
 
+        var courseId = $.getUrlVars()['courseid'];
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
@@ -78,7 +74,7 @@ App = {
             console.log('ShowCourseInf start.....');      
 
             // 先获得所有的地址
-            return instance.getCourseInfByCourseId(show_course_id,{from: account, gas: 300000});
+            return instance.getCourseInfByCourseId(courseId,{from: account, gas: 300000});
         }).then(function(courseInf_) { 
             console.log('when courseId ===> : ' + courseInf_[0]);
             if(courseInf_[0] == 0){
@@ -89,10 +85,10 @@ App = {
                 var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
 
                 // 展示课程基本信息
-                var courInfHead_ =  '<thead><tr><th>courseId</th>' +
-                                                '<th>courseName</th>' +
-                                                '<th>proAddress</th>' +    
-                                                '<th>proAuthorization</th></tr></thead>';
+                var courInfHead_ =  '<thead><tr><th>Course Id</th>' +
+                                                '<th>Course Name</th>' +
+                                                '<th>Professor Address</th>' +    
+                                                '<th>Authorization Code</th></tr></thead>';
                 var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
@@ -107,13 +103,14 @@ App = {
                 
                 // 展示学生基本信息
                 // 学生table head
-                var courseStudentInfHead_ =  '<thead><tr><th>courseStuAddress</th>' +
-                                                        '<th>courseStuGrade</th></tr></thead>';
+                var courseStudentInfHead_ =  '<thead><tr><th>Student Address</th>' +
+                                                        '<th>Grade</th></tr></thead>';
                 document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
                 for(var i=0;i<stuAddrSum;i++){
                     // 得到每个地址的长度
                     stuAddrLength = courseInf_[4][i].length;
-                    var courseStuAddr_ = courseInf_[4][i].slice(0,6) + '..' + courseInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
+                    // var courseStuAddr_ = courseInf_[4][i].slice(0,6) + '..' + courseInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
+                    var courseStuAddr_ = courseInf_[4][i];
                     // 学生table data
                     var courseStudentInf_ = '<tr><td>' + courseStuAddr_ + '</td>' + 
                                                 '<td>' + courseInf_[5][i] + '</td></tr>';
@@ -130,6 +127,35 @@ App = {
 
     },
 
+    CreateCourseGrade: function() {
+        console.log('enter ==> CreateCourseGrade()');
+        var account = web3.eth.accounts[0]; // msg.sender
+        console.log('account===> : ' + account);
+        //var nowAuthorization = 0;
+        // 获取到元素值
+        var grade_courseId= $('#grade_courseId').val();
+        var grade_stuBlockAddress= $('#grade_stuBlockAddress').val();
+        var grade_stuGrade= $('#grade_stuGrade').val();
+
+        console.log('grade_courseId: ' + grade_courseId + ' ==> grade_professor_address: ' + account);
+        console.log('grade_stuBlockAddress: ' + grade_stuBlockAddress + ' ==> grade_stuGrade: ' + grade_stuGrade);
+
+        // Professor已经得到合约的名称, 实例化智能合约 deployed
+        App.contracts.Professor.deployed().then(function(instance) {
+            console.log('CreateCourseGrade start.....');
+            
+            return instance.createCourseGrade(grade_courseId,account,grade_stuBlockAddress,grade_stuGrade,{from: account, gas: 300000});
+        }).then(function(res) { 
+            // 赋值展示
+            alert("성공적인 점수 입력되었습니다.")
+            console.log('when res ==> account===> : ' + account);
+            console.log('CreateCourseGrade ==> res = '+ res);
+        }).catch(function(err) {
+            alert("점수 입력 실패. >< ") 
+            console.log('when error ==> account===> : ' + account);
+            console.log('CreateCourseGrade ==> error = '+ err);
+        });
+    }
   };
   
   // 页面加载完毕, 自动执行app.init()

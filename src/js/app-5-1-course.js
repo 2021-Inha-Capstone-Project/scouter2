@@ -91,7 +91,7 @@ App = {
                     var courseCards =   '<div class="shell">' +
                                             '<div class="main-top">' +
                                                 '<h2>'+ myCoursesId_[i] +'</h2>' +
-                                                '<div class="ball"><a href="0-2-show_course.html"><img src="./img/2.2.png"></a></div>' +
+                                                '<div class="ball"><a href="0-2-show_course.html?courseid=' + myCoursesId_[i] + '"><img src="./img/2.2.png"></a></div>' +
                                                 '<div class="line"></div>' +
                                                 '<span>I\'m a professor</span>' +
                                             '</div>' + 
