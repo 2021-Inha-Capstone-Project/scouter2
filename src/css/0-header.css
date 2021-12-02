@@ -1,0 +1,182 @@
+  a{
+    text-decoration: none;
+  }
+
+  #header_index{
+    position: flex;
+    z-index: 1;
+  }
+
+  header {
+    width: 100vw;
+  }
+
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* 左右padding */
+    padding: 0 5vw;
+    height: 100px;
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow:0 8px 29px rgba(0, 0, 0, 0.8);
+    z-index: 1;
+  }
+  
+  .nav-menu {
+    /* 占令一半宽度 */
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    /* 最宽550px */
+    max-width: 550px;
+  }
+  
+  .nav-menu li {
+    list-style: none;
+    font-weight: 500;
+    
+  }
+
+  #header-font{
+    color: #eeecdf; 
+    font-size: medium;
+    font-weight: 600;
+  }
+  #header-font:hover{
+      transition: .5s;
+      font-size: 120%;
+      font-weight: 800;
+      background-color: rgb(255, 254, 254);
+      color: rgba(0,0,0,.9);
+      height: 80px; 
+      border-radius: 20px;
+  }
+
+  #header-font2{
+    color: #eeecdf; 
+    font-size: medium;
+  }
+  #header-font2:hover{
+      transition: .5s;
+      font-size: 110%;
+      font-weight: 800;
+      background-color: rgb(255, 255, 255);
+      color: rgba(0,0,0,.9);
+      height: 65px; 
+      border-radius: 10px;
+  }
+
+
+
+/*   header-logo     */
+
+  
+
+  .header-logo{
+    height: 30px;
+    text-align: center;
+    line-height: 20px;
+    transition: .3s;
+    cursor: pointer;
+  }
+  .header-logo::before{
+      content: '';
+      display: block;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      transform: translate(30px,-30px);
+      background-image: url('../img/login2.png');
+      background-size: cover;
+      border: 10px solid rgba(0, 0, 0, 0);
+  }
+
+  .logo-information{
+      width: 200px;
+      background-color: rgba(0, 0, 0, 0.8);
+      transform: translate(-20px,-200px);
+      border-radius: 20px;
+      padding: 20px 0;
+      transition: .3s;
+      opacity: 0;
+  }
+
+  .header-logo:hover .logo-information{
+    width: 200px;
+    opacity: 1;
+    line-height: 70px;
+    transform: translate(-20px,-10px);
+    height: auto;
+  }
+
+/* header-button  */
+
+
+.show-button{
+  height: 80px;
+  width: 100px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border:0px;
+  text-align: center;
+  line-height: 75px;
+  transition: .5s;
+  cursor: pointer; 
+  font-weight: 800;
+   
+}
+
+.show-information{
+  transform: translate(-30px,-300px);
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 20px;
+  padding: 20px 0;
+  transition: .3s;
+  opacity: 0;
+}
+
+.show-button:hover .show-information{
+  width: 150px;
+  opacity: 1;
+  line-height: 40px;
+  transform: translate(-30px,30px);
+  height: auto;
+}
+
+/*   header-choose     */
+
+  .header-choose{
+    width: 200px;
+    height: 80px;
+    text-align: center;
+    line-height: 80px;
+    transition: .3s;
+    cursor: pointer;
+  }
+
+  .choose-information{
+    background-color: rgba(0, 0, 0, 0.8);
+    transform: translate(0px,-200px);
+    border-radius: 20px;
+    padding: 20px 0;
+    line-height: 0;
+    transition: .3s;
+    opacity: 0;
+}
+
+  .header-choose:hover .choose-information{
+    opacity: 1;
+    line-height: 65px;
+    border-radius: 20px;
+    transform: translate(0px,20px);
+    height: auto;
+  }
+
+
+/*   ===     */
+
