@@ -61,6 +61,8 @@ App = {
   
     // 实现创建课程
     ShowCourseInf: function() {
+        // 将table的display设置为可见
+
         console.log('enter ==> ShowCourseInf()');
         var account = web3.eth.accounts[0]; // msg.sender
         console.log('account===> : ' + account);
@@ -87,32 +89,36 @@ App = {
                 var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
 
                 // 展示课程基本信息
-                var courInf_ = '<hr>courseId: ' + courseInf_[0] 
-                                    + '<br>courseName: ' + courseInf_[1]
-                                    + '<br>proAddress: ' + proAddress
-                                    + '<br>proAuthorization: ' + courseInf_[3] + '<hr><br><br>';
+                var courInfHead_ =  '<thead><tr><th>courseId</th>' +
+                                                '<th>courseName</th>' +
+                                                '<th>proAddress</th>' +    
+                                                '<th>proAuthorization</th></tr></thead>';
+                var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
+                                        '<td>' + courseInf_[1] + '</td>' + 
+                                        '<td>' + proAddress + '</td>' + 
+                                        '<td>' + courseInf_[3] + '</td></tr>';
 
                                     //+ '----myStuCourses: ' + studentInf[4] + '<br>';
-                document.getElementById("courseInf").innerHTML = courInf_;
+                document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_;
                 // 展示课程学生地址和成绩
                 // 得到 多少个学生的  
                 var stuAddrSum = courseInf_[4].length;
                 console.log('when stuAddrSum ===> : ' + stuAddrSum);  // 2个
-                // 创建一个返回数组
-                var courseStuAddrSum_ = new Array(stuAddrSum);
+                
+                // 展示学生基本信息
+                // 学生table head
+                var courseStudentInfHead_ =  '<thead><tr><th>courseStuAddress</th>' +
+                                                        '<th>courseStuGrade</th></tr></thead>';
+                document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
                 for(var i=0;i<stuAddrSum;i++){
                     // 得到每个地址的长度
                     stuAddrLength = courseInf_[4][i].length;
                     var courseStuAddr_ = courseInf_[4][i].slice(0,6) + '..' + courseInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
-                    courseStuAddrSum_[i]= courseStuAddr_;
+                    // 学生table data
+                    var courseStudentInf_ = '<tr><td>' + courseStuAddr_ + '</td>' + 
+                                                '<td>' + courseInf_[5][i] + '</td></tr>';
+                    $("#courseStudentInf").append(courseStudentInf_);
                 }
-                document.getElementById("courseStuAddr").innerHTML = 'courseStuAddress: <br>' + courseStuAddrSum_;
-
-                // 成绩部分
-                var courseStuGrade_ = 'courseStuGrade: <br>' + courseInf_[5];
-                document.getElementById("courseStuGrade").innerHTML = courseStuGrade_;
-
-
                 console.log('when res ==> account===> : ' + account);
                 console.log('ShowCourseInf ==> res = '+ courseInf_);
             }

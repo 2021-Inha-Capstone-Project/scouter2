@@ -4,41 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./css/0-start.css" rel="stylesheet" type="text/css"> 
     <link href="./css/0-header.css" rel="stylesheet" type="text/css">
-    <link href="./css/0-start-cards.css" rel="stylesheet" type="text/css">
-    <link href="./css/iconfont.css" rel="stylesheet" type="text/css"> 
+    <link href="./css/0-2-show_course.css" rel="stylesheet" type="text/css"> 
     <script src="./js/jquery.min.js"></script>
-    <title>0-start</title>
-
-    <style>
-        .now-font{
-            color: #eeecdf; 
-            font-size: medium;
-            font-weight: 600;
-        }
-
-        .but{
-            height: 50px;
-            width: 50px;
-            text-align: center;
-            left: 50%;
-        }
-   
-        .stuInf-font{
-            width: auto;
-            height: auto;
-            margin: 1%;
-            padding: auto;
-            border-radius: 10px;
-            color: #eeecdf; 
-            text-align: center;
-            font-size: medium;
-            font-weight: 600;
-
-        }
-    </style>
-
+    <title>1-student_card</title>
 
 </head>
 <body>
@@ -89,28 +58,14 @@
       <!-- header -->
 
 
-
-
-
-    <!-- start-cards-->
-    <div class="card-button">
-        <input type="button" class="but" id="ShowStudents" value="View" >
-
-        <input type="button" class="but" id="ShowMsgSender" value="ShowMsgSender" >
-        <div id="msgSender"></div>
-
-        
-        <div class="card-button1">
-
- 
-        <div class="stuInf-font" id="stuInf"></div>
-        <!-- ......  -->
-        <!-- ......  -->
-        <!-- ......  -->
-       
+    <div class="search">
+        <input type="button" id="ShowAllStudents" value="View" >
     </div>
 
-    <!-- start-cards-->
+    <!--所有学生的信息-->
+    <table class="bordered2" id="allStuInf"> </table>
+
+     
 
 
     <!---
