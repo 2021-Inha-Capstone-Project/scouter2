@@ -49,7 +49,7 @@ App = {
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
     
-        });
+        }).done(App.ShowAllCourses);
         
         return App.bindEvents();
     },
