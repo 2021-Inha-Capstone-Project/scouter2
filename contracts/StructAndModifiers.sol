@@ -21,8 +21,6 @@ pragma solidity >=0.4.22 <0.9.0;
     setcourseStudentCounts          // 设置course id的学生人数(当学生加入课程的时候,调用一次,内部函数)
                                     // Set the number of students with the course ID (called once when the student joins the course)
 
-    setNameByAddress()              // 通过address修改此人的name,  Change this person's name through address
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +33,7 @@ pragma solidity >=0.4.22 <0.9.0;
 
     ==> getIdByAddress()            // 通过address查找此人的id , Find this person's id through address
 
-    ==> getAddressById()            // 通过ID查找此人的地址  ,  Find this person's address by ID
+    ==> getStuAddressByStuId()            // 通过ID查找此人的地址  ,  Find this person's address by ID
 
     getAuthorizationByAddress()     // 通过address查找此人的authorization , Find this person's authorization through address
 
@@ -57,6 +55,7 @@ pragma solidity >=0.4.22 <0.9.0;
 // getter about student
     getStudentCounts()              // 得到当前学生的总人数
     getStudentIndexByAddress()      // 通过 address 找到student中的index  ,Find the index in the student by address
+    getStudentNameByAddress()
     getStudentInfByStuAddress()     // 通过stuAddress获取整个stu的信息
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,11 +117,13 @@ pragma solidity >=0.4.22 <0.9.0;
     
 */
 
+
+
 contract StructAndModifiers{
 
     address public modifiersOwner;   // 
 
-    constructor() public {
+    constructor() {
         modifiersOwner = msg.sender;
         adminSelfs[1] = AdminSelf(1,'Root',modifiersOwner,3);
         adminCounts++;
@@ -209,6 +210,7 @@ contract StructAndModifiers{
     //课程学生信息  Course student information
     struct CourseStudent{
         address stuBlockAddress;
+        string stuName;
         uint stuGrade;
     }
 
@@ -283,34 +285,11 @@ contract StructAndModifiers{
     }
     
 
-    // 通过address修改此人的name , Find this person's id through address
-    function setNameByAddress(address _address,string memory _name) public returns(bool){
-        uint index = 0;
-        index = getAdminIndexByAddress(_address);
-        if(index!=0){
-            adminSelfs[index].adminName = _name;
-            return true;
-        }
-        index = getProfessorIndexByAddress(_address);
-        if(index!=0){
-            professorSelfs[index].proName = _name;
-            return true;
-        }
-        index = getStudentIndexByAddress(_address);
-        if(index!=0){
-            studentSelfs[index].stuName = _name;
-            return true;
-        }
-        return false; //
-    }
-
-
-
 //////////////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////  
 ///////////////////////////////  4.2. getter function
 
-
+/*
     // 查看当前的msg.sender
     function getMsgSender() public view returns(address){
         return msg.sender;
@@ -332,6 +311,7 @@ contract StructAndModifiers{
         }
         return 0;
     }
+*/
 
     // 通过address查找此人的id , Find this person's id through address
     function getIdByAddress(address _address) public view returns(uint){
@@ -349,21 +329,12 @@ contract StructAndModifiers{
         }
         return 0; //
     }
-  
+ 
     
-    // 通过ID查找此人的地址  ,  Find this person's address by ID
-    function getAddressById(uint _id) public view returns(address){
-
-        for(uint i=1;i<=adminCounts;i++){
-            if(adminSelfs[i].adminId == _id)
-                return adminSelfs[i].adminBlockAddress;
-        }
-        for(uint i=1;i<=professorCounts;i++){
-            if(professorSelfs[i].proId == _id)
-                return professorSelfs[i].proBlockAddress;
-        }
+    // 通过stuID查找此人的地址  ,  Find this person's address by ID
+    function getStuAddressByStuId(uint _stuId) public view returns(address){
         for(uint i=1;i<=studentCounts;i++){
-            if(studentSelfs[i].stuId == _id)
+            if(studentSelfs[i].stuId == _stuId)
                 return studentSelfs[i].stuBlockAddress;
         }
         return address(0x0);
@@ -388,15 +359,28 @@ contract StructAndModifiers{
         return 0; //
     }
 
+/*
+    // 通过address 查找此人的id，name，authorization，address
+    function getPersonInfByAddress(address _address) public view returns(uint,string memory,uint){
+        for(uint i=1;i<=adminCounts;i++){
+            if(adminSelfs[i].adminBlockAddress == _address)
+                return (adminSelfs[i].adminId,adminSelfs[i].adminName,adminSelfs[i].adminAuthorization);
+        }
+        for(uint i=1;i<=professorCounts;i++){
+            if(professorSelfs[i].proBlockAddress == _address)
+                return (professorSelfs[i].proId,professorSelfs[i].proName,professorSelfs[i].proAuthorization);
+        }
+        for(uint i=1;i<=studentCounts;i++){
+            if(studentSelfs[i].stuBlockAddress == _address)
+                return (studentSelfs[i].stuId,studentSelfs[i].stuName,studentSelfs[i].stuAuthorization);
+        }
+        return (0,'null',0); //
+    }
+*/
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // getter about admin
-
-    // 得到当前管理员的总人数
-    function getAdminCounts() public view returns(uint){
-        return adminCounts;
-    }
 
 
     // 通过 address 找到admin中的index , Find the index in admin by ID
@@ -415,10 +399,6 @@ contract StructAndModifiers{
 
 // getter about professor
 
-    // 得到当前教师的总人数
-    function getProfessorCounts() public view returns(uint){
-        return professorCounts;
-    }
 
     // 通过 address 找到professor中的index , Find the index in the professor by ID
     function getProfessorIndexByAddress(address _proBlockAddress) public view returns(uint){
@@ -453,6 +433,8 @@ contract StructAndModifiers{
         return allProfessorAddress_;
     }
 
+
+/*
     // 得到所有教授的ID
     function getAllProfessorId() public view returns(uint[] memory){
         uint[] memory allProfessorId_ = new uint[](professorCounts);
@@ -461,15 +443,11 @@ contract StructAndModifiers{
         }
         return allProfessorId_;
     }
-
+*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // getter about student
 
-    // 得到当前学生的总人数
-    function getStudentCounts() public view returns(uint){
-        return studentCounts;
-    }
 
     // 通过 address 找到student中的index  ,Find the index in the student by ID
     function getStudentIndexByAddress(address _stuBlockAddress) public view returns(uint){
@@ -480,6 +458,15 @@ contract StructAndModifiers{
         }
         return 0; // 
     }
+
+/*
+    // 通过 address找到对应的学生名字
+    function getStudentNameByAddress(address _stuBlockAddress) public view returns(string memory){
+        uint studentIndex = getStudentIndexByAddress(_stuBlockAddress);
+        return studentSelfs[studentIndex].stuName; // 
+    }
+*/
+
 
     // 通过stuAddress获取整个stu的信息
     function getStudentInfByStuAddress(address _stuBlockAddress) public view returns(uint,string memory,address,uint,uint[] memory ){
@@ -505,6 +492,7 @@ contract StructAndModifiers{
         return allStudentAddress_;
     }
 
+/*
     // 得到所有学生的ID
     function getAllStudentId() public view returns(uint[] memory){
         uint[] memory allStudentId_ = new uint[](studentCounts);
@@ -513,7 +501,7 @@ contract StructAndModifiers{
         }
         return allStudentId_;
     }
-
+*/
 
  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -544,7 +532,6 @@ contract StructAndModifiers{
     }
 
 
-
     // 得到course id的学生人数  Number of students who get course ID
     function getcourseStudentCounts(uint _courseid) public view returns(uint courseStudentCounts_){
         for(uint i=1;i<=courseCounts;i++){
@@ -554,12 +541,7 @@ contract StructAndModifiers{
         }
     }
 
-    // 返回courseCounts的值
-    function getCourseCounts() public view returns(uint){
-        return courseCounts;    
-    }
-
-
+/*
     // 得到指定course id下的所有学生信息
     function getCourseStudentsByCourseId(uint _courseid) public view returns(address[] memory,uint[] memory){
         // 先得到课程的索引
@@ -577,9 +559,11 @@ contract StructAndModifiers{
         }
         return (stuAddressTemp,stuGradeTemp);
     }
+*/
+
 
     // 得到指定course id下的所有信息
-    function getCourseInfByCourseId(uint _courseid) public view returns(uint,string memory,address,uint,address[] memory,uint[] memory){
+    function getCourseInfByCourseId(uint _courseid) public view returns(uint,string memory,address,uint){
         // 先得到课程的索引
         uint courseIndex = getIndexByCourseId(_courseid);
 
@@ -587,58 +571,69 @@ contract StructAndModifiers{
         uint courseId_ = courseInfs[courseIndex].courseId;          
         string memory courseName_ = courseInfs[courseIndex].courseName;      
         address proBlockAddress_ = courseInfs[courseIndex].proBlockAddress;
+        uint courseStudentCounts_ = courseInfs[courseIndex].courseStudentCounts;  
+
+        return (courseId_,courseName_,proBlockAddress_,courseStudentCounts_);
+    }
+
+    // 得到指定course id下的学生所有信息
+    function getCourseStudentInfByCourseId(uint _courseid) public view returns(address[] memory,string[] memory,uint[] memory){
+        // 先得到课程的索引
+        uint courseIndex = getIndexByCourseId(_courseid);
+
+        // courseId_, courseName_,proBlockAddress_,courseStudentCounts_   
         uint courseStudentCounts_ = courseInfs[courseIndex].courseStudentCounts;  
 
         // 得到指定course id下的所有学生信息
         // 创建两个临时数组
         address[] memory stuAddressTemp = new address[](courseStudentCounts_); 
+        string[] memory stuNameTemp = new string[](courseStudentCounts_); 
         uint[] memory stuGradeTemp = new uint[](courseStudentCounts_); 
 
         for(uint i=1;i<=courseStudentCounts_;i++){
             stuAddressTemp[i-1] = courseInfs[courseIndex].courseStudents[i].stuBlockAddress;
+            stuNameTemp[i-1] = courseInfs[courseIndex].courseStudents[i].stuName;
             stuGradeTemp[i-1] = courseInfs[courseIndex].courseStudents[i].stuGrade;
         }
 
-
-        return (courseId_,courseName_,proBlockAddress_,courseStudentCounts_,stuAddressTemp,stuGradeTemp);
+        return (stuAddressTemp,stuNameTemp,stuGradeTemp);
     }
 
 
-    // 得到指定course id下的成绩排名前n名的学生
-    function getTopStudentsByCourseId(uint _courseid,uint _getTops) public view returns(uint,string memory,address,uint,address[] memory,uint[] memory){
+    // 得到指定course id下的成绩排名前n名的学生  ,但有的时候不足n名,返回的第一个uint代表可以返回的人数
+    function getTopStudentsByCourseId(uint _courseid,uint _getTops) public view returns(uint,address[] memory,string[] memory,uint[] memory){
+        
         // 设置想要得到前几名学生
         uint getTops = _getTops;
-        
+        // 设置记录得到成绩的人数
+        uint gotGradeCounts = 0;
         // 先得到课程的索引
         uint courseIndex = getIndexByCourseId(_courseid);
-
         // courseId_, courseName_,proBlockAddress_,courseStudentCounts_
-        uint courseId_ = courseInfs[courseIndex].courseId;          
-        string memory courseName_ = courseInfs[courseIndex].courseName;      
-        address proBlockAddress_ = courseInfs[courseIndex].proBlockAddress;
         uint courseStudentCounts_ = courseInfs[courseIndex].courseStudentCounts;  
-
         // 当学生人数不足要求时，取当前拥有的人数
         if(courseStudentCounts_ < getTops){
             getTops = courseStudentCounts_;
         }
-        // 得到指定course id下的所有学生信息
-        // 创建两个临时数组
         
-        address[] memory stuAddressTemp = new address[](getTops); 
-        uint[] memory stuGradeTemp = new uint[](getTops); 
-
-
         // 先进行排名，将成绩记录在临时数组，再取数组的前三个值
         uint[] memory gradeOfStuGradeSort = new uint[](courseStudentCounts_);
-        // 先将全部成绩放入 1 -- courseStudentCounts_
-        for(uint i=1;i<=courseStudentCounts_;i++){ // 总轮次 
-            gradeOfStuGradeSort[i-1] = courseInfs[courseIndex].courseStudents[i].stuGrade;
+        // 先将全部成绩放入 gradeOfStuGradeSort ,同时检查成绩是否为空
+        for(uint i=1;i<=courseStudentCounts_;i++){ // 总轮次
+            if(courseInfs[courseIndex].courseStudents[i].stuGrade > 0){
+                gradeOfStuGradeSort[i-1] = courseInfs[courseIndex].courseStudents[i].stuGrade;
+                gotGradeCounts++;
+            }  
+        }
+
+        // 
+        if(gotGradeCounts < getTops){
+            getTops = gotGradeCounts;
         }
 
         // 调整顺序根据学生成绩 冒泡排序
-        for(uint i=0;i<courseStudentCounts_;i++){ // 总轮次 
-            for(uint j=1;j<courseStudentCounts_;j++){ // 每轮比较
+        for(uint i=0;i<gradeOfStuGradeSort.length;i++){ // 总轮次 
+            for(uint j=1;j<gradeOfStuGradeSort.length;j++){ // 每轮比较
                 if(gradeOfStuGradeSort[j] > gradeOfStuGradeSort[j-1]){
                     // 交换位置
                     uint temp = gradeOfStuGradeSort[j-1];
@@ -647,11 +642,20 @@ contract StructAndModifiers{
                 }
             }
         }
+
+        // 得到指定course id下的所有学生信息
+        // 创建两个临时数组
+        
+        address[] memory stuAddressTemp = new address[](getTops); 
+        string[] memory stuNameTemp = new string[](getTops);
+        uint[] memory stuGradeTemp = new uint[](getTops); 
+
+
         // 根据indexOfStuGradeSort，找到索引对应的前三个人
         // 设置一个变量进行累加， 只取前三个
         uint flag = 0;
-        for(uint i=0;i<courseStudentCounts_;i++){ // 总轮次 
-            if(flag == getTops){
+        for(uint i=0;i<gradeOfStuGradeSort.length;i++){ // 总轮次
+            if(flag == getTops){ // 
                 break;
             }
             // 成绩只需取前三个就可以
@@ -659,13 +663,13 @@ contract StructAndModifiers{
             // 地址需要通过成绩找到对应的地址
             for(uint j=1;j<=courseStudentCounts_;j++){ // 总轮次 
                 if(stuGradeTemp[i] == courseInfs[courseIndex].courseStudents[j].stuGrade){
-                    stuAddressTemp[i] = courseInfs[courseIndex].courseStudents[j].stuBlockAddress;
+                    stuNameTemp[i] = courseInfs[courseIndex].courseStudents[j].stuName;
+                    stuAddressTemp[i] = courseInfs[courseIndex].courseStudents[j].stuBlockAddress;         
                 }
             }
             flag++;
         }
-  
-        return (courseId_,courseName_,proBlockAddress_,courseStudentCounts_,stuAddressTemp,stuGradeTemp);
+        return (getTops,stuAddressTemp,stuNameTemp,stuGradeTemp);
     }
 
 
@@ -829,8 +833,30 @@ contract StructAndModifiers{
         return false;
     }
     
-    
-    
+
+
+
+
+///////////这是test用的函数
+///////////这是test用的函数
+///////////这是test用的函数
+// test用
+    // 得到指定course id下的学生的名字信息
+    function getCourseStudentNameByCourseId(uint _courseid) public view returns(string[] memory){
+        // 先得到课程的索引
+        uint courseIndex = getIndexByCourseId(_courseid);
+        // courseId_, courseName_,proBlockAddress_,courseStudentCounts_   
+        uint courseStudentCounts_ = courseInfs[courseIndex].courseStudentCounts;  
+        // 得到指定course id下的所有学生信息
+        // 创建两个临时数组
+        string[] memory stuNameTemp = new string[](courseStudentCounts_); 
+        for(uint i=1;i<=courseStudentCounts_;i++){
+            stuNameTemp[i-1] = courseInfs[courseIndex].courseStudents[i].stuName;
+        }
+        return stuNameTemp;
+    }
+
+
 
 
 }

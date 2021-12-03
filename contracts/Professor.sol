@@ -23,8 +23,7 @@ pragma solidity >=0.4.22 <0.9.0;
 
 
 import "./Admin.sol";
-contract Professor is Admin{
-    
+contract Professor is Admin {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //创建课程  只有老师有权限 Only teachers have permission to create courses
     function createCourse (uint _courseId, string memory _courseName,address _proBlockAddress) public onlyProfessor returns(bool){    
@@ -60,7 +59,7 @@ contract Professor is Admin{
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //加入课程  只有Professor有权限 Only professors have permission to join the course
     
-    function applyCourse (uint _courseId,address _proBlockAddress,address _stuBlockAddress) public onlyProfessor returns(bool){
+    function applyCourse (uint _courseId,address _proBlockAddress,address _stuBlockAddress) public onlyProfessor returns(bool,string memory){
         
         // 检查_proBlockAddress与地址是否匹配 Check whether the proid matches the address
         require(_proBlockAddress == msg.sender,">>>The proId no match the current address!!!");
@@ -84,7 +83,9 @@ contract Professor is Admin{
         // 创建成功之后需要将此student address放到对应的学生的档案中
         // After successful creation, you need to put this student ID into the corresponding student's file
         uint studentIndex = getStudentIndexByAddress(_stuBlockAddress);
-        
+        // 得到学生的姓名
+        string memory _stuName = studentSelfs[studentIndex].stuName;
+
         // ID放到对应的学生的档案中 Put the ID in the corresponding student's file
         // 此时检查是否有重复的course ID.  At this time, check whether there is a duplicate course ID
         bool repeated = false;
@@ -97,8 +98,6 @@ contract Professor is Admin{
         
         // 没有重复,可以申请  No duplication, can apply
         studentSelfs[studentIndex].myStuCourses.push(_courseId);
-        
-        
         
         // 先找到该门课程 ,将学生的信息放到对应的课程里面
         // First find the course and put the students' information into the corresponding course
@@ -115,7 +114,8 @@ contract Professor is Admin{
         setcourseStudentCounts(_courseId);
         uint courseStudentCounts_ = getcourseStudentCounts(_courseId);    
         courseInfs[indexOfCourseID].courseStudents[courseStudentCounts_].stuBlockAddress = _stuBlockAddress;
-           
+        courseInfs[indexOfCourseID].courseStudents[courseStudentCounts_].stuName = _stuName;
+
         // 每当有一名学生申请时,+1   // Whenever a student applies, + 1
         // isTeachingPeopleSum++
         uint professorIndex = getProfessorIndexByAddress(_proBlockAddress);
@@ -125,7 +125,7 @@ contract Professor is Admin{
         // isLearningSum++
         studentSelfs[studentIndex].isLearningSum += 1;
         
-        return true;
+        return (true,courseInfs[indexOfCourseID].courseStudents[courseStudentCounts_].stuName);
         
     }
     

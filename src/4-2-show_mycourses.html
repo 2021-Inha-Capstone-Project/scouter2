@@ -15,6 +15,24 @@
  
 </head>
 <body>
+
+    <!-- 通过js获得地址栏参数得到要展示的course_id-->
+    <script>
+        var show_course_id_ = $.getUrlParam('show_course_id');
+
+		window.onload = function(){
+			$("#show_course_id").val(show_course_id_);
+		}
+
+        // 跳转页面传值
+        function GoStudentAdderPage(){
+            document.getElementById("goStudentAdderPage").href="4-2-1-student_adder.html?show_course_id="+show_course_id_;
+        }
+    </script>
+    
+    <div id="show_course_id"></div>
+
+
     <!-- header -->
     <nav id="header_index">    
         <!--우리 팀 -->         
@@ -22,10 +40,9 @@
             <a href="0-start.html">
             <li class="header-logo">
                 <ul class="logo-information">
-                    <li><div id="header-font">종합설계</div></li>
-                    <li><div id="header-font">교수:신병석</div></li>
-                    <li><div id="header-font">팀명:</div></li>
-                    <li><div id="header-font">Humble and Bold</div></li>
+                    <li id="nowID" class="now-font"></li>
+                    <li id="nowPrefession" class="now-font"></li>
+                    <li id="nowAddress" class="now-font"></li>
                 </ul>
             </li>
             </a>
@@ -34,24 +51,22 @@
 
         <ul class="nav-menu">
 
-<!--코스 관리 -->
-        <li class="header-choose">
-            <a href="4-courses.html"><div id="header-font">교수의 집</div></a>   
-        </li>  
+            <li class="header-choose">
+               <a href="" id="goStudentAdderPage" onclick="GoStudentAdderPage()"><div id="header-font">학생 추가</div></button></a>
+            </li> 
 
+    <!--코스 관리 -->
+            <li class="header-choose">
+                <a href="4-courses.html"><div id="header-font">교수의 집</div></a>   
+            </li>  
+
+             
         </ul>
     </nav>
         
     <!-- header -->
 
-    <!-- 通过js获得地址栏参数得到要展示的course_id-->
-    <script>
-        var show_course_id_ = $.getUrlParam('show_course_id');
-		window.onload = function(){
-			$("#show_course_id").val(show_course_id_);
-		}
-    </script>
-    <div id="show_course_id"></div>
+    
 
 
     <div class="search">

@@ -5,15 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./css/0-header.css" rel="stylesheet" type="text/css">
-    <link href="./css/4-courses.css" rel="stylesheet" type="text/css"> 
+    <link href="./css/0-show_course_table.css" rel="stylesheet" type="text/css">
     <script src="./js/jquery.min.js"></script>
-    <title>0-start</title>
+    <script src="./js/getUrl.js"></script> 
+    <title>4-2-1-student_adder</title>
 
 </head>
-<body id="allCourses">
+<body>
+
+    <script>
+        var show_course_id_ = $.getUrlParam('show_course_id');
+		window.onload = function(){
+			$("#show_course_id").val(show_course_id_);
+		}
+        function GoShowMyCoursesPage(){
+            document.getElementById("goShowMyCoursesPage").href="4-2-show_mycourses.html?show_course_id="+show_course_id_;
+        }
+    </script>
+    <div id="show_course_id"></div>
+
     <!-- header -->
     <nav id="header_index">
-        
 <!--우리 팀 -->         
         <ul class="nav-menu">
             <a href="0-start.html">
@@ -27,16 +39,11 @@
             </a>
         </ul>
 
-
+        
         <ul class="nav-menu">
-<!--모든 학생 -->            
+        
             <li class="header-choose"> 
-                <a href="1-all_students.html"><div id="header-font">모든 학생</div></a>
-            </li>
-
-<!--권한 관리 -->            
-            <li class="header-choose"> 
-                <a href="3-authority.html"><div id="header-font">관리자</div></a>
+                <a href="" id="goShowMyCoursesPage" onclick="GoShowMyCoursesPage()"><div id="header-font">코스 보기</div></a>
             </li>
 
 <!--코스 관리 -->
@@ -50,19 +57,16 @@
 
       <!-- header -->
 
-
-
-
 <!-- 
-    <div class="card-button">
-        <input type="button" class="view-css" id="ShowAllCourses" value="View" >
-
+    <div class="search">
+        <input type="button" id="ShowAllStudents" value="View" >
     </div>
 -->
 
+    <!--所有学生的信息-->
 
-
-
+    <table class="bordered1" id="courseInf"> </table>
+    <table class="bordered2" id="allStuInf"> </table>
 
     <!---
 
@@ -90,7 +94,7 @@
 <!-- truffle: 提供了solidity封装, 实现了合约的开发,测试,部署的解决方案 -->
 <script src="js/truffle-contract.js"></script>
 <!-- xxx.js: 自己编写业务罗技的js文件 -->
-<script src="js/app-0-start.js"></script> 
+<script src="js/app-4-2-1-student_adder.js"></script> 
 
 </body>
 </html>

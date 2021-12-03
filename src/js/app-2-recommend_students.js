@@ -21,6 +21,11 @@ App = {
            App.web3Provider = web3.currentProvider;
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+           // 实时监听meta mask的地址切换
+           ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                App.ShowAddressInf();
+           })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
        } else {
@@ -30,6 +35,11 @@ App = {
            App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+           // 实时监听meta mask的地址切换
+           ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                App.ShowAddressInf();
+           })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(App.web3Provider);
        }
@@ -46,7 +56,7 @@ App = {
             App.contracts.Professor = TruffleContract(data);
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
-        }).done(App.RecommendCourseStudents);
+        }).done(App.ShowAddressInf,App.RecommendCourseStudents);
         return App.bindEvents();
     },
   
@@ -77,12 +87,12 @@ App = {
             instance_ = instance;
             console.log('RecommendCourseStudents start.....');      
 
-            // 
-            return instance.getTopStudentsByCourseId(recommend_course_id,topStudents,{from: account, gas: 300000});
+            // 先获得所有的地址
+            return instance_.getCourseInfByCourseId(recommend_course_id,{from: account, gas: 300000});
         }).then(function(courseInf_) { 
             console.log('when courseId ===> : ' + courseInf_[0]);
             if(courseInf_[0] == 0){
-                alert("입력한 과정이 존재하지 않습니다")
+                alert("과정이 존재하지 않습니다")
             }
             else{
                 var proAddressLength = courseInf_[2].length;
@@ -92,43 +102,144 @@ App = {
                 var courInfHead_ =  '<thead><tr><th>courseId</th>' +
                                                 '<th>courseName</th>' +
                                                 '<th>proAddress</th>' +    
-                                                '<th>proAuthorization</th></tr></thead>';
+                                                '<th>CourseStuCounts</th></tr></thead>';
                 var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
                                         '<td>' + courseInf_[3] + '</td></tr>';
 
                                     //+ '----myStuCourses: ' + studentInf[4] + '<br>';
-                document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_;
-                // 展示课程学生地址和成绩
-                // 得到 多少个学生的  
-                var stuAddrSum = courseInf_[4].length;
-                console.log('when stuAddrSum ===> : ' + stuAddrSum);  // 2个
-                
+                document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_; 
+            }
+            return instance_.getTopStudentsByCourseId(recommend_course_id,topStudents,{from: account, gas: 300000});
+        }).then(function(courseAllStudentsInf_){
+            var getTops = courseAllStudentsInf_[0];
+            console.log('when getTops ===> : ' + getTops);  
+            if(getTops == 0){
+                alert("추천할 학생이 없습니다.");
+            }
+            else{
                 // 展示学生基本信息
                 // 学生table head
                 var courseStudentInfHead_ =  '<thead><tr><th>courseStuAddress</th>' +
+                                                        '<th>courseStuName</th>' +
                                                         '<th>courseStuGrade</th></tr></thead>';
                 document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
-                for(var i=0;i<stuAddrSum;i++){
+                for(var i=0;i<getTops;i++){
                     // 得到每个地址的长度
-                    stuAddrLength = courseInf_[4][i].length;
-                    var courseStuAddr_ = courseInf_[4][i].slice(0,6) + '..' + courseInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
+                    //stuAddrLength = courseAllStudentsInf_[4][i].length;
+                    //var courseStuAddr_ = courseAllStudentsInf_[4][i].slice(0,6) + '..' + courseAllStudentsInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
                     // 学生table data
-                    var courseStudentInf_ = '<tr><td>' + courseStuAddr_ + '</td>' + 
-                                                '<td>' + courseInf_[5][i] + '</td></tr>';
+                    var courseStudentInf_ = '<tr><td>' + courseAllStudentsInf_[1][i] + '</td>' + 
+                                                '<td>' + courseAllStudentsInf_[2][i] + '</td>' + 
+                                                '<td>' + courseAllStudentsInf_[3][i] + '</td></tr>';
                     $("#courseStudentInf").append(courseStudentInf_);
                 }
                 console.log('when res ==> account===> : ' + account);
-                console.log('RecommendCourseStudents ==> res = '+ courseInf_);
-            }
-            
+                console.log('RecommendCourseStudents ==> res = '+ courseAllStudentsInf_);
+            } 
         }).catch(function(err) { 
             console.log('when error ==> account===> : ' + account);
             console.log('RecommendCourseStudents ==> error = '+ err);
         });
 
     },
+
+
+    // 实现的show
+    ShowAddressInf: function() {
+        console.log('enter ==> ShowAddressInf()');
+        var account = web3.eth.accounts[0]; // msg.sender
+        console.log('account===> : ' + account);
+        
+        // 权限值
+        var nowID = 0;
+        var nowAuthorization = 0;
+
+        // Professor已经得到合约的名称, 实例化智能合约 deployed
+        App.contracts.Professor.deployed().then(function(instance) {
+            console.log('ShowAddressInf1 start.....');
+            nowID = instance.getIdByAddress(account,{from: account, gas: 300000});
+            return nowID;
+        }).then(function(nowID) { 
+            // 赋值展示
+            var nowId = '';
+            if(nowID == 1){
+                nowId = '1(root)';
+            }
+            else if(nowID == 0){
+                nowId = 'null';
+            }
+            else{
+                nowId = nowID;
+            }
+            document.getElementById("nowID").innerHTML = "ID: "+nowId;
+        }).catch(function(err) { 
+            alert('failed!!! ❌');
+            console.log('when error ==> account===> : ' + account);
+            console.log('ShowAddressInf ==> error = '+ err);
+        });
+
+        // Professor已经得到合约的名称, 实例化智能合约 deployed
+        App.contracts.Professor.deployed().then(function(instance) {
+            console.log('ShowAddressInf2 start.....');
+            nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
+            return nowAuthorization;
+        }).then(function(nowAuthorization) { 
+            // 赋值展示
+            var nowAut = '';
+            if(nowAuthorization == 1){
+                nowAut = 'student';
+            }
+            else if(nowAuthorization == 2){
+                nowAut = 'professor';
+            }
+            else if(nowAuthorization == 3){
+                nowAut = 'admin';
+            }
+            else{
+                nowAut = 'null';
+            }
+            document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
+        }).catch(function(err) { 
+            alert('failed!!! ❌');
+            console.log('when error ==> account===> : ' + account);
+            console.log('ShowAddressInf ==> error = '+ err);
+        });
+
+
+        var accountLength = account.length;
+        var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
+        document.getElementById("nowAddress").innerHTML = acc;
+        console.log('ShowAddressInf ==> acc = '+ acc);
+
+        
+    },
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   };
   
