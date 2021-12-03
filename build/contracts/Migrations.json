@@ -53,7 +53,7 @@
   "sourceMap": "66:352:1:-;;;113:10;90:33;;;;;;;;;;;;;;;;;;;;66:352;8:9:-1;5:2;;;30:1;27;20:12;5:2;66:352:1;;;;;;;",
   "deployedSourceMap": "66:352:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;66:352:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;127:36;;;:::i;:::-;;;;;;;;;;;;;;;;;;;90:33;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;313:103;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;313:103:1;;;;;;;;;;;;;;;;;:::i;:::-;;127:36;;;;:::o;90:33::-;;;;;;;;;;;;;:::o;313:103::-;225:5;;;;;;;;;;;211:19;;:10;:19;;;196:101;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;402:9;375:24;:36;;;;313:103;:::o",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity >=0.4.22 <0.9.0;\n\ncontract Migrations {\n  address public owner = msg.sender;\n  uint public last_completed_migration;\n\n  modifier restricted() {\n    require(\n      msg.sender == owner,\n      \"This function is restricted to the contract's owner\"\n    );\n    _;\n  }\n\n  function setCompleted(uint completed) public restricted {\n    last_completed_migration = completed;\n  }\n}\n",
-  "sourcePath": "D:\\desktop\\truffle_v3.9.2\\contracts\\Migrations.sol",
+  "sourcePath": "/Users/sophotky/Computer-Science/blockchain/capstone/scouter2/contracts/Migrations.sol",
   "ast": {
     "absolutePath": "project:/contracts/Migrations.sol",
     "exportedSymbols": {
@@ -912,15 +912,15 @@
     "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
   },
   "networks": {
-    "1337": {
+    "5777": {
       "events": {},
       "links": {},
-      "address": "0x6b8aa0cBb3ec82A98CFE125393777474a52E5ecd",
-      "transactionHash": "0xcad0db6f5668a39f59f7ed29ab81915ed479fbfa92b639094e582b86a4a3ba17"
+      "address": "0x6Eb5C197248DE3A0b8d77121eA0D6433c769FC6A",
+      "transactionHash": "0xb5acee7d190095de6a42d5db06268d61fdfd68e9b5de43dc3907c95284f7e12f"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-12-02T22:08:17.138Z",
+  "updatedAt": "2021-12-03T05:28:29.496Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
