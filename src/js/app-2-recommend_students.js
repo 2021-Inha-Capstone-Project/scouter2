@@ -1,8 +1,3 @@
-function tdclick(addr) {
-    console.log("td clicked");
-    console.log(addr);
-}
-
 App = {    
 
     // 定义三个变量
@@ -119,7 +114,6 @@ App = {
                     // 得到每个地址的长度
                     stuAddrLength = courseInf_[4][i].length;
                     var courseStuAddr_ = courseInf_[4][i].slice(0,6) + '..' + courseInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
-                    console.log(courseStuAddr_)
                     // 学生table data
                     var courseStudentInf_ = '<tr><td>' + courseStuAddr_ + '</td>' + 
                                                 '<td>' + courseInf_[5][i] + '</td></tr>';
