@@ -191,13 +191,11 @@ App = {
         }).then(function(res) { 
             // 赋值展示
 
-            alert("학생이 성공적으로 참여되었습니다." + res[0]);
+            alert("학생이 성공적으로 참여되었습니다.");
             // 修改成功后自动刷新页面显示新成绩
             window.location.reload();
             console.log('when res ==> account===> : ' + account);
-            console.log('ApplyCourse ==> res = ' + res[0]);
-            console.log('ApplyCourse ==> res = ' + res[1]);
-            console.log('ApplyCourse ==> res = ' + res[2]);
+            console.log('ApplyCourse ==> res = ' + res);
         }).catch(function(err) { 
             alert("학생이 참여하지 못했습니다.")
             console.log('when error ==> account===> : ' + account);

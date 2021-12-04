@@ -56,7 +56,7 @@ App = {
             App.contracts.Professor = TruffleContract(data);
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
-        }).done(App.ShowAddressInf,App.ShowCourseInf,App.TestCountsStuName);
+        }).done(App.ShowAddressInf,App.ShowCourseInf);
         return App.bindEvents();
     },
   
@@ -146,7 +146,7 @@ App = {
                 document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_;
                 return instance_.getCourseStudentInfByCourseId(show_course_id,{from: account, gas: 300000});
             }
-        }).then(function(courseAllStudentsInf_){
+        }).then(async function(courseAllStudentsInf_){
             
             // 展示课程学生地址和成绩
             // 得到 多少个学生的  
@@ -160,16 +160,23 @@ App = {
                                                     '<th>courseStuAddress</th>' +
                                                     '<th>courseStuGrade</th></tr></thead>';
             document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
+            
             for(var i=0;i<stuAddrSum;i++){
                 // 得到每个地址的长度
                 //stuAddrLength = courseAllStudentsInf_[4][i].length;
                 //var courseStuAddr_ = courseAllStudentsInf_[4][i].slice(0,6) + '..' + courseAllStudentsInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
                 // 学生table data
+                // 异步调用 上面函数要标记async
+                let courseStuName_ = await instance_.getStudentNameById(courseAllStudentsInf_[0][i].c[0],{from: account, gas: 300000});
+                
+                console.log(courseAllStudentsInf_[0][i]);
+                console.log(courseStuName_);
                 var courseStudentInf_ = '<tr><td>' + courseAllStudentsInf_[0][i] + '</td>' + 
+                                            '<td>' + courseStuName_ + '</td>' + 
                                             '<td>' + courseAllStudentsInf_[1][i] + '</td>' + 
-                                            '<td>' + courseAllStudentsInf_[2][i] + '</td>' + 
-                                            '<td>' + courseAllStudentsInf_[3][i] + '</td></tr>';
-                $("#courseStudentInf").append(courseStudentInf_);
+                                            '<td>' + courseAllStudentsInf_[2][i] + '</td></tr>';
+                $("#courseStudentInf").append(courseStudentInf_);    
+                
             }
             console.log('when res ==> account===> : ' + account);
             console.log('ShowCourseInf ==> res = '+ courseAllStudentsInf_);
@@ -181,22 +188,6 @@ App = {
 
     },
 
-
-
-    // test name
-    TestCountsStuName:function(){
-        var account = web3.eth.accounts[0]; // msg.sender
-        var show_course_id = $('#show_course_id').val();
-        console.log('show_course_id===> : ' + show_course_id);
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('TestCountsStuName start.....');
-            return instance.getCourseStudentNameByCourseId(show_course_id,{from: account, gas: 300000});
-        }).then(function(res) { 
-            console.log('TestCountsStuName ==> res = '+ res);
-        }).catch(function(err) { 
-            console.log('TestCountsStuName ==> error = '+ err);
-        });
-    },
 
 
 
