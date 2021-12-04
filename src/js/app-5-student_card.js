@@ -62,6 +62,7 @@ App = {
             return instance_.getStudentInfByStuAddress($("#student-address").val(),{from: account, gas: 300000})
 
         }).then(async function(studentInf) { 
+            console.log(studentInf)
             var studentInfoThead =  '<thead><tr><th>Student ID</th>' +
                                                 '<th>Name</th>' +
                                                 '<th>Address</th>' +    
@@ -93,7 +94,7 @@ App = {
             
                 var allStudentInf_ =    '<tr><td>' + studentInf[4][i] +  '</td>' +
                                             '<td>' + courseName + '</td>' +
-                                            '<td>' + studentInf[5][i] + '</td>' +
+                                            '<td>' + studentInf[6][i] + '</td>' +
                                             '</tr>';
 
                 $("#courseStudentInf").append(allStudentInf_);

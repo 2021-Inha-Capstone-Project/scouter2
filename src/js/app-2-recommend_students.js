@@ -135,10 +135,16 @@ App = {
                     //stuAddrLength = courseAllStudentsInf_[4][i].length;
                     //var courseStuAddr_ = courseAllStudentsInf_[4][i].slice(0,6) + '..' + courseAllStudentsInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
                     // 学生table data
-                    var courseStudentInf_ = '<tr><td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[3][i]+'">' + courseAllStudentsInf_[1][i] + '</a></td>' + 
+                    // var courseStudentInf_ = '<tr><td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[3][i]+'">' + courseAllStudentsInf_[1][i] + '</a></td>' + 
+                    //                             '<td>' + courseAllStudentsInf_[2][i] + '</td>' +                                      
+                    //                             '<td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[3][i]+'">' + courseAllStudentsInf_[3][i] + '</a></td>' + 
+                    //                             '<td>' + courseAllStudentsInf_[4][i] + '</td></tr>';
+
+                    var courseStudentInf_ = '<tr><td >' + courseAllStudentsInf_[1][i] + '</td>' + 
                                                 '<td>' + courseAllStudentsInf_[2][i] + '</td>' +                                      
-                                                '<td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[3][i]+'">' + courseAllStudentsInf_[3][i] + '</a></td>' + 
+                                                '<td onclick=\"tdclick(\''+courseAllStudentsInf_[3][i]+ '\');\">' + courseAllStudentsInf_[3][i] + '</td>' + 
                                                 '<td>' + courseAllStudentsInf_[4][i] + '</td></tr>';
+
                     $("#courseStudentInf").append(courseStudentInf_);
                 }
                 console.log('when res ==> account===> : ' + account);
@@ -221,31 +227,6 @@ App = {
 
         
     },
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   };
   
