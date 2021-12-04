@@ -5,6 +5,12 @@ module.exports = {
         port: 7545,
         network_id: "*", // Match any network id
       }
+  },
+
+  compilers: {
+    solc: {
+      version: "0.8.7",  // 这里是配置solidity的版本的地方
+    }
   }
 
 };

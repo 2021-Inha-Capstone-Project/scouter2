@@ -22,6 +22,11 @@ App = {
            App.web3Provider = web3.currentProvider;
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+           // 实时监听meta mask的地址切换
+           ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                App.ShowAddressInf();
+           })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
        } else {
@@ -31,6 +36,11 @@ App = {
            App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+           // 实时监听meta mask的地址切换
+           ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                App.ShowAddressInf();
+           })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(App.web3Provider);
        }
@@ -49,7 +59,7 @@ App = {
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
     
-        }).done(App.ShowAllCourses);
+        }).done(App.ShowAddressInf,App.ShowAllCourses);
         
         return App.bindEvents();
     },
@@ -58,8 +68,8 @@ App = {
     // 绑定事件， 点击按钮出发授权函数
     bindEvents: function() {
       //$(document).on('click', '#ShowAllCourses', App.ShowAllCourses);
-      $(document).on('click', '#ShowAddressInf', App.ShowAddressInf);
-
+      //$(document).on('click', '#ShowAddressInf', App.ShowAddressInf);
+        
     },
   
 
@@ -146,7 +156,7 @@ App = {
             }
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
-            alert('failed!!! ❌');
+            //alert('failed!!! ❌');
             console.log('when error ==> account===> : ' + account);
             console.log('ShowAddressInf ==> error = '+ err);
         });
@@ -173,28 +183,15 @@ App = {
             }
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
-            alert('failed!!! ❌');
+            //alert('failed!!! ❌');
             console.log('when error ==> account===> : ' + account);
             console.log('ShowAddressInf ==> error = '+ err);
         });
 
-
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowAddressInf3 start.....');
-            var msgSender = instance.getMsgSender({from: account, gas: 300000});
-            return msgSender;
-        }).then(function(msgSender) { 
-            // 赋值展示
-            var accountLength = msgSender.length;
-            var acc = msgSender.slice(0,6) + '..' + msgSender.slice(accountLength-4,accountLength);
-            document.getElementById("nowAddress").innerHTML = acc;
-        }).catch(function(err) { 
-            alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
-        });
-
-
+        var accountLength = account.length;
+        var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
+        document.getElementById("nowAddress").innerHTML = acc;
+        console.log('ShowAddressInf ==> acc = '+ acc);
         
     },
  

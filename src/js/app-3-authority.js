@@ -22,6 +22,11 @@ App = {
            App.web3Provider = web3.currentProvider;
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+           // 实时监听meta mask的地址切换
+           ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                App.ShowAddressInf();
+           })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
        } else {
@@ -31,6 +36,11 @@ App = {
            App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+           // 实时监听meta mask的地址切换
+           ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                App.ShowAddressInf();
+           })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(App.web3Provider);
        }
@@ -49,7 +59,7 @@ App = {
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
     
-        });
+        }).done(App.ShowAddressInf);;
         
         return App.bindEvents();
     },
@@ -59,7 +69,7 @@ App = {
     bindEvents: function() {
       $(document).on('click', '#SetPermission', App.SetPermission);
       $(document).on('click', '#RemovePermission', App.RemovePermission);
-      $(document).on('click', '#ShowAddressInf', App.ShowAddressInf);
+      //$(document).on('click', '#ShowAddressInf', App.ShowAddressInf);
 
     },
   
@@ -72,6 +82,7 @@ App = {
 
         // 获取到元素值
         var set_address= document.getElementById("set_address").value;
+        var set_name= document.getElementById("set_name").value;
         // 得到权限值
         var setAuthority;
         var authority_ = document.getElementsByName('authority');
@@ -86,10 +97,12 @@ App = {
         App.contracts.Professor.deployed().then(function(instance) {
             console.log('SetPermission start.....');
                       
-            return instance.setPermission(set_address,setAuthority,{from: account, gas: 300000});
+            return instance.setPermission(set_address,set_name,setAuthority,{from: account, gas: 300000});
         }).then(function(res) { 
             // 赋值展示
             alert("권한이 성공적으로 설정되었습니다.")
+            // 修改成功后自动刷新页面显示新成绩
+            window.location.reload();
             console.log('account ===> : ' + account);
             console.log('SetPermission ==> res = '+ res);
         }).catch(function(err) { 
@@ -118,6 +131,8 @@ App = {
             return instance.removePermission(remove_address,{from: account, gas: 300000});
         }).then(function(res) { 
             alert("권한이 성공적으로 제거되었습니다.")
+            // 修改成功后自动刷新页面显示新成绩
+            window.location.reload();
             console.log('account ===> : ' + account);
             console.log('SetPermission ==> res = '+ res);
         }).catch(function(err) { 
@@ -191,21 +206,10 @@ App = {
         });
 
 
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowAddressInf3 start.....');
-            var msgSender = instance.getMsgSender({from: account, gas: 300000});
-            return msgSender;
-        }).then(function(msgSender) { 
-            // 赋值展示
-            var accountLength = msgSender.length;
-            var acc = msgSender.slice(0,6) + '..' + msgSender.slice(accountLength-4,accountLength);
-            document.getElementById("nowAddress").innerHTML = acc;
-        }).catch(function(err) { 
-            alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
-        });
-
+        var accountLength = account.length;
+        var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
+        document.getElementById("nowAddress").innerHTML = acc;
+        console.log('ShowAddressInf ==> acc = '+ acc);
 
         
     },

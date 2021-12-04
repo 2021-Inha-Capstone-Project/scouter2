@@ -23,8 +23,7 @@ pragma solidity >=0.4.22 <0.9.0;
 
 
 import "./Admin.sol";
-contract Professor is Admin{
-    
+contract Professor is Admin {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //创建课程  只有老师有权限 Only teachers have permission to create courses
     function createCourse (uint _courseId, string memory _courseName,address _proBlockAddress) public onlyProfessor returns(bool){    
@@ -60,31 +59,34 @@ contract Professor is Admin{
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //加入课程  只有Professor有权限 Only professors have permission to join the course
     
-    function applyCourse (uint _courseId,address _proBlockAddress,address _stuBlockAddress) public onlyProfessor returns(bool){
+    function applyCourse (uint _courseId,address _proBlockAddress,address _stuBlockAddress) public onlyProfessor returns(bool,uint,string memory){
         
         // 检查_proBlockAddress与地址是否匹配 Check whether the proid matches the address
-        require(_proBlockAddress == msg.sender,">>>The proId no match the current address!!!");
+        //require(_proBlockAddress == msg.sender,">>>The proId no match the current address!!!");
         
         // 检查课程信息是否存在 Check whether the course information exists
-        bool isExisted = checkCourseExisted(_courseId); 
-        require(isExisted == true,">>>_courseId no existed!!!");
+        //bool isExisted = checkCourseExisted(_courseId); 
+        //require(isExisted == true,">>>_courseId no existed!!!");
         
         // 检查此课程是否可以申请 Check whether this course can be applied
         bool canApply_ = checkCourseCanApply(_courseId);
         require(canApply_ == true,">>>canApply_ == false");
         
         // 检查教授是否拥有此门课程 Check whether the professor has this course
-        bool isheldByPro = checkCourseHeldByProBlockAddress(_courseId,_proBlockAddress);
-        require(isheldByPro == true,">>>professor does not own this course!!!");
+        //bool isheldByPro = checkCourseHeldByProBlockAddress(_courseId,_proBlockAddress);
+        //require(isheldByPro == true,">>>professor does not own this course!!!");
               
         // 检查学生id的身份是否为学生 Check whether the student ID is a student
-        bool isStudent = checkIsStudent(_stuBlockAddress);
-        require(isStudent == true,">>>stuID is not a student!!!");
+        //bool isStudent = checkIsStudent(_stuBlockAddress);
+        //require(isStudent == true,">>>stuID is not a student!!!");
         
         // 创建成功之后需要将此student address放到对应的学生的档案中
         // After successful creation, you need to put this student ID into the corresponding student's file
         uint studentIndex = getStudentIndexByAddress(_stuBlockAddress);
-        
+        // 得到学生的姓名
+        uint _stuId = studentSelfs[studentIndex].stuId;
+        string memory _stuName = studentSelfs[studentIndex].stuName;
+
         // ID放到对应的学生的档案中 Put the ID in the corresponding student's file
         // 此时检查是否有重复的course ID.  At this time, check whether there is a duplicate course ID
         bool repeated = false;
@@ -96,14 +98,15 @@ contract Professor is Admin{
         require(repeated == false,">>>>>>repeated = true");
         
         // 没有重复,可以申请  No duplication, can apply
+        // 保存课程的id
         studentSelfs[studentIndex].myStuCourses.push(_courseId);
-        
-        
-        
+
         // 先找到该门课程 ,将学生的信息放到对应的课程里面
         // First find the course and put the students' information into the corresponding course
         uint indexOfCourseID = getIndexByCourseId(_courseId);
-        
+        // 保存课程的名字
+        string memory courseName_ = courseInfs[indexOfCourseID].courseName;
+        studentSelfs[studentIndex].myStuCourseNames.push(courseName_);
         // 找到这门课下存储学生的数组的长度, 即 已经修这门课的学生人数
         // 新加入的学生将赋值到人数+1的位置上
         // 先将人数+1, 然后赋值给courseStudentCounts_  
@@ -115,7 +118,9 @@ contract Professor is Admin{
         setcourseStudentCounts(_courseId);
         uint courseStudentCounts_ = getcourseStudentCounts(_courseId);    
         courseInfs[indexOfCourseID].courseStudents[courseStudentCounts_].stuBlockAddress = _stuBlockAddress;
-           
+        courseInfs[indexOfCourseID].courseStudents[courseStudentCounts_].stuId = _stuId;
+        courseInfs[indexOfCourseID].courseStudents[courseStudentCounts_].stuName = _stuName;
+
         // 每当有一名学生申请时,+1   // Whenever a student applies, + 1
         // isTeachingPeopleSum++
         uint professorIndex = getProfessorIndexByAddress(_proBlockAddress);
@@ -125,7 +130,7 @@ contract Professor is Admin{
         // isLearningSum++
         studentSelfs[studentIndex].isLearningSum += 1;
         
-        return true;
+        return (true,_stuId,_stuName);
         
     }
     
@@ -134,19 +139,19 @@ contract Professor is Admin{
     // Create grade (onlyprofessor) = = > save to course class
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 创建成绩  只有老师有权限  Only teachers have permission to create grades
-    // 需要 _courseId ,  _proId , _stuId, _stuGrade
+    // 需要 _courseId ,  _proBlockAddress , _stuBlockAddress, _stuGrade
     function createCourseGrade (uint _courseId,address _proBlockAddress,address _stuBlockAddress,uint _stuGrade) public onlyProfessor returns(bool){
         
         // 检查_proBlockAddress与地址是否匹配 Check whether the proid matches the address
-        require(_proBlockAddress == msg.sender,">>>The proId no match the current address!!!");
+        //require(_proBlockAddress == msg.sender,">>>The proId no match the current address!!!");
         
         // 检查课程信息是否存在 Check whether the course information exists
-        bool isExisted = checkCourseExisted(_courseId); 
-        require(isExisted == true,">>>_courseId no existed!!!");
+        //bool isExisted = checkCourseExisted(_courseId); 
+        //require(isExisted == true,">>>_courseId no existed!!!");
         
         // 先检查教授是否是pro自己的课程  First check whether the professor is proid's own course
-        bool isheldByPro = checkCourseHeldByProBlockAddress(_courseId,_proBlockAddress);
-        require(isheldByPro == true,">>>professor does not own this course!!!");
+        //bool isheldByPro = checkCourseHeldByProBlockAddress(_courseId,_proBlockAddress);
+        //require(isheldByPro == true,">>>professor does not own this course!!!");
         
         // check是否是stu自己的课程 Check is stuid's own course
         bool isheldByStu = checkCourseHeldByStuBlockAddress(_courseId,_stuBlockAddress);
@@ -176,7 +181,9 @@ contract Professor is Admin{
                 professorSelfs[professorIndex].isTeachingPeopleSum--;
                 // isLearning--
                 studentSelfs[studentIndex].isLearningSum--;
-                
+                // 记录自己的成绩信息
+                studentSelfs[studentIndex].myStuCoursesGrades.push(_stuGrade);
+
                 return true;    // 更新完毕 Update complete
             }
         }

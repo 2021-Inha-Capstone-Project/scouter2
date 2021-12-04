@@ -22,6 +22,11 @@ App = {
            App.web3Provider = web3.currentProvider;
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+           // 实时监听meta mask的地址切换
+           ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                App.ShowAddressInf();
+           })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
        } else {
@@ -31,6 +36,11 @@ App = {
            App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+           // 实时监听meta mask的地址切换
+           ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                App.ShowAddressInf();
+           })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(App.web3Provider);
        }
@@ -49,7 +59,7 @@ App = {
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
     
-        }).done(App.ShowMyCourses);
+        }).done(App.ShowAddressInf,App.ShowMyCourses);
         
         return App.bindEvents();
     },
@@ -59,13 +69,10 @@ App = {
     bindEvents: function() {
      // 
       //$(document).on('click', '#ShowMyCourses', App.ShowMyCourses);
-      $(document).on('click', '#CreateCourse', App.CreateCourse);
-      $(document).on('click', '#ApplyCourse', App.ApplyCourse);
-      $(document).on('click', '#CreateCourseGrade', App.CreateCourseGrade);  
+      //$(document).on('click', '#CreateCourse', App.CreateCourse);
+      //$(document).on('click', '#ApplyCourse', App.ApplyCourse);
+      //$(document).on('click', '#CreateCourseGrade', App.CreateCourseGrade);  
 
-      $(document).on('click', '#ShowCourseId', App.ShowCourseId);
-      $(document).on('click', '#ShowCourseCounts', App.ShowCourseCounts);
-      $(document).on('click', '#ShowCourseStudentCounts', App.ShowCourseStudentCounts);
     },
 
 
@@ -111,9 +118,7 @@ App = {
                 console.log("when res ===> " + myCoursesId_.length);
                 console.log("when res ===> " + myCoursesId_[0]);
                 console.log("when res ===> " + myCoursesId_[1]);
-                // 只能查看一次
-                var button_ = document.getElementById("ShowMyCourses");
-                button_.style.display = "none";
+
             }
 
         }).catch(function(err) { 
@@ -124,6 +129,9 @@ App = {
     },
 
 
+
+    
+/*
   
     // 实现创建课程
     CreateCourse: function() {
@@ -147,6 +155,8 @@ App = {
         }).then(function(res) { 
             // 赋值展示
             alert("코스가 성공적으로 생성되었습니다.")
+            // 成功后自动刷新页面显示新成绩
+            window.location.reload();
             console.log('when res ==> account===> : ' + account);
             console.log('CreateCourse ==> res = '+ res);
         }).catch(function(err) { 
@@ -156,6 +166,7 @@ App = {
         });
 
     },
+
 
     // 实现课程加入学生
     ApplyCourse: function() {
@@ -177,9 +188,11 @@ App = {
             return instance.applyCourse(apply_course_id,account,apply_student_address,{from: account, gas: 300000});
         }).then(function(res) { 
             // 赋值展示
-            alert("학생이 성공적으로 참여되었습니다.")
+            var applyStudentName = res[1];
+            alert("학생이 성공적으로 참여되었습니다." + applyStudentName);
             console.log('when res ==> account===> : ' + account);
-            console.log('ApplyCourse ==> res = '+ res);
+            console.log('ApplyCourse ==> res = ' + res);
+            console.log('ApplyCourse ==> res[1] = '+ res[1]);
         }).catch(function(err) { 
             alert("학생이 참여하지 못했습니다.")
             console.log('when error ==> account===> : ' + account);
@@ -220,104 +233,78 @@ App = {
 
     },
 
+*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    ShowCourseId: function() {
-        console.log('enter ==> ShowCourseId()');
+    // 实现的show
+    ShowAddressInf: function() {
+        console.log('enter ==> ShowAddressInf()');
         var account = web3.eth.accounts[0]; // msg.sender
         console.log('account===> : ' + account);
         
-        console.log('pro_address: ' + account);
-        
+        // 权限值
+        var nowID = 0;
+        var nowAuthorization = 0;
+
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowCourseId start.....');
-            return instance.getCourseIdByProAddress(account,{from: account, gas: 300000});
-        }).then(function(now_conrse_id) { 
+            console.log('ShowAddressInf1 start.....');
+            nowID = instance.getIdByAddress(account,{from: account, gas: 300000});
+            return nowID;
+        }).then(function(nowID) { 
             // 赋值展示
-            document.getElementById("now_course_count").innerHTML = now_conrse_id;
+            var nowId = '';
+            if(nowID == 1){
+                nowId = '1(root)';
+            }
+            else if(nowID == 0){
+                nowId = 'null';
+            }
+            else{
+                nowId = nowID;
+            }
+            document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
             console.log('when error ==> account===> : ' + account);
-            console.log('ShowCourseId ==> error = '+ err);
+            console.log('ShowAddressInf ==> error = '+ err);
         });
-    },
 
-    ShowCourseCounts: function() {
-        console.log('enter ==> ShowCourseCounts()');
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
-        
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowCourseCounts start.....');
-            return instance.getCourseCounts({from: account, gas: 300000});
-        }).then(function(now_course_count) { 
+            console.log('ShowAddressInf2 start.....');
+            nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
+            return nowAuthorization;
+        }).then(function(nowAuthorization) { 
             // 赋值展示
-            document.getElementById("now_course_count").innerHTML = now_course_count;
+            var nowAut = '';
+            if(nowAuthorization == 1){
+                nowAut = 'student';
+            }
+            else if(nowAuthorization == 2){
+                nowAut = 'professor';
+            }
+            else if(nowAuthorization == 3){
+                nowAut = 'admin';
+            }
+            else{
+                nowAut = 'null';
+            }
+            document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
             console.log('when error ==> account===> : ' + account);
-            console.log('ShowCourseCounts ==> error = '+ err);
+            console.log('ShowAddressInf ==> error = '+ err);
         });
 
+
+        var accountLength = account.length;
+        var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
+        document.getElementById("nowAddress").innerHTML = acc;
+        console.log('ShowAddressInf ==> acc = '+ acc);
 
     },
-
-    ShowCourseStudentCounts: function(){
-        console.log('enter ==> ShowCourseCounts()');
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
-
-        // 获取到元素值
-        var pro_id= $('#pro_id').val();
-
-        console.log('pro_id>>>: ' + pro_id);
-
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowCourseStudentCounts start.....');
-            return instance.getcourseStudentCounts(pro_id,{from: account, gas: 300000});
-        }).then(function(now_course_student_counts) { 
-            // 赋值展示
-            document.getElementById("now_course_count").innerHTML = now_course_student_counts;
-        }).catch(function(err) { 
-            alert('failed!!! please input professor id');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowCourseCounts ==> error = '+ err);
-        });
-
-
-
-    }
-    
-
-
-
-
-
-
-
-
-
-
+ 
 
  
   };

@@ -36,7 +36,7 @@ contract Admin is StructAndModifiers{
     
      ////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     // 设置权限函数 Set permission function
-    function setPermission(address _blockAddress,uint _authorization) public onlyAdmin returns(bool){
+    function setPermission(address _blockAddress,string memory _name,uint _authorization) public onlyAdmin returns(bool){
         
         // 检查设置的权限值是否合法  Check whether the set permission value is legal
         require(_authorization == 1 || _authorization == 2 || _authorization == 3, "unauthorized");
@@ -56,7 +56,7 @@ contract Admin is StructAndModifiers{
             // 由于课程的数组此时没法赋值，所以采取一个一个赋值的方式 
             // Since the course array cannot be assigned at this time, it is assigned one by one
             studentSelfs[studentCounts].stuId = setstuId;
-            studentSelfs[studentCounts].stuName = "stu-name";
+            studentSelfs[studentCounts].stuName = _name;
             studentSelfs[studentCounts].stuBlockAddress = _blockAddress;
             studentSelfs[studentCounts].stuAuthorization = 1;
             studentSelfs[studentCounts].isLearningSum = 0; // 初始化为没有正在上课 Initialize to no class in progress
@@ -68,7 +68,7 @@ contract Admin is StructAndModifiers{
             // 由于课程的数组此时没法赋值，所以采取一个一个赋值的方式
             // Since the course array cannot be assigned at this time, it is assigned one by one
             professorSelfs[professorCounts].proId = setproId;
-            professorSelfs[professorCounts].proName = "pro-name";
+            professorSelfs[professorCounts].proName = _name;
             professorSelfs[professorCounts].proBlockAddress = _blockAddress;
             professorSelfs[professorCounts].proAuthorization = 2;
             professorSelfs[professorCounts].isTeachingPeopleSum = 0; // 初始化为没有正在教学 Initialize to no teaching in progress
@@ -77,7 +77,7 @@ contract Admin is StructAndModifiers{
         else if(_authorization == 3){ // Admin
             adminCounts++;
             setadmId++;
-            adminSelfs[adminCounts] = AdminSelf(setadmId,"adm-name",_blockAddress,3);
+            adminSelfs[adminCounts] = AdminSelf(setadmId,_name,_blockAddress,3);
 
         }
         // 设置成功了  Setup succeeded

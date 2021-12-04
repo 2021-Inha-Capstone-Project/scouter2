@@ -22,6 +22,11 @@ App = {
            App.web3Provider = web3.currentProvider;
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+           // 实时监听meta mask的地址切换
+           ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                App.ShowAddressInf();
+           })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
        } else {
@@ -31,6 +36,12 @@ App = {
            App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+            // 实时监听meta mask的地址切换
+           ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                App.ShowAddressInf();
+           })
+
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(App.web3Provider);
        }
@@ -49,7 +60,7 @@ App = {
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
     
-        }).done(App.ShowAllStudents);
+        }).done(App.ShowAddressInf,App.ShowAllStudents);
         
         return App.bindEvents();
     },
@@ -58,11 +69,68 @@ App = {
     // 绑定事件， 点击按钮出发授权函数
     bindEvents: function() {
 
-      $(document).on('click', '#ShowAddressInf', App.ShowAddressInf);
+      //$(document).on('click', '#ShowAddressInf', App.ShowAddressInf);
       //$(document).on('click', '#ShowAllStudents', App.ShowAllStudents);
 
     },
   
+    
+    // 
+    ShowAllStudents: function() {
+        console.log('enter ==> ShowAllStudents()');
+        var account = web3.eth.accounts[0]; // msg.sender
+        console.log('account===> : ' + account);
+ 
+        // Professor已经得到合约的名称, 实例化智能合约 deployed
+        App.contracts.Professor.deployed().then(function(instance) {
+            instance_ = instance;
+            console.log('ShowAllStudents start.....');      
+
+            // 先获得所有的地址
+            return instance_.getAllStudentAddress({from: account, gas: 300000});
+        }).then(function(allStudentAddress_) { 
+            console.log('allStudentAddress_ = ['+ allStudentAddress_+']');
+            var sum = allStudentAddress_.length;
+            console.log('sum = '+ sum);
+            if(sum == 0){
+                alert("현재 학생이 없습니다.");
+            }
+            else{
+                // 展示课程基本信息
+                var allStudentInfHead_ = '<thead><tr><th>stuId</th>' +
+                                                    '<th>stuName</th>' +
+                                                    '<th>stuBlockAddress</th>' + 
+                                                    '<th>stuAuthorization</th>' +    
+                                                    '<th>myStuCourseIds</th></tr></thead>';
+                document.getElementById("allStuInf").innerHTML = allStudentInfHead_;
+                for(var i=0;i<sum;i++){
+                    instance_.getStudentInfByStuAddress(allStudentAddress_[i],{from: account, gas: 300000}).then(function(studentInf){
+                        // 对地址进行处理输出
+                        var accountLength = studentInf[2].length;
+                        var accountTemp = studentInf[2].slice(0,6) + '..' + studentInf[2].slice(accountLength-4,accountLength);
+
+                        // 通过div添加到页面中  
+                        var allStudentInf_ =    '<tr><td>' + studentInf[0] + '</td>' + 
+                                                    '<td>' + studentInf[1] + '</td>' + 
+                                                    '<td>' + accountTemp + '</td>' + 
+                                                    '<td>' + studentInf[3] + '</td>' +
+                                                    '<td>' + studentInf[4] + '</td></tr>';
+                        
+                        $("#allStuInf").append(allStudentInf_);
+                        
+                    });
+                }
+            }
+
+        }).catch(function(err) { 
+            console.log('when error ==> account===> : ' + account);
+            console.log('ShowAllStudents ==> error = '+ err);
+        });
+
+    },
+
+
+
     // 实现的函数
     ShowAddressInf: function() {
         console.log('enter ==> ShowAddressInf()');
@@ -125,83 +193,35 @@ App = {
         });
 
 
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowAddressInf3 start.....');
-            var msgSender = instance.getMsgSender({from: account, gas: 300000});
-            return msgSender;
-        }).then(function(msgSender) { 
-            // 赋值展示
-            var accountLength = msgSender.length;
-            var acc = msgSender.slice(0,6) + '..' + msgSender.slice(accountLength-4,accountLength);
-            document.getElementById("nowAddress").innerHTML = acc;
-        }).catch(function(err) { 
-            alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
-        });
-
-
+        var accountLength = account.length;
+        var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
+        document.getElementById("nowAddress").innerHTML = acc;
+        console.log('ShowAddressInf ==> acc = '+ acc);
         
     },
  
 
 
-    // 
-    ShowAllStudents: function() {
-        console.log('enter ==> ShowAllStudents()');
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
- 
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            instance_ = instance;
-            console.log('ShowAllStudents start.....');      
 
-            // 先获得所有的地址
-            return instance_.getAllStudentAddress({from: account, gas: 300000});
-        }).then(function(allStudentAddress_) { 
-            console.log('allStudentAddress_ = ['+ allStudentAddress_+']');
-            var sum = allStudentAddress_.length;
-            console.log('sum = '+ sum);
-            if(sum == 0){
-                alert("현재 학생이 없습니다.");
-            }
-            else{
-                // 展示课程基本信息
-                var allStudentInfHead_ = '<thead><tr><th>stuId</th>' +
-                                                    '<th>stuName</th>' +
-                                                    '<th>stuBlockAddress</th>' + 
-                                                    '<th>stuAuthorization</th>' +    
-                                                    '<th>myStuCourseIds</th></tr></thead>';
-                document.getElementById("allStuInf").innerHTML = allStudentInfHead_;
-                for(var i=0;i<sum;i++){
-                    instance_.getStudentInfByStuAddress(allStudentAddress_[i],{from: account, gas: 300000}).then(function(studentInf){
-                        // 对地址进行处理输出
-                        var accountLength = studentInf[2].length;
-                        var accountTemp = studentInf[2].slice(0,6) + '..' + studentInf[2].slice(accountLength-4,accountLength);
 
-                        // 通过div添加到页面中  
-                        var allStudentInf_ =    '<tr><td>' + studentInf[0] + '</td>' + 
-                                                    '<td>' + studentInf[1] + '</td>' + 
-                                                    '<td>' + accountTemp + '</td>' + 
-                                                    '<td>' + studentInf[3] + '</td>' +
-                                                    '<td>' + studentInf[4] + '</td></tr>';
-                        
-                        $("#allStuInf").append(allStudentInf_);
-                        // 只能查看一次
-                        var button_ = document.getElementById("ShowAllStudents");
-                        button_.style.display = "none";
-                        //button_.disabled = true;
-                    });
-                }
-            }
 
-        }).catch(function(err) { 
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAllStudents ==> error = '+ err);
-        });
 
-    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   };

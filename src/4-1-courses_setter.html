@@ -7,7 +7,7 @@
     <link href="./css/0-header.css" rel="stylesheet" type="text/css"> 
     <link href="./css/4-1-course_setter.css" rel="stylesheet" type="text/css"> 
     <script src="./js/jquery.min.js"></script>
-    <title>-1-courses_setter</title>
+    <title>1-courses_setter</title>
     <script> 
         console.log("进入 4-1-courses_setter .....");
 
@@ -20,35 +20,17 @@
     <nav id="header_index">
         
         <!--우리 팀 -->         
-                <ul class="nav-menu">
-                    <a href="0-start.html">
-                    <li class="header-logo">
-                        <ul class="logo-information">
-                            <li><div id="header-font">종합설계</div></li>
-                            <li><div id="header-font">교수:신병석</div></li>
-                            <li><div id="header-font">팀명:</div></li>
-                            <li><div id="header-font">Humble and Bold</div></li>
-                        </ul>
-                    </li>
-                    </a>
-                </ul>
-        <!--  show  button-->
         <ul class="nav-menu">
-            <li> 
-                <input id="pro_id"  class="now-font" placeholder="input pro id">
-                
-                <button id="ShowCourseStudentCounts">ShowCourse studentCounts</button><br>
-                <div id="now_course_student_counts" class="now-font"></div>
-
-
-                <button id="ShowCourseId">ShowCourse id</button>
-                <div id="now_conrse_id" class="now-font"></div>
-                
-                <button id="ShowCourseCounts">ShowCourse counts</button><br>
-                <div id="now_course_count" class="now-font"></div>
+            <a href="0-start.html">
+            <li class="header-logo">
+                <ul class="logo-information">
+                    <li id="nowID" class="now-font"></li>
+                    <li id="nowPrefession" class="now-font"></li>
+                    <li id="nowAddress" class="now-font"></li>
+                </ul>
             </li>
+            </a>
         </ul>
-
 
 <!--코스 관리 -->            
         <ul class="nav-menu">
@@ -72,16 +54,22 @@
         </div>
     </div>
 
+
+
+<!-- 
+
     <div class="shell">
         <div class="main-top2">
             <p class="login_">학생 추가</p>
             <input type="text" class="input_" id="apply_course_id" placeholder="course id">
             <input type="text" class="input_" id="apply_student_address" placeholder="student address">
 
-            <!--弹窗提示创建-->
+            
             <input type="button" class="ok-button" id="ApplyCourse" value="OK">
         </div>
     </div>
+
+
 
     <div class="shell">
         <div class="main-top2">
@@ -91,12 +79,11 @@
             <input type="text" class="input_" id="grade_stuBlockAddress"   placeholder="stuBlockAddress">
             <input type="text" class="input_" id="grade_stuGrade"   placeholder="stuGrade">
 
-            <!--弹窗提示创建-->
             <input type="button" class="ok-button" id="CreateCourseGrade" value="OK">
 
         </div>
     </div>
-
+-->    
 
 
 
@@ -131,7 +118,7 @@
 <!-- truffle: 提供了solidity封装, 实现了合约的开发,测试,部署的解决方案 -->
 <script src="js/truffle-contract.js"></script>
 <!-- xxx.js: 自己编写业务罗技的js文件 -->
-<script src="js/app-4-courses.js"></script> 
+<script src="js/app-4-1-courses_setter.js"></script> 
 
 
 
