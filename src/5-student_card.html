@@ -15,20 +15,6 @@
  
 </head>
 <body>
-    
-    <!-- 通过js获得地址栏参数得到要展示的course_id-->
-    <script>
-        var recommend_course_id_ = $.getUrlParam('recommend_course_id');
-		window.onload = function(){
-			$("#recommend_course_id").val(recommend_course_id_);
-		}
-    </script>
-
-    <!--用div接收值--> 
-    <div id="recommend_course_id"></div>
-
-
-    
     <!-- header -->
     <nav id="header_index">    
         <!--우리 팀 -->         
@@ -36,17 +22,17 @@
             <a href="0-start.html">
             <li class="header-logo">
                 <ul class="logo-information">
-                    <li id="nowID" class="now-font"></li>
-                    <li id="nowPrefession" class="now-font"></li>
-                    <li id="nowAddress" class="now-font"></li>
+                    <li><div id="header-font">종합설계</div></li>
+                    <li><div id="header-font">교수:신병석</div></li>
+                    <li><div id="header-font">팀명:</div></li>
+                    <li><div id="header-font">Humble and Bold</div></li>
                 </ul>
             </li>
             </a>
         </ul>
-
-
-
         <ul class="nav-menu">
+
+
 <!--권한 관리 -->            
         <li class="header-choose"> 
             <a href="3-authority.html"><div id="header-font">관리자</div></a>
@@ -62,18 +48,23 @@
         
     <!-- header -->
 
-    
+    <!-- 通过js获得地址栏参数得到要展示的course_id-->
+    <script>
+        var addr = $.getUrlParam('addr');
+		window.onload = function(){
+			$("#student-address").val(addr);
+		}
+    </script>
+
+    <!--用div接收值--> 
+    <div id="student-address"></div>
 
 
     <!--此课程的课程信息 -->
-    <table class="bordered1" id="courseInf"> </table>
+    <table class="bordered1" id="studentInfo"> </table>
     
     <!--此课程的学生信息-->
     <table class="bordered2" id="courseStudentInf">
-        <!-- <tr>
-            <td onclick="tdclick('addr');">courseStuAddress</td>
-            <td>90</td>
-        </tr> -->
     </table>
      
     
@@ -106,7 +97,7 @@
 <!-- truffle: 提供了solidity封装, 实现了合约的开发,测试,部署的解决方案 -->
 <script src="js/truffle-contract.js"></script>
 <!-- xxx.js: 自己编写业务罗技的js文件 -->
-<script src="js/app-2-recommend_students.js"></script> 
+<script src="js/app-5-student_card.js"></script> 
 
     
 </body>

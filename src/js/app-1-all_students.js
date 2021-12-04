@@ -62,17 +62,13 @@ App = {
     
         }).done(App.ShowAddressInf,App.ShowAllStudents);
         
-        return App.bindEvents();
+        // return App.bindEvents();
     },
   
   
-    // 绑定事件， 点击按钮出发授权函数
-    bindEvents: function() {
-
-      //$(document).on('click', '#ShowAddressInf', App.ShowAddressInf);
-      //$(document).on('click', '#ShowAllStudents', App.ShowAllStudents);
-
-    },
+    // // 绑定事件， 点击按钮出发授权函数
+    // bindEvents: function() {
+    // },
   
     
     // 
@@ -197,31 +193,87 @@ App = {
         var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
         document.getElementById("nowAddress").innerHTML = acc;
         console.log('ShowAddressInf ==> acc = '+ acc);
+    }
+    // // 实现的函数
+    // ShowAddressInf: function() {
+    //     console.log('enter ==> ShowAddressInf()');
+    //     var account = web3.eth.accounts[0]; // msg.sender
+    //     console.log('account===> : ' + account);
         
-    },
- 
+    //     // 权限值
+    //     var nowID = 0;
+    //     var nowAuthorization = 0;
+
+    //     // Professor已经得到合约的名称, 实例化智能合约 deployed
+    //     App.contracts.Professor.deployed().then(function(instance) {
+    //         console.log('ShowAddressInf1 start.....');
+    //         nowID = instance.getIdByAddress(account,{from: account, gas: 300000});
+    //         return nowID;
+    //     }).then(function(nowID) { 
+    //         // 赋值展示
+    //         var nowId = '';
+    //         if(nowID == 1){
+    //             nowId = '1(root)';
+    //         }
+    //         else if(nowID == 0){
+    //             nowId = 'null';
+    //         }
+    //         else{
+    //             nowId = nowID;
+    //         }
+    //         document.getElementById("nowID").innerHTML = "ID: "+nowId;
+    //     }).catch(function(err) { 
+    //         alert('failed!!! ❌');
+    //         console.log('when error ==> account===> : ' + account);
+    //         console.log('ShowAddressInf ==> error = '+ err);
+    //     });
+
+    //     // Professor已经得到合约的名称, 实例化智能合约 deployed
+    //     App.contracts.Professor.deployed().then(function(instance) {
+    //         console.log('ShowAddressInf2 start.....');
+    //         nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
+    //         return nowAuthorization;
+    //     }).then(function(nowAuthorization) { 
+    //         // 赋值展示
+    //         var nowAut = '';
+    //         if(nowAuthorization == 1){
+    //             nowAut = 'student';
+    //         }
+    //         else if(nowAuthorization == 2){
+    //             nowAut = 'professor';
+    //         }
+    //         else if(nowAuthorization == 3){
+    //             nowAut = 'admin';
+    //         }
+    //         else{
+    //             nowAut = 'null';
+    //         }
+    //         document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
+    //     }).catch(function(err) { 
+    //         alert('failed!!! ❌');
+    //         console.log('when error ==> account===> : ' + account);
+    //         console.log('ShowAddressInf ==> error = '+ err);
+    //     });
 
 
+    //     App.contracts.Professor.deployed().then(function(instance) {
+    //         console.log('ShowAddressInf3 start.....');
+    //         var msgSender = instance.getMsgSender({from: account, gas: 300000});
+    //         return msgSender;
+    //     }).then(function(msgSender) { 
+    //         // 赋值展示
+    //         var accountLength = msgSender.length;
+    //         var acc = msgSender.slice(0,6) + '..' + msgSender.slice(accountLength-4,accountLength);
+    //         document.getElementById("nowAddress").innerHTML = acc;
+    //     }).catch(function(err) { 
+    //         alert('failed!!! ❌');
+    //         console.log('when error ==> account===> : ' + account);
+    //         console.log('ShowAddressInf ==> error = '+ err);
+    //     });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
+    // },
 
 
   };

@@ -1,3 +1,7 @@
+function tdclick(addr){
+    location.replace("5-student_card.html?addr=" + addr)
+}
+
 App = {    
 
     // 定义三个变量

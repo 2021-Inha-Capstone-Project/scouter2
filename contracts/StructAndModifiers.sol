@@ -401,7 +401,6 @@ contract StructAndModifiers{
 
 // getter about professor
 
-
     // 通过 address 找到professor中的index , Find the index in the professor by ID
     function getProfessorIndexByAddress(address _proBlockAddress) public view returns(uint){
         for(uint i=1;i<=professorCounts;i++){
@@ -451,7 +450,6 @@ contract StructAndModifiers{
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // getter about student
-
 
     // 通过 address 找到student中的index  ,Find the index in the student by ID
     function getStudentIndexByAddress(address _stuBlockAddress) public view returns(uint){
