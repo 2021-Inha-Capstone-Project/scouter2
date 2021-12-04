@@ -103,12 +103,14 @@ App = {
                 var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
 
                 // 展示课程基本信息
-                var courInfHead_ =  '<thead><tr><th>courseId</th>' +
-                                                '<th>courseName</th>' +
-                                                '<th>proAddress</th>' +    
-                                                '<th>CourseStuCounts</th></tr></thead>';
+                var courInfHead_ =  '<thead><tr><th>Course ID</th>' +
+                                                '<th>Course Name</th>' +
+                                                '<th>Professor Name</th>' +    
+                                                '<th>Professor Address</th>' +    
+                                                '<th>Total Students</th></tr></thead>';
                 var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
+                                        '<td>' + "NAME" + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
                                         '<td>' + courseInf_[3] + '</td></tr>';
 
@@ -116,9 +118,11 @@ App = {
                 document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_; 
             }
             return instance_.getTopStudentsByCourseId(recommend_course_id,topStudents,{from: account, gas: 300000});
-        }).then(function(courseAllStudentsInf_){
+        }).then(async function(courseAllStudentsInf_){
             var getTops = courseAllStudentsInf_[0];
             console.log('when getTops ===> : ' + getTops);  
+            console.log(courseAllStudentsInf_)
+
             if(getTops == 0){
                 alert("추천할 학생이 없습니다.");
             }
@@ -131,28 +135,22 @@ App = {
                                                         '<th>courseStuGrade</th></tr></thead>';
                 document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
                 for(var i=0;i<getTops;i++){
-                    // 得到每个地址的长度
-                    //stuAddrLength = courseAllStudentsInf_[4][i].length;
-                    //var courseStuAddr_ = courseAllStudentsInf_[4][i].slice(0,6) + '..' + courseAllStudentsInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
-                    // 学生table data
-                    // var courseStudentInf_ = '<tr><td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[3][i]+'">' + courseAllStudentsInf_[1][i] + '</a></td>' + 
-                    //                             '<td>' + courseAllStudentsInf_[2][i] + '</td>' +                                      
-                    //                             '<td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[3][i]+'">' + courseAllStudentsInf_[3][i] + '</a></td>' + 
-                    //                             '<td>' + courseAllStudentsInf_[4][i] + '</td></tr>';
 
-                    var courseStudentInf_ = '<tr><td >' + courseAllStudentsInf_[1][i] + '</td>' + 
-                                                '<td>' + courseAllStudentsInf_[2][i] + '</td>' +                                      
-                                                '<td onclick=\"tdclick(\''+courseAllStudentsInf_[3][i]+ '\');\">' + courseAllStudentsInf_[3][i] + '</td>' + 
-                                                '<td>' + courseAllStudentsInf_[4][i] + '</td></tr>';
-
+                    // 异步调用 上面函数要标记async
+                    let courseStuName_ = await instance_.getStudentNameById(courseAllStudentsInf_[1][i].c[0],{from: account, gas: 300000});
+                    console.log(courseAllStudentsInf_[0][i]);
+                    console.log(courseStuName_);
+                    var courseStudentInf_ = '<tr onclick=\"tdclick(\''+courseAllStudentsInf_[2][i]+ '\');\"><td>' + courseAllStudentsInf_[1][i] + '</td>' + 
+                                                '<td>' + courseStuName_ + '</td>' +                                      
+                                                '<td>' + courseAllStudentsInf_[2][i] + '</td>' + 
+                                                '<td>' + courseAllStudentsInf_[3][i] + '</td></tr>';
                     $("#courseStudentInf").append(courseStudentInf_);
                 }
                 console.log('when res ==> account===> : ' + account);
                 console.log('RecommendCourseStudents ==> res = '+ courseAllStudentsInf_);
             } 
         }).catch(function(err) { 
-            console.log('when error ==> account===> : ' + account);
-            console.log('RecommendCourseStudents ==> error = '+ err);
+            console.log(err);
         });
 
     },

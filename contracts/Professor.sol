@@ -59,7 +59,7 @@ contract Professor is Admin {
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //加入课程  只有Professor有权限 Only professors have permission to join the course
     
-    function applyCourse (uint _courseId,address _proBlockAddress,address _stuBlockAddress) public onlyProfessor returns(bool,uint,string memory){
+    function applyCourse (uint _courseId,address _proBlockAddress,address _stuBlockAddress) public onlyProfessor returns(bool){
         
         // 检查_proBlockAddress与地址是否匹配 Check whether the proid matches the address
         //require(_proBlockAddress == msg.sender,">>>The proId no match the current address!!!");
@@ -85,7 +85,7 @@ contract Professor is Admin {
         uint studentIndex = getStudentIndexByAddress(_stuBlockAddress);
         // 得到学生的姓名
         uint _stuId = studentSelfs[studentIndex].stuId;
-        string memory _stuName = studentSelfs[studentIndex].stuName;
+        //string memory _stuName = studentSelfs[studentIndex].stuName;
 
         // ID放到对应的学生的档案中 Put the ID in the corresponding student's file
         // 此时检查是否有重复的course ID.  At this time, check whether there is a duplicate course ID
@@ -104,9 +104,11 @@ contract Professor is Admin {
         // 先找到该门课程 ,将学生的信息放到对应的课程里面
         // First find the course and put the students' information into the corresponding course
         uint indexOfCourseID = getIndexByCourseId(_courseId);
+
         // 保存课程的名字
-        string memory courseName_ = courseInfs[indexOfCourseID].courseName;
-        studentSelfs[studentIndex].myStuCourseNames.push(courseName_);
+        //string memory courseName_ = courseInfs[indexOfCourseID].courseName;
+        //studentSelfs[studentIndex].myStuCourseNames.push(courseName_);
+
         // 找到这门课下存储学生的数组的长度, 即 已经修这门课的学生人数
         // 新加入的学生将赋值到人数+1的位置上
         // 先将人数+1, 然后赋值给courseStudentCounts_  
@@ -119,7 +121,7 @@ contract Professor is Admin {
         uint courseStudentCounts_ = getcourseStudentCounts(_courseId);    
         courseInfs[indexOfCourseID].courseStudents[courseStudentCounts_].stuBlockAddress = _stuBlockAddress;
         courseInfs[indexOfCourseID].courseStudents[courseStudentCounts_].stuId = _stuId;
-        courseInfs[indexOfCourseID].courseStudents[courseStudentCounts_].stuName = _stuName;
+        //courseInfs[indexOfCourseID].courseStudents[courseStudentCounts_].stuName = _stuName;
 
         // 每当有一名学生申请时,+1   // Whenever a student applies, + 1
         // isTeachingPeopleSum++
@@ -130,7 +132,7 @@ contract Professor is Admin {
         // isLearningSum++
         studentSelfs[studentIndex].isLearningSum += 1;
         
-        return (true,_stuId,_stuName);
+        return true;
         
     }
     
@@ -177,12 +179,19 @@ contract Professor is Admin {
                 // 更新老师和学生的状态数  Update the status number of teachers and students
                 uint professorIndex = getProfessorIndexByAddress(_proBlockAddress);
                 uint studentIndex = getStudentIndexByAddress(_stuBlockAddress);
-                // isTeaching--
-                professorSelfs[professorIndex].isTeachingPeopleSum--;
-                // isLearning--
-                studentSelfs[studentIndex].isLearningSum--;
+                
+                if(professorSelfs[professorIndex].isTeachingPeopleSum != 0){
+                    // isTeaching--
+                    professorSelfs[professorIndex].isTeachingPeopleSum--;
+                }
+                if(studentSelfs[studentIndex].isLearningSum != 0){
+                    // isLearning--
+                    studentSelfs[studentIndex].isLearningSum--;
+                }
+                
+                
                 // 记录自己的成绩信息
-                studentSelfs[studentIndex].myStuCoursesGrades.push(_stuGrade);
+                //studentSelfs[studentIndex].myStuCoursesGrades.push(_stuGrade);
 
                 return true;    // 更新完毕 Update complete
             }

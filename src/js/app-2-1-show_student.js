@@ -113,7 +113,7 @@ App = {
                 document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_; 
             }
             return instance_.getStudentInfByStuAddress(recommend_course_stu_addr,{from: account, gas: 300000});
-        }).then(function(courseStudentsInf_){       
+        }).then(async function(courseStudentsInf_){       
             // 展示学生基本信息
             // 学生table head
             var courseStudentInfHead_ =  '<thead><tr><th>stuId</th>' +
@@ -133,15 +133,23 @@ App = {
 
             $("#courseStudentInf").append(courseStudentInf_);
 
+
+            // 展示学生的所有课程信息
             var courseStudentCourseHead_ =  '<thead><tr><th>stuCourseId</th>' +
                                                         '<th>stuCourseName</th>' +
                                                         '<th>stuCourseGrade</th></tr></thead>';
             $("#courseStudentCourse_").append(courseStudentCourseHead_);
 
             for(var i=0;i<courseStudentsInf_[4].length;i++){
+
+                // 异步调用 上面函数要标记async
+                let stuCourseName_ = await instance_.getCourseNameByCourseId(courseStudentsInf_[4][i].c[0],{from: account, gas: 300000});
+                console.log(courseStudentsInf_[4][i]);
+                console.log(stuCourseName_);
+
                 var courseStudentCourse_ = '<tr><td>' + courseStudentsInf_[4][i] + '</td>' +
-                                                '<td>' + courseStudentsInf_[5][i] + '</td>' +
-                                                '<td>' + courseStudentsInf_[6][i] + '</td></tr>';
+                                                '<td>' + stuCourseName_ + '</td>' +
+                                                '<td>' + courseStudentsInf_[5][i] + '</td></tr>';
                 $("#courseStudentCourse_").append(courseStudentCourse_);
             }
                                         

@@ -86,15 +86,13 @@ App = {
             var accountLength = studentInf[2].length;
             var accountTemp = studentInf[2].slice(0,6) + '..' + studentInf[2].slice(accountLength-4,accountLength);
 
-            console.log(typeof(studentInf[4][0].c[0]))
+            console.log(studentInf)
             for(let i = 0; i < studentInf[4].length; i++){
-                var courseName;
-                let courseInfo = await instance_.getCourseInfByCourseId(studentInf[4][i].c[0], {from: account, gas: 300000});
-                courseName = courseInfo[1];
+                let courseName = await instance_.getCourseNameByCourseId(studentInf[4][i].c[0], {from: account, gas: 300000});
             
                 var allStudentInf_ =    '<tr><td>' + studentInf[4][i] +  '</td>' +
                                             '<td>' + courseName + '</td>' +
-                                            '<td>' + studentInf[6][i] + '</td>' +
+                                            '<td>' + studentInf[5][i] + '</td>' +
                                             '</tr>';
 
                 $("#courseStudentInf").append(allStudentInf_);
