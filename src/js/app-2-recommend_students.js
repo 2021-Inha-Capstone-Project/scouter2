@@ -112,7 +112,7 @@ App = {
                 document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_; 
             }
             return instance_.getTopStudentsByCourseId(recommend_course_id,topStudents,{from: account, gas: 300000});
-        }).then(function(courseAllStudentsInf_){
+        }).then(async function(courseAllStudentsInf_){
             var getTops = courseAllStudentsInf_[0];
             console.log('when getTops ===> : ' + getTops);  
             if(getTops == 0){
@@ -131,10 +131,14 @@ App = {
                     //stuAddrLength = courseAllStudentsInf_[4][i].length;
                     //var courseStuAddr_ = courseAllStudentsInf_[4][i].slice(0,6) + '..' + courseAllStudentsInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
                     // 学生table data
-                    var courseStudentInf_ = '<tr><td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[3][i]+'">' + courseAllStudentsInf_[1][i] + '</a></td>' + 
-                                                '<td>' + courseAllStudentsInf_[2][i] + '</td>' +                                      
-                                                '<td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[3][i]+'">' + courseAllStudentsInf_[3][i] + '</a></td>' + 
-                                                '<td>' + courseAllStudentsInf_[4][i] + '</td></tr>';
+                    // 异步调用 上面函数要标记async
+                    let courseStuName_ = await instance_.getStudentNameById(courseAllStudentsInf_[1][i].c[0],{from: account, gas: 300000});
+                    console.log(courseAllStudentsInf_[0][i]);
+                    console.log(courseStuName_);
+                    var courseStudentInf_ = '<tr><td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[2][i]+'">' + courseAllStudentsInf_[1][i] + '</a></td>' + 
+                                                '<td>' + courseStuName_ + '</td>' +                                      
+                                                '<td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[2][i]+'">' + courseAllStudentsInf_[2][i] + '</a></td>' + 
+                                                '<td>' + courseAllStudentsInf_[3][i] + '</td></tr>';
                     $("#courseStudentInf").append(courseStudentInf_);
                 }
                 console.log('when res ==> account===> : ' + account);
