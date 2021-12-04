@@ -156,7 +156,7 @@ App = {
             }
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
-            alert('failed!!! ❌');
+            //alert('failed!!! ❌');
             console.log('when error ==> account===> : ' + account);
             console.log('ShowAddressInf ==> error = '+ err);
         });
@@ -183,7 +183,7 @@ App = {
             }
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
-            alert('failed!!! ❌');
+            //alert('failed!!! ❌');
             console.log('when error ==> account===> : ' + account);
             console.log('ShowAddressInf ==> error = '+ err);
         });

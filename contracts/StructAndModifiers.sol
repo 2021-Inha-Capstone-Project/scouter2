@@ -179,6 +179,8 @@ contract StructAndModifiers{
         address stuBlockAddress;  // 
         uint stuAuthorization;    // = 1
         uint[] myStuCourses;      // 保存自己修的课 Save the lesson I'm taking
+        string[] myStuCourseNames;
+        uint[] myStuCoursesGrades;
         // 判断是否正在上课, 正在上课的学生不能呗随意剥夺权限
         // 当学生每加入一门课程时会+1,当学生每得到一门成绩时,表明一门课程结束 则-1
         // 为0时表示没有学习一门课程
@@ -210,6 +212,7 @@ contract StructAndModifiers{
     //课程学生信息  Course student information
     struct CourseStudent{
         address stuBlockAddress;
+        uint stuId;
         string stuName;
         uint stuGrade;
     }
@@ -256,7 +259,7 @@ contract StructAndModifiers{
         require(isProfessor,"isProfessor = false");
         _;
     }
-    
+/*   
     // 查看是否是学生
     function checkIsStudent(address _stuBlockAddress) internal view returns(bool){
         for (uint i = 0; i <= studentCounts; i++) {   
@@ -266,7 +269,7 @@ contract StructAndModifiers{
         }
         return false;
     }
-    
+*/    
     
   
 //////////////////////////////////////////////////////////////  
@@ -394,7 +397,6 @@ contract StructAndModifiers{
     }
     
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // getter about professor
@@ -409,7 +411,8 @@ contract StructAndModifiers{
         }
         return 0; // 
     }
-    
+
+/*
     // 通过proAddress获取整个pro的信息
     function getProfessorInfByProAddress(address _proBlockAddress) public view returns(uint,string memory,address,uint,uint[] memory ){
         // 得到proIndex
@@ -424,6 +427,7 @@ contract StructAndModifiers{
         return (proId_,proName_,proBlockAddress_,proAuthorization_,myProCourses_);
     }
 
+
     // 得到所有教授的地址
     function getAllProfessorAddress() public view returns(address[] memory){
         address[] memory allProfessorAddress_ = new address[](professorCounts);
@@ -432,7 +436,7 @@ contract StructAndModifiers{
         }
         return allProfessorAddress_;
     }
-
+*/
 
 /*
     // 得到所有教授的ID
@@ -469,7 +473,7 @@ contract StructAndModifiers{
 
 
     // 通过stuAddress获取整个stu的信息
-    function getStudentInfByStuAddress(address _stuBlockAddress) public view returns(uint,string memory,address,uint,uint[] memory ){
+    function getStudentInfByStuAddress(address _stuBlockAddress) public view returns(uint,string memory,address,uint,uint[] memory,string[] memory,uint[] memory ){
         // 得到stuIndex
         uint stuIndex = getStudentIndexByAddress(_stuBlockAddress);
         // 返回 stuId,stuName,stuBlockAddress,stuAuthorization,myStuCourses
@@ -477,9 +481,14 @@ contract StructAndModifiers{
         string memory stuName_ = studentSelfs[stuIndex].stuName;
         address stuBlockAddress_ = studentSelfs[stuIndex].stuBlockAddress;
         uint stuAuthorization_ = studentSelfs[stuIndex].stuAuthorization;
-        uint[] memory myStuCourses_ = getCourseIdByStuAddress(_stuBlockAddress);
+
+        uint[] memory myStuCourses_ = studentSelfs[stuIndex].myStuCourses;
+        //uint[] memory myStuCourses_ = getCourseIdByStuAddress(_stuBlockAddress);
+        // 得到所有的成绩
+        string[] memory myStuCourseNames_ = studentSelfs[stuIndex].myStuCourseNames;
+        uint[] memory myStuCoursesGrades_ = studentSelfs[stuIndex].myStuCoursesGrades;
         // return
-        return (stuId_,stuName_,stuBlockAddress_,stuAuthorization_,myStuCourses_);
+        return (stuId_,stuName_,stuBlockAddress_,stuAuthorization_,myStuCourses_,myStuCourseNames_,myStuCoursesGrades_);
     }
 
 
@@ -577,7 +586,7 @@ contract StructAndModifiers{
     }
 
     // 得到指定course id下的学生所有信息
-    function getCourseStudentInfByCourseId(uint _courseid) public view returns(address[] memory,string[] memory,uint[] memory){
+    function getCourseStudentInfByCourseId(uint _courseid) public view returns(uint[] memory,string[] memory,address[] memory,uint[] memory){
         // 先得到课程的索引
         uint courseIndex = getIndexByCourseId(_courseid);
 
@@ -587,21 +596,23 @@ contract StructAndModifiers{
         // 得到指定course id下的所有学生信息
         // 创建两个临时数组
         address[] memory stuAddressTemp = new address[](courseStudentCounts_); 
+        uint[] memory stuIdTemp = new uint[](courseStudentCounts_); 
         string[] memory stuNameTemp = new string[](courseStudentCounts_); 
         uint[] memory stuGradeTemp = new uint[](courseStudentCounts_); 
 
         for(uint i=1;i<=courseStudentCounts_;i++){
             stuAddressTemp[i-1] = courseInfs[courseIndex].courseStudents[i].stuBlockAddress;
+            stuIdTemp[i-1] = courseInfs[courseIndex].courseStudents[i].stuId;
             stuNameTemp[i-1] = courseInfs[courseIndex].courseStudents[i].stuName;
             stuGradeTemp[i-1] = courseInfs[courseIndex].courseStudents[i].stuGrade;
         }
 
-        return (stuAddressTemp,stuNameTemp,stuGradeTemp);
+        return (stuIdTemp,stuNameTemp,stuAddressTemp,stuGradeTemp);
     }
 
 
     // 得到指定course id下的成绩排名前n名的学生  ,但有的时候不足n名,返回的第一个uint代表可以返回的人数
-    function getTopStudentsByCourseId(uint _courseid,uint _getTops) public view returns(uint,address[] memory,string[] memory,uint[] memory){
+    function getTopStudentsByCourseId(uint _courseid,uint _getTops) public view returns(uint,uint[] memory,string[] memory,address[] memory,uint[] memory){
         
         // 设置想要得到前几名学生
         uint getTops = _getTops;
@@ -642,14 +653,13 @@ contract StructAndModifiers{
                 }
             }
         }
-
         // 得到指定course id下的所有学生信息
         // 创建两个临时数组
         
-        address[] memory stuAddressTemp = new address[](getTops); 
+        address[] memory stuAddressTemp = new address[](getTops);
+        uint[] memory stuIdTemp = new uint[](getTops);  
         string[] memory stuNameTemp = new string[](getTops);
         uint[] memory stuGradeTemp = new uint[](getTops); 
-
 
         // 根据indexOfStuGradeSort，找到索引对应的前三个人
         // 设置一个变量进行累加， 只取前三个
@@ -663,13 +673,14 @@ contract StructAndModifiers{
             // 地址需要通过成绩找到对应的地址
             for(uint j=1;j<=courseStudentCounts_;j++){ // 总轮次 
                 if(stuGradeTemp[i] == courseInfs[courseIndex].courseStudents[j].stuGrade){
+                    stuIdTemp[i] = courseInfs[courseIndex].courseStudents[j].stuId;
                     stuNameTemp[i] = courseInfs[courseIndex].courseStudents[j].stuName;
                     stuAddressTemp[i] = courseInfs[courseIndex].courseStudents[j].stuBlockAddress;         
                 }
             }
             flag++;
         }
-        return (getTops,stuAddressTemp,stuNameTemp,stuGradeTemp);
+        return (getTops,stuIdTemp,stuNameTemp,stuAddressTemp,stuGradeTemp);
     }
 
 
@@ -703,7 +714,7 @@ contract StructAndModifiers{
 
     
     // stu ////////////////////////////////
-
+/*
     // 获得某个学生上了几门课
     function getCourseCountsByStuAddress(address _stuBlockAddress) public view returns(uint){
         // 得到stuIndex
@@ -726,14 +737,14 @@ contract StructAndModifiers{
         }
         return myStuCoursesTemp;
     }
-
+*/
     
 
 
 //////////////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////  
 ///////////////////////////////   4.3. check function
-
+/*
     // 验证此id是否已经使用过了      Verify that this ID has been used
     function checkIdExisted(uint _id) internal view returns(bool){
         for(uint i=1;i<=adminCounts;i++){
@@ -750,7 +761,7 @@ contract StructAndModifiers{
         }
         return false; // 
     }
-    
+*/    
     
     // 验证是否此address已经使用过了  Verify that this address has been used
     function checkAddressExisted(address _address) internal view returns(bool){
@@ -795,7 +806,8 @@ contract StructAndModifiers{
         }
         return false;
     }
-    
+
+/* 
     // 通过courseid和proBlockAddress检查教授是否有本课程
     // Check whether the professor has this course through courseid and proid
     function checkCourseHeldByProBlockAddress(uint _courseId,address _proBlockAddress) internal view returns(bool){
@@ -813,7 +825,7 @@ contract StructAndModifiers{
         }
         return false;
     }
-    
+*/    
     
     // 通过courseId,stuId 检查学生是否拥有此门课程
     // Check whether students have this course through courseid and stuid

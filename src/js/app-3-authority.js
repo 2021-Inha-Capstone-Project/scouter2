@@ -101,6 +101,8 @@ App = {
         }).then(function(res) { 
             // 赋值展示
             alert("권한이 성공적으로 설정되었습니다.")
+            // 修改成功后自动刷新页面显示新成绩
+            window.location.reload();
             console.log('account ===> : ' + account);
             console.log('SetPermission ==> res = '+ res);
         }).catch(function(err) { 
@@ -129,6 +131,8 @@ App = {
             return instance.removePermission(remove_address,{from: account, gas: 300000});
         }).then(function(res) { 
             alert("권한이 성공적으로 제거되었습니다.")
+            // 修改成功后自动刷新页面显示新成绩
+            window.location.reload();
             console.log('account ===> : ' + account);
             console.log('SetPermission ==> res = '+ res);
         }).catch(function(err) { 

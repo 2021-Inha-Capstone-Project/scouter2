@@ -155,8 +155,9 @@ App = {
             
             // 展示学生基本信息
             // 学生table head
-            var courseStudentInfHead_ =  '<thead><tr><th>courseStuAddress</th>' +
+            var courseStudentInfHead_ =  '<thead><tr><th>courseStuId</th>' +
                                                     '<th>courseStuName</th>' +
+                                                    '<th>courseStuAddress</th>' +
                                                     '<th>courseStuGrade</th></tr></thead>';
             document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
             for(var i=0;i<stuAddrSum;i++){
@@ -166,7 +167,8 @@ App = {
                 // 学生table data
                 var courseStudentInf_ = '<tr><td>' + courseAllStudentsInf_[0][i] + '</td>' + 
                                             '<td>' + courseAllStudentsInf_[1][i] + '</td>' + 
-                                            '<td>' + courseAllStudentsInf_[2][i] + '</td></tr>';
+                                            '<td>' + courseAllStudentsInf_[2][i] + '</td>' + 
+                                            '<td>' + courseAllStudentsInf_[3][i] + '</td></tr>';
                 $("#courseStudentInf").append(courseStudentInf_);
             }
             console.log('when res ==> account===> : ' + account);

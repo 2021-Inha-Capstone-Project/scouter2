@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>2-recommend_students</title>
+  <title>2-1-show_student page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
   <script src="./js/jquery.min.js"></script>
   <script src="./js/getUrl.js"></script>
@@ -10,25 +10,30 @@
   <link href="./css/0-show_course_table.css" rel="stylesheet" type="text/css"> 
   
   <script> 
-    console.log("进入 2-recommend_students page .....");
+    console.log("进入 2-1-show_student page .....");
   </script> 
  
 </head>
 <body>
-    
+
     <!-- 通过js获得地址栏参数得到要展示的course_id-->
     <script>
         var recommend_course_id_ = $.getUrlParam('recommend_course_id');
+        //var recommend_course_stu_id_ = $.getUrlParam('courseStuId');
+        var recommend_course_stu_addr_ = $.getUrlParam('courseStuAddr');
 		window.onload = function(){
 			$("#recommend_course_id").val(recommend_course_id_);
+            //$("#recommend_course_stu_id").val(recommend_course_stu_id_);
+            $("#recommend_course_stu_addr").val(recommend_course_stu_addr_);
 		}
     </script>
 
     <!--用div接收值--> 
     <div id="recommend_course_id"></div>
+    <!-- <div id="recommend_course_stu_id"></div> -->
+    <div id="recommend_course_stu_addr"></div>
 
 
-    
     <!-- header -->
     <nav id="header_index">    
         <!--우리 팀 -->         
@@ -71,7 +76,8 @@
     <!--此课程的学生信息-->
     <table class="bordered2" id="courseStudentInf"> </table>
      
-    
+    <!--此课程的学生信息-->
+    <table class="bordered2" id="courseStudentCourse_"> </table>
 
     <!-- start-cards-->
 
@@ -101,7 +107,7 @@
 <!-- truffle: 提供了solidity封装, 实现了合约的开发,测试,部署的解决方案 -->
 <script src="js/truffle-contract.js"></script>
 <!-- xxx.js: 自己编写业务罗技的js文件 -->
-<script src="js/app-2-recommend_students.js"></script> 
+<script src="js/app-2-1-show_student.js"></script> 
 
     
 </body>

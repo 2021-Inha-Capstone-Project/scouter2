@@ -69,7 +69,7 @@ App = {
     bindEvents: function() {
      // 
       //$(document).on('click', '#ShowMyCourses', App.ShowMyCourses);
-      $(document).on('click', '#CreateCourse', App.CreateCourse);
+      //$(document).on('click', '#CreateCourse', App.CreateCourse);
       //$(document).on('click', '#ApplyCourse', App.ApplyCourse);
       //$(document).on('click', '#CreateCourseGrade', App.CreateCourseGrade);  
 
@@ -129,6 +129,9 @@ App = {
     },
 
 
+
+    
+/*
   
     // 实现创建课程
     CreateCourse: function() {
@@ -164,7 +167,7 @@ App = {
 
     },
 
-/*
+
     // 实现课程加入学生
     ApplyCourse: function() {
         console.log('enter ==> ApplyCourse()');
