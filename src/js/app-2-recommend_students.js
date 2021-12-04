@@ -1,3 +1,7 @@
+function tdclick(addr){
+    location.replace("5-student_card.html?addr=" + addr)
+}
+
 App = {    
 
     // 定义三个变量
@@ -115,7 +119,7 @@ App = {
                     stuAddrLength = courseInf_[4][i].length;
                     var courseStuAddr_ = courseInf_[4][i].slice(0,6) + '..' + courseInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
                     // 学生table data
-                    var courseStudentInf_ = '<tr><td>' + courseStuAddr_ + '</td>' + 
+                    var courseStudentInf_ = '<tr><td onclick=\"tdclick(\'' +courseInf_[4][i]+ '\');\">' + courseStuAddr_ + '</td>' + 
                                                 '<td>' + courseInf_[5][i] + '</td></tr>';
                     $("#courseStudentInf").append(courseStudentInf_);
                 }

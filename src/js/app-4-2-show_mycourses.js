@@ -109,7 +109,7 @@ App = {
         App.contracts.Professor.deployed().then(function(instance) {
             instance_ = instance;
             console.log('ShowCourseInf start.....');      
-
+            
             // 先获得所有的地址
             return instance.getCourseInfByCourseId(show_course_id,{from: account, gas: 300000});
         }).then(function(courseInf_) { 
