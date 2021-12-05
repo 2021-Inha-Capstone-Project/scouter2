@@ -1,3 +1,7 @@
+function tdclick(recommend_course_id){
+    location.replace("2-recommend_students.html?recommend_course_id="+recommend_course_id);
+}
+
 App = {    
 
     // 定义三个变量
@@ -100,11 +104,13 @@ App = {
                 var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
 
                 // 展示课程基本信息
-                var courInfHead_ =  '<thead><tr><th><a href="2-recommend_students.html?recommend_course_id='+recommend_course_id+'">courseId</a></th>' +
+                // onclick="tdclick(\''+ recommend_course_id +'\');\"
+                // <a href="2-recommend_students.html?recommend_course_id='+recommend_course_id+'"></a>
+                var courInfHead_ =  '<thead><tr onclick="tdclick(\''+ recommend_course_id +'\');\"><th>courseId</th>' +
                                                 '<th>courseName</th>' +
                                                 '<th>proAddress</th>' +    
                                                 '<th>CourseStuCounts</th></tr></thead>';
-                var courInf_ =      '<tr><td><a href="2-recommend_students.html?recommend_course_id='+recommend_course_id+'">' + courseInf_[0] + '</a></td>' + 
+                var courInf_ =      '<tr onclick="tdclick(\''+ recommend_course_id +'\');\"><td>' + courseInf_[0] + '</a></td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
                                         '<td>' + courseInf_[3] + '</td></tr>';
@@ -116,22 +122,23 @@ App = {
         }).then(async function(courseStudentsInf_){       
             // 展示学生基本信息
             // 学生table head
-            var courseStudentInfHead_ =  '<thead><tr><th>stuId</th>' +
+            var courseStudentInfHead_ =  '<thead><tr onclick="tdclick(\''+ recommend_course_id +'\');\"><th>stuId</th>' +
                                                     '<th>stuName</th>' +
                                                     '<th>stuAddress</th>' +
-                                                    '<th>stuAuthorization</th></tr></thead>';
-            document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
-
+                                                    '<th>stuAuthor</th></tr></thead>';
+            
+            //$("#courseInf").append(courseStudentInfHead_);                                        
+      
             // 得到每个地址的长度
-            //stuAddrLength = courseAllStudentsInf_[4].length;
-            //var courseStuAddr_ = courseAllStudentsInf_[4].slice(0,6) + '..' + courseAllStudentsInf_[4].slice(stuAddrLength-4,stuAddrLength);
+            stuAddrLength = courseStudentsInf_[2].length;
+            var courseStuAddr_ = courseStudentsInf_[2].slice(0,6) + '..' + courseStudentsInf_[2].slice(stuAddrLength-4,stuAddrLength);
             // 学生table data
-            var courseStudentInf_ = '<tr><td>' + courseStudentsInf_[0] + '</td>' +
+            var courseStudentInf_ = '<tr onclick="tdclick(\''+ recommend_course_id +'\');\"><td>' + courseStudentsInf_[0] + '</td>' +
                                         '<td>' + courseStudentsInf_[1] + '</td>' +  
-                                        '<td>' + courseStudentsInf_[2] + '</td>' + 
+                                        '<td>' + courseStuAddr_ + '</td>' + 
                                         '<td>' + courseStudentsInf_[3] + '</td></tr>';
 
-            $("#courseStudentInf").append(courseStudentInf_);
+            $("#courseInf").append(courseStudentInfHead_ + courseStudentInf_);
 
 
             // 展示学生的所有课程信息

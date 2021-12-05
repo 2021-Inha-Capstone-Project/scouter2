@@ -1,3 +1,16 @@
+function tdclick(res){
+    console.log(res);
+    var res_ = res.split(",");
+    var recommend_course_id_ = res_[0];
+    var courseStuAddr_ = res_[1];
+    location.replace("2-1-show_student.html?recommend_course_id=" + recommend_course_id_ + "&courseStuAddr="+courseStuAddr_);
+}
+function tdclick2(){
+    location.replace("0-start.html");
+}
+
+
+
 App = {    
 
     // 定义三个变量
@@ -99,11 +112,11 @@ App = {
                 var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
 
                 // 展示课程基本信息
-                var courInfHead_ =  '<thead><tr><th>courseId</th>' +
+                var courInfHead_ =  '<thead><tr onclick="tdclick2();\"><th>courseId</th>' +
                                                 '<th>courseName</th>' +
                                                 '<th>proAddress</th>' +    
                                                 '<th>CourseStuCounts</th></tr></thead>';
-                var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
+                var courInf_ =      '<tr onclick="tdclick2();\"><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
                                         '<td>' + courseInf_[3] + '</td></tr>';
@@ -128,16 +141,17 @@ App = {
                 document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
                 for(var i=0;i<getTops;i++){
                     // 得到每个地址的长度
-                    //stuAddrLength = courseAllStudentsInf_[4][i].length;
-                    //var courseStuAddr_ = courseAllStudentsInf_[4][i].slice(0,6) + '..' + courseAllStudentsInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
+                    stuAddrLength = courseAllStudentsInf_[2][i].length;
+                    var courseStuAddr_ = courseAllStudentsInf_[2][i].slice(0,6) + '..' + courseAllStudentsInf_[2][i].slice(stuAddrLength-4,stuAddrLength);
                     // 学生table data
                     // 异步调用 上面函数要标记async
                     let courseStuName_ = await instance_.getStudentNameById(courseAllStudentsInf_[1][i].c[0],{from: account, gas: 300000});
                     console.log(courseAllStudentsInf_[0][i]);
                     console.log(courseStuName_);
-                    var courseStudentInf_ = '<tr><td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[2][i]+'">' + courseAllStudentsInf_[1][i] + '</a></td>' + 
+                    //<a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[2][i]+'"></a>
+                    var courseStudentInf_ = '<tr onclick="tdclick(\''+ recommend_course_id +','+courseAllStudentsInf_[2][i] +'\');\"><td>' + courseAllStudentsInf_[1][i] + '</td>' + 
                                                 '<td>' + courseStuName_ + '</td>' +                                      
-                                                '<td><a href="2-1-show_student.html?recommend_course_id='+recommend_course_id+'&courseStuAddr='+courseAllStudentsInf_[2][i]+'">' + courseAllStudentsInf_[2][i] + '</a></td>' + 
+                                                '<td>' + courseStuAddr_ + '</td>' + 
                                                 '<td>' + courseAllStudentsInf_[3][i] + '</td></tr>';
                     $("#courseStudentInf").append(courseStudentInf_);
                 }
