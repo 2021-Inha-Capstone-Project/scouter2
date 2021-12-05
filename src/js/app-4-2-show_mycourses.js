@@ -71,24 +71,33 @@ App = {
 
     // 这里复用了赋予学生成绩的函数达到修改成绩的目的
     // 实现课程赋予学生成绩
-    CreateCourseGrade: function() {
+    CreateCourseGrade: function(grade_stuId) {
         console.log('enter ==> CreateCourseGrade()');
         var account = web3.eth.accounts[0]; // msg.sender
         console.log('account===> : ' + account);
         //var nowAuthorization = 0;
         // 获取到元素值
         var grade_courseId= $('#show_course_id').val();
-        var grade_stuBlockAddress= $('#change_student_address').val();
-        var grade_stuGrade= $('#change_student_grade').val();
+        //var grade_stuBlockAddress= $('#change_student_address').val();
+        
+        // 找到对应记录成绩的id
+        var grade_stuGrade= $("#change_student_grade").val();
+        
+        // 判断输入的成绩是否符合要求
+        // Determine whether the entered score meets the requirements
 
-        console.log('grade_courseId: ' + grade_courseId + ' ==> grade_professor_address: ' + account);
-        console.log('grade_stuBlockAddress: ' + grade_stuBlockAddress + ' ==> grade_stuGrade: ' + grade_stuGrade);
+        console.log('grade_courseId: ' + grade_courseId + '\ngrade_professor_address: ' + account);
+        console.log('grade_stuId: ' + grade_stuId + ' \ngrade_stuGrade: ' + grade_stuGrade);
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
+            // 先通过stuId找到stuAddress
+            instance_ = instance;
+            return instance_.getStuAddressByStuId(grade_stuId);
+        }).then(function(grade_stuBlockAddress){
+            console.log('grade_stuBlockAddress: ' + grade_stuBlockAddress);
             console.log('CreateCourseGrade start.....');
-            
-            return instance.createCourseGrade(grade_courseId,account,grade_stuBlockAddress,grade_stuGrade,{from: account, gas: 300000});
+            return instance_.createCourseGrade(grade_courseId,account,grade_stuBlockAddress,grade_stuGrade,{from: account, gas: 300000});
         }).then(function(res) { 
             // 赋值展示
             alert("성공적인 점수 입력되었습니다.")
@@ -101,6 +110,7 @@ App = {
             console.log('when error ==> account===> : ' + account);
             console.log('CreateCourseGrade ==> error = '+ err);
         });
+    
     },
 
 
@@ -153,18 +163,19 @@ App = {
             var stuAddrSum = courseAllStudentsInf_[0].length;
             console.log('when stuAddrSum ===> : ' + stuAddrSum);  // 2个
             
-            // 展示学生基本信息
+            // 展示学生信息头部
             // 学生table head
             var courseStudentInfHead_ =  '<thead><tr><th>courseStuId</th>' +
                                                     '<th>courseStuName</th>' +
                                                     '<th>courseStuAddress</th>' +
-                                                    '<th>courseStuGrade</th></tr></thead>';
-            document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
-            
+                                                    '<th>courseStuGrade</th>' +
+                                                    '<th>addStuGrade</th></tr></thead>';
+            $("#courseStudentInf").append(courseStudentInfHead_);
+            // 展示学生信息
             for(var i=0;i<stuAddrSum;i++){
                 // 得到每个地址的长度
-                //stuAddrLength = courseAllStudentsInf_[4][i].length;
-                //var courseStuAddr_ = courseAllStudentsInf_[4][i].slice(0,6) + '..' + courseAllStudentsInf_[4][i].slice(stuAddrLength-4,stuAddrLength);
+                stuAddrLength = courseAllStudentsInf_[1][i].length;
+                var courseStuAddr_ = courseAllStudentsInf_[1][i].slice(0,6) + '..' + courseAllStudentsInf_[1][i].slice(stuAddrLength-4,stuAddrLength);
                 // 学生table data
                 // 异步调用 上面函数要标记async
                 let courseStuName_ = await instance_.getStudentNameById(courseAllStudentsInf_[0][i].c[0],{from: account, gas: 300000});
@@ -173,11 +184,12 @@ App = {
                 console.log(courseStuName_);
                 var courseStudentInf_ = '<tr><td>' + courseAllStudentsInf_[0][i] + '</td>' + 
                                             '<td>' + courseStuName_ + '</td>' + 
-                                            '<td>' + courseAllStudentsInf_[1][i] + '</td>' + 
-                                            '<td>' + courseAllStudentsInf_[2][i] + '</td></tr>';
+                                            '<td>' + courseStuAddr_ + '</td>' + 
+                                            '<td>' + courseAllStudentsInf_[2][i] + '</td>' + 
+                                            '<td><button onclick="App.CreateCourseGrade('+courseAllStudentsInf_[0][i]+')" >add</button></td></tr>';
                 $("#courseStudentInf").append(courseStudentInf_);    
-                
             }
+            
             console.log('when res ==> account===> : ' + account);
             console.log('ShowCourseInf ==> res = '+ courseAllStudentsInf_);
 
