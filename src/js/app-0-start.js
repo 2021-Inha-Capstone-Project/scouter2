@@ -71,8 +71,9 @@ App = {
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {  
             // 先获得所有的course id
+            _instance = instance;
             return instance.getAllCourseId({from: account, gas: 300000});
-        }).then(function(allCoursesId_) { 
+        }).then(async function(allCoursesId_) { 
             console.log(allCoursesId_)
             // console.log("when allCoursesId_ ===> " + allCoursesId_);
             // console.log("when allCoursesId_.length ===> " + allCoursesId_.length);
@@ -80,27 +81,42 @@ App = {
                 alert("죄송합니다\n아직 수업을 시작하신 교수님이 없습니다 ❌");
             }
             else{
-                for(var i=0;i<allCoursesId_.length;i++){
+                for(var i=0;i<allCoursesId_[0].length;i++){
+                    let courseName = await _instance.getCourseNameByCourseId(allCoursesId_[0][i].c[0]);
                     let isCourseEnded = allCoursesId_[1][i];
-                    var allCourseCards =   '<div class="shell">' +
-                                            '<div class="main-top" id="' + allCoursesId_[0][i] + '">' +
-                                                '<h2>'+ allCoursesId_[0][i] +'</h2>' +
-                                                '<div class="ball"><a href="2-recommend_students.html?recommend_course_id='+ allCoursesId_[0][i] +'"><img src="./img/2.6.png"></a></div>' +
-                                                '<div class="line"></div>' +
-                                                '<span>I\'m a professor</span>' +
-                                            '</div>' + 
-                                            '<div class="main-bottom">' +
-                                                '<h2>Professor function</h2>'+
-                                                '<span></span>'+
-                                            '</div>' +
-                                        '</div>';
 
                     //If course has ended, it is prioritized to display first
                     if(isCourseEnded == true){
+                        var allCourseCards =   '<div class="shell">' +
+                            '<div class="main-top" id="' + allCoursesId_[0][i] + '">' +
+                                '<h2>'+ "Course ID:" +'</h2>' +
+                                '<h2>'+ allCoursesId_[0][i] +'</h2>' +
+                                '<div class="ball"><a href="2-recommend_students.html?recommend_course_id='+ allCoursesId_[0][i] +'"><img src="./img/2.6.png"></a></div>' +
+                                '<div class="line"></div>' +
+                            '</div>' + 
+                            '<div class="main-bottom">' +
+                                '<h2>'+ courseName +'</h2>' +
+                                '<span></span>'+
+                            '</div>' +
+                        '</div>';
+
                         $("#allCourses").prepend(allCourseCards);
                         document.getElementById(""+allCoursesId_[0][i]).style.backgroundColor = 'rgba(' + 69 + ',' + 0 + ',' + 0 + ',' + 1 + ')';;
                     }
                     else{
+                        var allCourseCards =   '<div class="shell">' +
+                            '<div class="main-top" id="' + allCoursesId_[0][i] + '">' +
+                                '<h2>'+ "Course ID:" +'</h2>' +
+                                '<h2>'+ allCoursesId_[0][i] +'</h2>' +
+                                '<div class="ball"><a href="2-recommend_students.html?recommend_course_id='+ allCoursesId_[0][i] +'" class="disabled"><img src="./img/2.6.png"></a></div>' +
+                                '<div class="line"></div>' +
+                            '</div>' + 
+                            '<div class="main-bottom">' +
+                                '<h2>'+ courseName +'</h2>' +
+                                '<span></span>'+
+                            '</div>' +
+                        '</div>';    
+
                         $("#allCourses").append(allCourseCards);
                     }
                 }

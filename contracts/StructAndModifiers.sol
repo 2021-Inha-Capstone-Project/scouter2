@@ -597,7 +597,7 @@ contract StructAndModifiers{
             allCourseId_[i-1] = courseInfs[i].courseId;
             isCourseEnded[i-1] = false;
 
-            if(courseInfs[i].courseStudentCounts == courseInfs[i].gotStudentGradeCounts){
+            if(courseInfs[i].courseStudentCounts != 0 && (courseInfs[i].courseStudentCounts == courseInfs[i].gotStudentGradeCounts)){
                 isCourseEnded[i-1] = true;
             }
         }
@@ -766,7 +766,7 @@ contract StructAndModifiers{
             uint courseIdx = getIndexByCourseId(myProCoursesTemp[i]);
 
             isCourseEnded[i] = false;
-            if(courseInfs[courseIdx].courseStudentCounts == courseInfs[courseIdx].gotStudentGradeCounts){
+            if(courseInfs[courseIdx].courseStudentCounts != 0 && (courseInfs[courseIdx].courseStudentCounts == courseInfs[courseIdx].gotStudentGradeCounts)){
                 isCourseEnded[i] = true;
             }
         }

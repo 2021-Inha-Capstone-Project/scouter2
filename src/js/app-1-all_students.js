@@ -93,22 +93,25 @@ App = {
             }
             else{
                 // 展示课程基本信息
-                var allStudentInfHead_ = '<thead><tr><th>stuId</th>' +
-                                                    '<th>stuName</th>' +
-                                                    '<th>stuBlockAddress</th>' + 
-                                                    '<th>stuAuthorization</th>' +    
-                                                    '<th>myStuCourseIds</th></tr></thead>';
+                var allStudentInfHead_ = '<caption><h1>All Students Information</h1></caption'+
+                                            '<thead><tr><th>ID</th>' +
+                                                    '<th>Name</th>' +
+                                                    '<th>Wallet Address</th>' + 
+                                                    '<th>Authorization</th>' +    
+                                                    '<th>Related Course</th></tr></thead>';
                 document.getElementById("allStuInf").innerHTML = allStudentInfHead_;
                 for(var i=0;i<sum;i++){
-                    instance_.getStudentInfByStuAddress(allStudentAddress_[i],{from: account, gas: 300000}).then(function(studentInf){
+                    instance_.getStudentInfByStuAddress(allStudentAddress_[i],{from: account, gas: 300000})
+                    .then(function(studentInf){
+                        console.log(studentInf[4])
                         // 对地址进行处理输出
-                        var accountLength = studentInf[2].length;
-                        var accountTemp = studentInf[2].slice(0,6) + '..' + studentInf[2].slice(accountLength-4,accountLength);
+                        var addressLength = studentInf[2].length;
+                        var address = studentInf[2].slice(0,6) + '..' + studentInf[2].slice(addressLength-4,addressLength);
 
                         // 通过div添加到页面中  
                         var allStudentInf_ =    '<tr><td>' + studentInf[0] + '</td>' + 
                                                     '<td>' + studentInf[1] + '</td>' + 
-                                                    '<td>' + accountTemp + '</td>' + 
+                                                    '<td>' + address + '</td>' + 
                                                     '<td>' + studentInf[3] + '</td>' +
                                                     '<td>' + studentInf[4] + '</td></tr>';
                         

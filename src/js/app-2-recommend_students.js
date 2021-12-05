@@ -1,5 +1,5 @@
 function tdclick(addr){
-    location.replace("5-student_card.html?addr=" + addr)
+    location.replace("5-student_card.html?addr=" + addr + "&courseId=" + $('#recommend_course_id').val())
 }
 
 App = {    
@@ -153,12 +153,13 @@ App = {
                 let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
 
                 // 展示课程基本信息
-                var courInfHead_ =  '<thead><tr><th>Course ID</th>' +
+                let courInfHead_ =  '<caption><h2>Course Information</h2></caption'+
+                                    '<thead><tr><th>ID</th>' +
                                                 '<th>Course Name</th>' +
                                                 '<th>Professor Name</th>' +    
                                                 '<th>Professor Address</th>' +    
                                                 '<th>Total Students</th></tr></thead>';
-                var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
+                let courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
                                         '<td>' + proName + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
@@ -177,20 +178,27 @@ App = {
             else{
                 // 展示学生基本信息
                 // 学生table head
-                var courseStudentInfHead_ =  '<thead><tr><th>courseStuId</th>' +
-                                                        '<th>courseStuName</th>' +
-                                                        '<th>courseStuAddress</th>' +
-                                                        '<th>courseStuGrade</th></tr></thead>';
+                let courseStudentInfHead_ =  '<caption><h2>Top 3 Students</h2></caption'+
+                                            '<thead><tr><th>Student ID</th>' +
+                                                    '<th>Name</th>' +
+                                                    '<th>Wallet Address</th>' +
+                                                    '<th>Grade</th></tr></thead>';
                 document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
-                for(var i=0;i<getTops;i++){
+                for(let i=0; i<getTops; i++){
 
                     // 异步调用 上面函数要标记async
                     let courseStuName_ = await instance_.getStudentNameById(courseAllStudentsInf_[1][i].c[0],{from: account, gas: 300000});
+                    let studentID = courseAllStudentsInf_[1][i];
+                    let studentGrade = courseAllStudentsInf_[3][i];
+                    let studentAddr = courseAllStudentsInf_[2][i];
 
-                    var courseStudentInf_ = '<tr onclick=\"tdclick(\''+courseAllStudentsInf_[2][i]+ '\');\"><td>' + courseAllStudentsInf_[1][i] + '</td>' + 
+                    let addressLength = studentAddr.length;
+                    let formattedAddress = studentAddr.slice(0,6) + '..' + studentAddr.slice(addressLength-4,addressLength);
+
+                    let courseStudentInf_ = '<tr onclick=\"tdclick(\''+ studentAddr+ '\');\"><td>' + studentID + '</td>' + 
                                                 '<td>' + courseStuName_ + '</td>' +                                      
-                                                '<td>' + courseAllStudentsInf_[2][i] + '</td>' + 
-                                                '<td>' + courseAllStudentsInf_[3][i] + '</td></tr>';
+                                                '<td>' + formattedAddress + '</td>' + 
+                                                '<td>' + studentGrade + '</td></tr>';
                     $("#courseStudentInf").append(courseStudentInf_);
                 }
             } 

@@ -8,7 +8,12 @@
   <script src="./js/getUrl.js"></script>
   <link href="./css/0-header.css" rel="stylesheet" type="text/css"> 
   <link href="./css/0-show_course_table.css" rel="stylesheet" type="text/css"> 
-
+  <script>
+    var course_id_ = $.getUrlParam('courseId');
+    function GoShowMyCoursesPage(){
+        document.getElementById("goShowMyCoursesPage").href="2-recommend_students.html?recommend_course_id="+ course_id_;
+    }
+</script>
 </head>
 <body>
     
@@ -27,9 +32,13 @@
                 </a>
             </ul>
     
-    
+            
     
             <ul class="nav-menu">
+                <li class="header-choose"> 
+                    <a href="" id="goShowMyCoursesPage" onclick="GoShowMyCoursesPage()"><div id="header-font"> <-Back To Course</div></a>
+                </li>
+
     <!--권한 관리 -->            
             <li class="header-choose"> 
                 <a href="3-authority.html"><div id="header-font">Go to Admin page</div></a>

@@ -84,18 +84,20 @@ App = {
  
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
-            instance_ = instance;
+            _instance = instance;
             console.log('ShowCourseId start.....');      
 
             // 先获得所有的地址
-            return instance_.getCourseIdByProAddress(account,{from: account, gas: 300000});
-        }).then(function(myCoursesId_) { 
+            return _instance.getCourseIdByProAddress(account,{from: account, gas: 300000});
+        }).then(async function(myCoursesId_) { 
             console.log(myCoursesId_)
             if(myCoursesId_[0].length == 0){
                 alert("죄송합니다\n아직 교수가 수업을 시작하지 않았습니다 ❌");
             }
             else{
                 for(var i=0;i<myCoursesId_.length;i++){
+                    let courseName = await _instance.getCourseNameByCourseId(myCoursesId_[0][i].c[0]);
+
                     let isCourseEnded = myCoursesId_[1][i];
                     var courseCards =   '<div class="shell">' +
                                             '<div class="main-top"  id="' + myCoursesId_[0][i] + '">' +
@@ -105,7 +107,7 @@ App = {
                                                 '<span>I\'m a professor</span>' +
                                             '</div>' + 
                                             '<div class="main-bottom">' +
-                                                '<h2>Professor function</h2>'+
+                                                '<h2>' + courseName + '</h2>'+
                                                 '<span></span>'+
                                             '</div>' +
                                         '</div>';

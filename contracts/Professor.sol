@@ -176,7 +176,7 @@ contract Professor is Admin {
             if(courseInfs[indexOfCourseID].courseStudents[j].stuBlockAddress==_stuBlockAddress){
                 // 信息匹配 ， 赋予成绩   Information matching, giving results
                 if(courseInfs[indexOfCourseID].courseStudents[j].stuGrade == 0){
-                    courseInfs[courseCounts].gotStudentGradeCounts++;
+                    courseInfs[indexOfCourseID].gotStudentGradeCounts++;
                 }
 
                 courseInfs[indexOfCourseID].courseStudents[j].stuGrade = _stuGrade;

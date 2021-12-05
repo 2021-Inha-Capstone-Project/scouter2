@@ -100,8 +100,9 @@ App = {
                 let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
 
                 // 展示课程基本信息
-                var courInfHead_ =  '<thead><tr><th>Course ID</th>' +
-                                                '<th>Course Name</th>' +
+                var courInfHead_ =  '<caption><h2>Course Information</h2></caption'+
+                                    '<thead><tr><th>ID</th>' +
+                                                '<th>Name</th>' +
                                                 '<th>Professor Name</th>' +    
                                                 '<th>Professor Address</th>' +    
                                                 '<th>Total Students</th></tr></thead>';
@@ -123,12 +124,13 @@ App = {
             }
             else{
                 // 展示课程基本信息
-                var allStudentInfHead_ = '<thead><tr><th>stuId</th>' +
-                                                    '<th>stuName</th>' +
-                                                    '<th>stuBlockAddress</th>' + 
-                                                    '<th>stuAuthorization</th>' +
-                                                    '<th>myStuCourseIds</th>' +     
-                                                    '<th>addCourse</th></tr></thead>';
+                var allStudentInfHead_ = '<caption><h2>Students to ADD</h2></caption'+
+                                                '<thead><tr><th>ID</th>' +
+                                                    '<th>Name</th>' +
+                                                    '<th>Wallet\'s Address</th>' + 
+                                                    '<th>Authorization</th>' +
+                                                    '<th>Related Course</th>' +     
+                                                    '<th></th></tr></thead>';
                 document.getElementById("allStuInf").innerHTML = allStudentInfHead_;
                 var i_ = 0;
                 for(var i=0;i<sum;i++){

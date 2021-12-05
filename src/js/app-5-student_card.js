@@ -53,12 +53,12 @@ App = {
   
     ShowAddressInf: function() {
         console.log('enter ==> ShowAddressInf()');
-        var account = web3.eth.accounts[0]; // msg.sender
+        let account = web3.eth.accounts[0]; // msg.sender
         console.log('account===> : ' + account);
         
         // 权限值
-        var nowID = 0;
-        var nowAuthorization = 0;
+        let nowID = 0;
+        let nowAuthorization = 0;
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
@@ -67,7 +67,7 @@ App = {
             return nowID;
         }).then(function(nowID) { 
             // 赋值展示
-            var nowId = '';
+            let nowId = '';
             if(nowID == 1){
                 nowId = '1(root)';
             }
@@ -91,7 +91,7 @@ App = {
             return nowAuthorization;
         }).then(function(nowAuthorization) { 
             // 赋值展示
-            var nowAut = '';
+            let nowAut = '';
             if(nowAuthorization == 1){
                 nowAut = 'student';
             }
@@ -112,15 +112,15 @@ App = {
         });
 
 
-        var accountLength = account.length;
-        var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
+        let accountLength = account.length;
+        let acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
         document.getElementById("nowAddress").innerHTML = acc;
         console.log('ShowAddressInf ==> acc = '+ acc);
 
     },
   
     GetStudentInfo: function() {
-        var account = web3.eth.accounts[0]; // msg.sender
+        let account = web3.eth.accounts[0]; // msg.sender
         console.log('account===> : ' + account);
  
         // Professor已经得到合约的名称, 实例化智能合约 deployed
@@ -130,34 +130,39 @@ App = {
 
         }).then(async function(studentInf) { 
             console.log(studentInf)
-            var studentInfoThead =  '<thead><tr><th>Student ID</th>' +
+            let addressLength = studentInf[2].length;
+            let address = studentInf[2].slice(0,6) + '..' + studentInf[2].slice(addressLength-4,addressLength);
+
+            let studentInfoThead =      '<caption><h2>Student Information</h2></caption'+
+                                        '<thead><tr><th>Student ID</th>' +
                                                 '<th>Name</th>' +
                                                 '<th>Address</th>' +    
                                                 '<th>Authorization</th></tr></thead>';
-            var tHeadTd =      '<tr><td>' + studentInf[0] + '</td>' + 
+            let tHeadTd =      '<tr><td>' + studentInf[0] + '</td>' + 
                                     '<td>' + studentInf[1] + '</td>' + 
-                                    '<td>' + studentInf[2] + '</td>' + 
+                                    '<td>' + address + '</td>' + 
                                     '<td>' + studentInf[3] + '</td></tr>';
                                                 
             document.getElementById("studentInfo").innerHTML = studentInfoThead + tHeadTd;
 
 
             // 展示课程基本信息
-            var allStudentInfHead_ = '<thead><th>Course ID</th>' + 
+            let allStudentInfHead_ =    '<caption><h2>Related Courses</h2></caption'+
+                                        '<thead><th>Course ID</th>' + 
                                                 '<th>Course Name</th>' +
                                                 '<th>Grade</th></tr>' +
                                                 '</thead>';
 
             document.getElementById("courseStudentInf").innerHTML = allStudentInfHead_;
 
-            var accountLength = studentInf[2].length;
-            var accountTemp = studentInf[2].slice(0,6) + '..' + studentInf[2].slice(accountLength-4,accountLength);
+            let accountLength = studentInf[2].length;
+            let accountTemp = studentInf[2].slice(0,6) + '..' + studentInf[2].slice(accountLength-4,accountLength);
 
             console.log(studentInf)
             for(let i = 0; i < studentInf[4].length; i++){
                 let courseName = await instance_.getCourseNameByCourseId(studentInf[4][i].c[0], {from: account, gas: 300000});
             
-                var allStudentInf_ =    '<tr><td>' + studentInf[4][i] +  '</td>' +
+                let allStudentInf_ =    '<tr><td>' + studentInf[4][i] +  '</td>' +
                                             '<td>' + courseName + '</td>' +
                                             '<td>' + studentInf[5][i] + '</td>' +
                                             '</tr>';
