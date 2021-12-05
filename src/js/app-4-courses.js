@@ -90,15 +90,17 @@ App = {
             // 先获得所有的地址
             return instance_.getCourseIdByProAddress(account,{from: account, gas: 300000});
         }).then(function(myCoursesId_) { 
-            if(myCoursesId_.length == 0){
-                alert("죄송합니다\n아직 교수가 수업을 시작하지 않았습니다");
+            console.log(myCoursesId_)
+            if(myCoursesId_[0].length == 0){
+                alert("죄송합니다\n아직 교수가 수업을 시작하지 않았습니다 ❌");
             }
             else{
                 for(var i=0;i<myCoursesId_.length;i++){
+                    let isCourseEnded = myCoursesId_[1][i];
                     var courseCards =   '<div class="shell">' +
-                                            '<div class="main-top">' +
-                                                '<h2>'+ myCoursesId_[i] +'</h2>' +
-                                                '<div class="ball"><a href="4-2-show_mycourses.html?show_course_id='+ myCoursesId_[i] +'"><img src="./img/2.2.png"></a></div>' +
+                                            '<div class="main-top"  id="' + myCoursesId_[0][i] + '">' +
+                                                '<h2>'+ myCoursesId_[0][i] +'</h2>' +
+                                                '<div class="ball"><a href="4-2-show_mycourses.html?show_course_id='+ myCoursesId_[0][i] +'"><img src="./img/2.2.png"></a></div>' +
                                                 '<div class="line"></div>' +
                                                 '<span>I\'m a professor</span>' +
                                             '</div>' + 
@@ -107,23 +109,20 @@ App = {
                                                 '<span></span>'+
                                             '</div>' +
                                         '</div>';
-                    
-                    $("#myCoursesId").append(courseCards);
+                
+
+                    //If course hasn't ended, it is prioritized to display first
+                    if(isCourseEnded){
+                        $("#myCoursesId").append(courseCards);
+                        document.getElementById(""+myCoursesId_[0][i]).style.backgroundColor = 'rgba(' + 69 + ',' + 0 + ',' + 0 + ',' + 1 + ')';
+                    }else{
+                        $("#myCoursesId").prepend(courseCards);
+                    }
                 }
-
-                // 只能查看一次
-                //var button_ = document.getElementById("ShowMyCourses");
-                //button_.disabled = true;
-
-                console.log("when res ===> " + myCoursesId_.length);
-                console.log("when res ===> " + myCoursesId_[0]);
-                console.log("when res ===> " + myCoursesId_[1]);
-
             }
 
         }).catch(function(err) { 
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowMyCourses ==> error = '+ err);
+            console.log(err);
         });
 
     },
@@ -266,8 +265,8 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            // console.log('when error ==> account===> : ' + account);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
@@ -293,8 +292,8 @@ App = {
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            // console.log('when error ==> account===> : ' + account);
+            console.log(err);
         });
 
 

@@ -74,33 +74,43 @@ App = {
     CreateCourseGrade: function() {
         console.log('enter ==> CreateCourseGrade()');
         var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
+        // console.log('account===> : ' + account);
         //var nowAuthorization = 0;
         // 获取到元素值
         var grade_courseId= $('#show_course_id').val();
         var grade_stuBlockAddress= $('#change_student_address').val();
         var grade_stuGrade= $('#change_student_grade').val();
 
-        console.log('grade_courseId: ' + grade_courseId + ' ==> grade_professor_address: ' + account);
-        console.log('grade_stuBlockAddress: ' + grade_stuBlockAddress + ' ==> grade_stuGrade: ' + grade_stuGrade);
+        try {
+            if(grade_stuBlockAddress == "" || grade_stuGrade == ""){
+                throw("Input fields can't be empty")
+            }
+            if(grade_stuGrade > 100 || grade_stuGrade < 0){
+                throw("Input grade from 1 to 100")
+            }
 
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('CreateCourseGrade start.....');
-            
-            return instance.createCourseGrade(grade_courseId,account,grade_stuBlockAddress,grade_stuGrade,{from: account, gas: 300000});
-        }).then(function(res) { 
-            // 赋值展示
-            alert("성공적인 점수 입력되었습니다.")
-            // 修改成功后自动刷新页面显示新成绩
-            window.location.reload();
-            console.log('when res ==> account===> : ' + account);
-            console.log('CreateCourseGrade ==> res = '+ res);
-        }).catch(function(err) {
-            alert("점수 입력 실패. >< ") 
-            console.log('when error ==> account===> : ' + account);
-            console.log('CreateCourseGrade ==> error = '+ err);
-        });
+            // console.log('grade_courseId: ' + grade_courseId + ' ==> grade_professor_address: ' + account);
+            // console.log('grade_stuBlockAddress: ' + grade_stuBlockAddress + ' ==> grade_stuGrade: ' + grade_stuGrade);
+
+            // Professor已经得到合约的名称, 实例化智能合约 deployed
+            App.contracts.Professor.deployed().then(function(instance) {
+                // console.log('CreateCourseGrade start.....');
+                
+                return instance.createCourseGrade(grade_courseId,account,grade_stuBlockAddress,grade_stuGrade,{from: account, gas: 300000});
+            }).then(function(res) { 
+                // 赋值展示
+                alert("성공적인 점수 입력되었습니다. ✅")
+                // 修改成功后自动刷新页面显示新成绩
+                window.location.reload();
+                // console.log('when res ==> account===> : ' + account);
+                // console.log('CreateCourseGrade ==> res = '+ res);
+            }).catch(function(err) {
+                alert("점수 입력 실패. >< ❌") 
+                // console.log('CreateCourseGrade ==> error = '+ err);
+            });
+        } catch (error) {
+            alert(error)
+        }
     },
 
 
@@ -123,14 +133,15 @@ App = {
             
             // 先获得所有的地址
             return instance_.getCourseInfByCourseId(show_course_id,{from: account, gas: 300000});
-        }).then(function(courseInf_) { 
+        }).then(async function(courseInf_) { 
             console.log('when courseId ===> : ' + courseInf_[0]);
             if(courseInf_[0] == 0){
-                alert("과정이 존재하지 않습니다")
+                alert("과정이 존재하지 않습니다 ❌")
             }
             else{
                 var proAddressLength = courseInf_[2].length;
                 var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
+                let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
 
                 // 展示课程基本信息
                 var courInfHead_ =  '<thead><tr><th>Course ID</th>' +
@@ -140,7 +151,7 @@ App = {
                                                 '<th>Total Students</th></tr></thead>';
                 var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
-                                        '<td>' + "NAME" + '</td>' + 
+                                        '<td>' + proName + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
                                         '<td>' + courseInf_[3] + '</td></tr>';
                                     //+ '----myStuCourses: ' + studentInf[4] + '<br>';
@@ -183,8 +194,7 @@ App = {
             console.log('ShowCourseInf ==> res = '+ courseAllStudentsInf_);
 
         }).catch(function(err) { 
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowCourseInf ==> error = '+ err);
+            console.log(err);
         });
 
     },
@@ -222,8 +232,7 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
@@ -249,8 +258,7 @@ App = {
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
 

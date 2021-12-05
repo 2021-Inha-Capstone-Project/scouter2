@@ -89,7 +89,7 @@ App = {
             var sum = allStudentAddress_.length;
             console.log('sum = '+ sum);
             if(sum == 0){
-                alert("현재 학생이 없습니다.");
+                alert("현재 학생이 없습니다. ❌");
             }
             else{
                 // 展示课程基本信息
@@ -119,8 +119,8 @@ App = {
             }
 
         }).catch(function(err) { 
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAllStudents ==> error = '+ err);
+            // console.log('when error ==> account===> : ' + account);
+            console.log(err);
         });
 
     },
@@ -157,8 +157,7 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
@@ -184,8 +183,7 @@ App = {
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
 

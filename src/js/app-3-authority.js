@@ -100,15 +100,14 @@ App = {
             return instance.setPermission(set_address,set_name,setAuthority,{from: account, gas: 300000});
         }).then(function(res) { 
             // 赋值展示
-            alert("권한이 성공적으로 설정되었습니다.")
+            alert("권한이 성공적으로 설정되었습니다. ✅")
             // 修改成功后自动刷新页面显示新成绩
             window.location.reload();
             console.log('account ===> : ' + account);
             console.log('SetPermission ==> res = '+ res);
         }).catch(function(err) { 
-            alert("권한 설정 실패했습니다 ><.")
-            console.log(' account ===> : ' + account);
-            console.log('SetPermission ==> error = '+ err);
+            alert("권한 설정 실패했습니다 ><. ❌")
+            console.log(err);
         });
 
     },
@@ -130,15 +129,14 @@ App = {
             console.log('RemovePermission start.....');
             return instance.removePermission(remove_address,{from: account, gas: 300000});
         }).then(function(res) { 
-            alert("권한이 성공적으로 제거되었습니다.")
+            alert("권한이 성공적으로 제거되었습니다. ✅")
             // 修改成功后自动刷新页面显示新成绩
             window.location.reload();
             console.log('account ===> : ' + account);
             console.log('SetPermission ==> res = '+ res);
         }).catch(function(err) { 
-            alert("권한 제거 실패했습니다 ><.")
-            console.log('account ===> : ' + account);
-            console.log('SetPermission ==> error = '+ err);
+            alert("권한 제거 실패했습니다 ><. ❌")
+            console.log(err);
         });
 
     },
@@ -174,8 +172,7 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
@@ -201,8 +198,7 @@ App = {
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
 

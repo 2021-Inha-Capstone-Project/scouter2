@@ -97,15 +97,14 @@ App = {
             return instance.createCourse(create_course_id,create_course_name,account,{from: account, gas: 300000});
         }).then(function(res) { 
             // 赋值展示
-            alert("코스가 성공적으로 생성되었습니다.")
+            alert("코스가 성공적으로 생성되었습니다. ✅")
             // 成功后自动刷新页面显示新成绩
             window.location.reload();
             console.log('when res ==> account===> : ' + account);
             console.log('CreateCourse ==> res = '+ res);
         }).catch(function(err) { 
-            alert("코스 생성 실패 ><.")
-            console.log('when error ==> account===> : ' + account);
-            console.log('CreateCourse ==> error = '+ err);
+            alert("코스 생성 실패 ><. ❌")
+            console.log(err);
         });
 
     },
@@ -209,8 +208,7 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
@@ -236,8 +234,7 @@ App = {
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
 

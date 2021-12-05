@@ -19,7 +19,6 @@ App = {
     initWeb3: function() {
       // TODO: refactor conditional
        if (typeof web3 !== 'undefined') {
-          console.log('enter ==> initWeb3()  if........');
            // If a web3 instance is already provided by Meta Mask.
            // 当前有Meta Mask私有链, 则返回Meta Mask私有链的信息
            App.web3Provider = web3.currentProvider;
@@ -33,7 +32,6 @@ App = {
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
        } else {
-          console.log('enter ==> initWeb3()  else........');
            // Specify default instance if no web3 instance provided
            // 否则手动指定要连接的Meta Mask私有链地址
            App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
@@ -54,113 +52,21 @@ App = {
   
     // 初始化智能合约
     initContract: function() {
-        console.log('enter ==> initContract()');
         // $.getJSON用来获取json格式的文件
         $.getJSON("Professor.json", function(data) {
             App.contracts.Professor = TruffleContract(data);
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
         }).done(App.ShowAddressInf,App.RecommendCourseStudents);
-        return App.bindEvents();
-    },
-  
-  
-    // 绑定事件， 点击按钮出发授权函数
-    bindEvents: function() {
-     // 留出一个位置
-      console.log('enter ==> bindEvents()');
-      //$('#RecommendCourseStudents').on('click', App.RecommendCourseStudents);
-    },
-  
-    // 实现推荐学生的函数,默认推荐3名 ,  设置推荐1名 即 推荐最优秀学生
-    RecommendCourseStudents: function() {
-        // 默认推荐三名学生
-        var topStudents = 3;
-
-        console.log('enter ==> RecommendCourseStudents()');
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
- 
-        // 得到值
-        var recommend_course_id = $('#recommend_course_id').val();
-        console.log('recommend_course_id===> : ' + recommend_course_id);
-
-
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            instance_ = instance;
-            console.log('RecommendCourseStudents start.....');      
-
-            // 先获得所有的地址
-            return instance_.getCourseInfByCourseId(recommend_course_id,{from: account, gas: 300000});
-        }).then(function(courseInf_) { 
-            console.log('when courseId ===> : ' + courseInf_[0]);
-            if(courseInf_[0] == 0){
-                alert("과정이 존재하지 않습니다")
-            }
-            else{
-                var proAddressLength = courseInf_[2].length;
-                var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
-
-                // 展示课程基本信息
-                var courInfHead_ =  '<thead><tr><th>Course ID</th>' +
-                                                '<th>Course Name</th>' +
-                                                '<th>Professor Name</th>' +    
-                                                '<th>Professor Address</th>' +    
-                                                '<th>Total Students</th></tr></thead>';
-                var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
-                                        '<td>' + courseInf_[1] + '</td>' + 
-                                        '<td>' + "NAME" + '</td>' + 
-                                        '<td>' + proAddress + '</td>' + 
-                                        '<td>' + courseInf_[3] + '</td></tr>';
-
-                                    //+ '----myStuCourses: ' + studentInf[4] + '<br>';
-                document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_; 
-            }
-            return instance_.getTopStudentsByCourseId(recommend_course_id,topStudents,{from: account, gas: 300000});
-        }).then(async function(courseAllStudentsInf_){
-            var getTops = courseAllStudentsInf_[0];
-            console.log('when getTops ===> : ' + getTops);  
-            console.log(courseAllStudentsInf_)
-
-            if(getTops == 0){
-                alert("추천할 학생이 없습니다.");
-            }
-            else{
-                // 展示学生基本信息
-                // 学生table head
-                var courseStudentInfHead_ =  '<thead><tr><th>courseStuId</th>' +
-                                                        '<th>courseStuName</th>' +
-                                                        '<th>courseStuAddress</th>' +
-                                                        '<th>courseStuGrade</th></tr></thead>';
-                document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
-                for(var i=0;i<getTops;i++){
-
-                    // 异步调用 上面函数要标记async
-                    let courseStuName_ = await instance_.getStudentNameById(courseAllStudentsInf_[1][i].c[0],{from: account, gas: 300000});
-                    console.log(courseAllStudentsInf_[0][i]);
-                    console.log(courseStuName_);
-                    var courseStudentInf_ = '<tr onclick=\"tdclick(\''+courseAllStudentsInf_[2][i]+ '\');\"><td>' + courseAllStudentsInf_[1][i] + '</td>' + 
-                                                '<td>' + courseStuName_ + '</td>' +                                      
-                                                '<td>' + courseAllStudentsInf_[2][i] + '</td>' + 
-                                                '<td>' + courseAllStudentsInf_[3][i] + '</td></tr>';
-                    $("#courseStudentInf").append(courseStudentInf_);
-                }
-                console.log('when res ==> account===> : ' + account);
-                console.log('RecommendCourseStudents ==> res = '+ courseAllStudentsInf_);
-            } 
-        }).catch(function(err) { 
-            console.log(err);
-        });
 
     },
+
 
 
     // 实现的show
     ShowAddressInf: function() {
         console.log('enter ==> ShowAddressInf()');
         var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
         
         // 权限值
         var nowID = 0;
@@ -168,7 +74,6 @@ App = {
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowAddressInf1 start.....');
             nowID = instance.getIdByAddress(account,{from: account, gas: 300000});
             return nowID;
         }).then(function(nowID) { 
@@ -186,13 +91,11 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowAddressInf2 start.....');
             nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
             return nowAuthorization;
         }).then(function(nowAuthorization) { 
@@ -213,17 +116,88 @@ App = {
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
 
         var accountLength = account.length;
         var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
-        document.getElementById("nowAddress").innerHTML = acc;
-        console.log('ShowAddressInf ==> acc = '+ acc);
+        document.getElementById("nowAddress").innerHTML = acc;        
+    },
+  
+    // 实现推荐学生的函数,默认推荐3名 ,  设置推荐1名 即 推荐最优秀学生
+    RecommendCourseStudents: function() {
+        // 默认推荐三名学生
+        var topStudents = 3;
 
-        
+        console.log('enter ==> RecommendCourseStudents()');
+        var account = web3.eth.accounts[0]; // msg.sender
+ 
+        // 得到值
+        var recommend_course_id = $('#recommend_course_id').val();
+
+        // Professor已经得到合约的名称, 实例化智能合约 deployed
+        App.contracts.Professor.deployed().then(function(instance) {
+            instance_ = instance;  
+
+            // 先获得所有的地址
+            return instance_.getCourseInfByCourseId(recommend_course_id,{from: account, gas: 300000});
+        }).then(async function(courseInf_) { 
+            // console.log(courseInf_);
+            if(courseInf_[0] == 0){
+                alert("과정이 존재하지 않습니다 ❌")
+            }
+            else{
+                var proAddressLength = courseInf_[2].length;
+                var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
+                let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
+
+                // 展示课程基本信息
+                var courInfHead_ =  '<thead><tr><th>Course ID</th>' +
+                                                '<th>Course Name</th>' +
+                                                '<th>Professor Name</th>' +    
+                                                '<th>Professor Address</th>' +    
+                                                '<th>Total Students</th></tr></thead>';
+                var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
+                                        '<td>' + courseInf_[1] + '</td>' + 
+                                        '<td>' + proName + '</td>' + 
+                                        '<td>' + proAddress + '</td>' + 
+                                        '<td>' + courseInf_[3] + '</td></tr>';
+
+                                    //+ '----myStuCourses: ' + studentInf[4] + '<br>';
+                document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_; 
+            }
+            return instance_.getTopStudentsByCourseId(recommend_course_id,topStudents,{from: account, gas: 300000});
+        }).then(async function(courseAllStudentsInf_){
+            var getTops = courseAllStudentsInf_[0];
+
+            if(getTops == 0){
+                alert("추천할 학생이 없습니다. ❌");
+            }
+            else{
+                // 展示学生基本信息
+                // 学生table head
+                var courseStudentInfHead_ =  '<thead><tr><th>courseStuId</th>' +
+                                                        '<th>courseStuName</th>' +
+                                                        '<th>courseStuAddress</th>' +
+                                                        '<th>courseStuGrade</th></tr></thead>';
+                document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
+                for(var i=0;i<getTops;i++){
+
+                    // 异步调用 上面函数要标记async
+                    let courseStuName_ = await instance_.getStudentNameById(courseAllStudentsInf_[1][i].c[0],{from: account, gas: 300000});
+
+                    var courseStudentInf_ = '<tr onclick=\"tdclick(\''+courseAllStudentsInf_[2][i]+ '\');\"><td>' + courseAllStudentsInf_[1][i] + '</td>' + 
+                                                '<td>' + courseStuName_ + '</td>' +                                      
+                                                '<td>' + courseAllStudentsInf_[2][i] + '</td>' + 
+                                                '<td>' + courseAllStudentsInf_[3][i] + '</td></tr>';
+                    $("#courseStudentInf").append(courseStudentInf_);
+                }
+            } 
+        }).catch(function(err) { 
+            console.log(err);
+        });
+
     },
 
   };

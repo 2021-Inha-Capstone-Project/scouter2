@@ -48,9 +48,76 @@ App = {
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
     
-        }).done(App.GetStudentInfo);
+        }).done(App.ShowAddressInf, App.GetStudentInfo);
     },
   
+    ShowAddressInf: function() {
+        console.log('enter ==> ShowAddressInf()');
+        var account = web3.eth.accounts[0]; // msg.sender
+        console.log('account===> : ' + account);
+        
+        // 权限值
+        var nowID = 0;
+        var nowAuthorization = 0;
+
+        // Professor已经得到合约的名称, 实例化智能合约 deployed
+        App.contracts.Professor.deployed().then(function(instance) {
+            console.log('ShowAddressInf1 start.....');
+            nowID = instance.getIdByAddress(account,{from: account, gas: 300000});
+            return nowID;
+        }).then(function(nowID) { 
+            // 赋值展示
+            var nowId = '';
+            if(nowID == 1){
+                nowId = '1(root)';
+            }
+            else if(nowID == 0){
+                nowId = 'null';
+            }
+            else{
+                nowId = nowID;
+            }
+            document.getElementById("nowID").innerHTML = "ID: "+nowId;
+        }).catch(function(err) { 
+            alert('failed!!! ❌');
+            // console.log('when error ==> account===> : ' + account);
+            console.log(err);
+        });
+
+        // Professor已经得到合约的名称, 实例化智能合约 deployed
+        App.contracts.Professor.deployed().then(function(instance) {
+            console.log('ShowAddressInf2 start.....');
+            nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
+            return nowAuthorization;
+        }).then(function(nowAuthorization) { 
+            // 赋值展示
+            var nowAut = '';
+            if(nowAuthorization == 1){
+                nowAut = 'student';
+            }
+            else if(nowAuthorization == 2){
+                nowAut = 'professor';
+            }
+            else if(nowAuthorization == 3){
+                nowAut = 'admin';
+            }
+            else{
+                nowAut = 'null';
+            }
+            document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
+        }).catch(function(err) { 
+            alert('failed!!! ❌');
+            // console.log('when error ==> account===> : ' + account);
+            console.log(err);
+        });
+
+
+        var accountLength = account.length;
+        var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
+        document.getElementById("nowAddress").innerHTML = acc;
+        console.log('ShowAddressInf ==> acc = '+ acc);
+
+    },
   
     GetStudentInfo: function() {
         var account = web3.eth.accounts[0]; // msg.sender

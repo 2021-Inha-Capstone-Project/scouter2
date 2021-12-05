@@ -89,25 +89,27 @@ App = {
 
             // 先获得所有的地址
             return instance_.getCourseInfByCourseId(show_course_id,{from: account, gas: 300000});
-        }).then(function(courseInf_) { 
+        }).then(async function(courseInf_) { 
             console.log('when courseId ===> : ' + courseInf_[0]);
             if(courseInf_[0] == 0){
-                alert("과정이 존재하지 않습니다")
+                alert("과정이 존재하지 않습니다 ❌")
             }
             else{
                 var proAddressLength = courseInf_[2].length;
                 var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
+                let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
 
                 // 展示课程基本信息
-                var courInfHead_ =  '<thead><tr><th>courseId</th>' +
-                                                '<th>courseName</th>' +
-                                                '<th>proAddress</th>' +    
-                                                '<th>courseStuCounts</th></tr></thead>';
+                var courInfHead_ =  '<thead><tr><th>Course ID</th>' +
+                                                '<th>Course Name</th>' +
+                                                '<th>Professor Name</th>' +    
+                                                '<th>Professor Address</th>' +    
+                                                '<th>Total Students</th></tr></thead>';
                 var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
+                                        '<td>' + proName + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
                                         '<td>' + courseInf_[3] + '</td></tr>';
-
                                     //+ '----myStuCourses: ' + studentInf[4] + '<br>';
                 document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_;
                 return instance_.getAllStudentAddress({from: account, gas: 300000});
@@ -117,7 +119,7 @@ App = {
             var sum = allStudentAddress_.length;
             console.log('sum = '+ sum);
             if(sum == 0){
-                alert("현재 학생이 없습니다.");
+                alert("현재 학생이 없습니다. ❌");
             }
             else{
                 // 展示课程基本信息
@@ -157,8 +159,7 @@ App = {
                 }           
             }
         }).catch(function(err) { 
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAllStudents ==> error = '+ err);
+            console.log(err);   
         });
 
         
@@ -191,15 +192,14 @@ App = {
         }).then(function(res) { 
             // 赋值展示
 
-            alert("학생이 성공적으로 참여되었습니다.");
+            alert("학생이 성공적으로 참여되었습니다. ✅");
             // 修改成功后自动刷新页面显示新成绩
             window.location.reload();
             console.log('when res ==> account===> : ' + account);
             console.log('ApplyCourse ==> res = ' + res);
         }).catch(function(err) { 
-            alert("학생이 참여하지 못했습니다.")
-            console.log('when error ==> account===> : ' + account);
-            console.log('ApplyCourse ==> error = '+ err);
+            alert("학생이 참여하지 못했습니다. ❌")
+            console.log(err);
         });
 
     },
@@ -236,8 +236,7 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
@@ -263,8 +262,7 @@ App = {
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
 
