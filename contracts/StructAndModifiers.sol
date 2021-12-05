@@ -224,6 +224,7 @@ contract StructAndModifiers{
         string courseName;      //课程名称
         address proBlockAddress;
         bool canApply;          // 是否可以申请课程, 当有学生拿到成绩之后学生不可以申请此课程
+        uint gotStudentGradeCounts;
         uint courseStudentCounts;  // 保存这门课下面的学生人数
         mapping (uint => CourseStudent) courseStudents;  // 保存修这门课的学生的数组
     }
@@ -415,7 +416,7 @@ contract StructAndModifiers{
     function getProfessorNameByAddress(address _profAddr) public view returns(string memory){
         for(uint i=1; i<=professorCounts; i++){
             if(professorSelfs[i].proBlockAddress == _profAddr) {
-                return professorSelfs[i].proName; // 
+                return professorSelfs[i].proName; 
             }    
         }
         return 'null';      
@@ -588,12 +589,20 @@ contract StructAndModifiers{
 
 
     // 返回当前所有的course id
-    function getAllCourseId() public view returns(uint[] memory){
+    function getAllCourseId() public view returns(uint[] memory, bool[] memory){
         uint [] memory allCourseId_ = new uint[](courseCounts);
-        for(uint i=1;i<=courseCounts;i++){
+        bool [] memory isCourseEnded = new bool[](courseCounts);
+
+        for(uint i=1; i<=courseCounts; i++){
             allCourseId_[i-1] = courseInfs[i].courseId;
+            isCourseEnded[i-1] = false;
+
+            if(courseInfs[i].courseStudentCounts == courseInfs[i].gotStudentGradeCounts){
+                isCourseEnded[i-1] = false;
+            }
         }
-        return allCourseId_;
+
+        return (allCourseId_, isCourseEnded);
     }
 
 
@@ -638,7 +647,7 @@ contract StructAndModifiers{
         address proBlockAddress_ = courseInfs[courseIndex].proBlockAddress;
         uint courseStudentCounts_ = courseInfs[courseIndex].courseStudentCounts;  
 
-        return (courseId_,courseName_,proBlockAddress_,courseStudentCounts_);
+        return (courseId_,courseName_,proBlockAddress_, courseStudentCounts_);
     }
 
     // 得到指定course id下的学生所有信息
@@ -742,32 +751,26 @@ contract StructAndModifiers{
     }
 
 
-
-
-    
-    // pro ///////////////////////////////////
-
-    // 获得某个教师开了几门课
-    function getCourseCountsByProAddress(address _proBlockAddress) public view returns(uint){
-        // 得到proIndex
-        uint proIndex = getProfessorIndexByAddress(_proBlockAddress);
-        return professorSelfs[proIndex].myProCourses.length;
-
-    }
-
     // 通过proAddress获得某个教师开的所有课程id的数组   Get an array of all course IDs opened by a teacher through proAddress
-    function getCourseIdByProAddress(address _proBlockAddress) public view returns(uint[] memory){
+    function getCourseIdByProAddress(address _proBlockAddress) public view returns(uint[] memory, bool[] memory){
         // 得到proIndex
         uint proIndex = getProfessorIndexByAddress(_proBlockAddress);
         // 得到开了多少门课
-        uint courseLens = getCourseCountsByProAddress(_proBlockAddress);
+        uint courseLens = professorSelfs[proIndex].myProCourses.length;
         // 创建个临时数组
         uint[] memory myProCoursesTemp = new uint[](courseLens); 
+        bool[] memory isCourseEnded = new bool[](courseLens);
 
         for(uint i=0;i<courseLens;i++){
             myProCoursesTemp[i] = professorSelfs[proIndex].myProCourses[i];
+            uint courseIdx = getIndexByCourseId(myProCoursesTemp[i]);
+
+            isCourseEnded[i] = true;
+            if(courseInfs[courseIdx].courseStudentCounts == courseInfs[courseIdx].gotStudentGradeCounts){
+                isCourseEnded[i] = false;
+            }
         }
-        return myProCoursesTemp;
+        return (myProCoursesTemp, isCourseEnded);
     }
 
     

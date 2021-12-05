@@ -44,6 +44,7 @@ contract Professor is Admin {
         courseInfs[courseCounts].courseName = _courseName;
         courseInfs[courseCounts].proBlockAddress = _proBlockAddress;
         courseInfs[courseCounts].canApply = true;
+        courseInfs[courseCounts].gotStudentGradeCounts = 0;
         
         // 创建成功之后需要将此course ID放到对应的教授的档案中
         // After successful creation, you need to put this course ID into the corresponding professor's file
@@ -174,6 +175,10 @@ contract Professor is Admin {
         for(uint j=1;j<=courseStudentCounts_;j++){
             if(courseInfs[indexOfCourseID].courseStudents[j].stuBlockAddress==_stuBlockAddress){
                 // 信息匹配 ， 赋予成绩   Information matching, giving results
+                if(courseInfs[indexOfCourseID].courseStudents[j].stuGrade == 0){
+                    courseInfs[courseCounts].gotStudentGradeCounts++;
+                }
+
                 courseInfs[indexOfCourseID].courseStudents[j].stuGrade = _stuGrade;
                 
                 // 更新老师和学生的状态数  Update the status number of teachers and students
@@ -188,7 +193,6 @@ contract Professor is Admin {
                     // isLearning--
                     studentSelfs[studentIndex].isLearningSum--;
                 }
-                
                 
                 // 记录自己的成绩信息
                 //studentSelfs[studentIndex].myStuCoursesGrades.push(_stuGrade);
