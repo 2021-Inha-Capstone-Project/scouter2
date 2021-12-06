@@ -90,19 +90,20 @@ App = {
             // 先获得所有的地址
             return _instance.getCourseIdByProAddress(account,{from: account, gas: 300000});
         }).then(async function(myCoursesId_) { 
-            console.log(myCoursesId_)
-            if(myCoursesId_[0].length == 0){
+            if(myCoursesId_.length == 0){
                 alert("죄송합니다\n아직 교수가 수업을 시작하지 않았습니다 ❌");
             }
             else{
                 for(var i=0;i<myCoursesId_.length;i++){
-                    let courseName = await _instance.getCourseNameByCourseId(myCoursesId_[0][i].c[0]);
+                    let course = await _instance.getCourseNameStatusById(myCoursesId_[i].c[0]);
+                    console.log(course);
+                    let courseName = course[0]
+                    let isCourseEnded = course[1];
 
-                    let isCourseEnded = myCoursesId_[1][i];
                     var courseCards =   '<div class="shell">' +
-                                            '<div class="main-top"  id="' + myCoursesId_[0][i] + '">' +
-                                                '<h2>'+ myCoursesId_[0][i] +'</h2>' +
-                                                '<div class="ball"><a href="4-2-show_mycourses.html?show_course_id='+ myCoursesId_[0][i] +'"><img src="./img/2.2.png"></a></div>' +
+                                            '<div class="main-top"  id="' + myCoursesId_[i] + '">' +
+                                                '<h2>'+ myCoursesId_[i] +'</h2>' +
+                                                '<div class="ball"><a href="4-2-show_mycourses.html?show_course_id='+ myCoursesId_[i] +'"><img src="./img/2.2.png"></a></div>' +
                                                 '<div class="line"></div>' +
                                                 '<span>I\'m a professor</span>' +
                                             '</div>' + 
@@ -116,7 +117,7 @@ App = {
                     //If course hasn't ended, it is prioritized to display first
                     if(isCourseEnded){
                         $("#myCoursesId").append(courseCards);
-                        document.getElementById(""+myCoursesId_[0][i]).style.backgroundColor = 'rgba(' + 69 + ',' + 0 + ',' + 0 + ',' + 1 + ')';
+                        document.getElementById(""+myCoursesId_[i]).style.backgroundColor = 'rgba(' + 69 + ',' + 0 + ',' + 0 + ',' + 1 + ')';
                     }else{
                         $("#myCoursesId").prepend(courseCards);
                     }

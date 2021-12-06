@@ -34,7 +34,7 @@ contract Professor is Admin {
         bool isExisted = checkCourseExisted(_courseId); 
         require(isExisted == false,">>>_courseId already existed!!!");
         
-        // 由于onlyProfessor所以不用检查proBlockAddress的真实性了
+        string memory _profName = getProfessorNameByAddress(_proBlockAddress);
         
         // 自增 Self increasing
         courseCounts ++;
@@ -42,6 +42,7 @@ contract Professor is Admin {
         // 创建  初始化没有学生和成绩 Create initialization without students and grades
         courseInfs[courseCounts].courseId = _courseId;
         courseInfs[courseCounts].courseName = _courseName;
+        courseInfs[courseCounts].profName = _profName;
         courseInfs[courseCounts].proBlockAddress = _proBlockAddress;
         courseInfs[courseCounts].canApply = true;
         courseInfs[courseCounts].gotStudentGradeCounts = 0;

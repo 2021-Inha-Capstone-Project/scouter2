@@ -97,7 +97,7 @@ App = {
                                             '<thead><tr><th>ID</th>' +
                                                     '<th>Name</th>' +
                                                     '<th>Wallet Address</th>' + 
-                                                    '<th>Authorization</th>' +    
+                                                    // '<th>Authorization</th>' +    
                                                     '<th>Related Course</th></tr></thead>';
                 document.getElementById("allStuInf").innerHTML = allStudentInfHead_;
                 for(var i=0;i<sum;i++){
@@ -112,7 +112,7 @@ App = {
                         var allStudentInf_ =    '<tr><td>' + studentInf[0] + '</td>' + 
                                                     '<td>' + studentInf[1] + '</td>' + 
                                                     '<td>' + address + '</td>' + 
-                                                    '<td>' + studentInf[3] + '</td>' +
+                                                    // '<td>' + studentInf[3] + '</td>' +
                                                     '<td>' + studentInf[4] + '</td></tr>';
                         
                         $("#allStuInf").append(allStudentInf_);

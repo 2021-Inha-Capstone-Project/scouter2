@@ -1,0 +1,26 @@
+input{
+    /* margin-top: 10px;
+    margin-left: 66%;
+    padding: 5px 0px; */
+    width: 100px;
+    outline-style: none ;
+    /* text-align:center; */
+    border: 0px;
+    border: 1px solid #ccc;
+    border-radius: 10%;
+    position:relative;
+}
+input:focus{
+    border-color: #95b7e0;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+} 
+
+
+#change_student_grade{
+    background-color: #fbf8e9;
+    /* border: none; */
+    text-align: center;
+    font-size: 1em;
+}

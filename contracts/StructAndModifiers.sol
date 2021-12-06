@@ -222,6 +222,7 @@ contract StructAndModifiers{
     struct CourseInf{
         uint courseId;          //课程号
         string courseName;      //课程名称
+        string profName;
         address proBlockAddress;
         bool canApply;          // 是否可以申请课程, 当有学生拿到成绩之后学生不可以申请此课程
         uint gotStudentGradeCounts;
@@ -404,7 +405,7 @@ contract StructAndModifiers{
 // getter about professor
 
     // 通过 address 找到professor中的index , Find the index in the professor by ID
-    function getProfessorIndexByAddress(address _proBlockAddress) public view returns(uint){
+    function getProfessorIndexByAddress(address _proBlockAddress) internal view returns(uint){
         for(uint i=1;i<=professorCounts;i++){
             if(professorSelfs[i].proBlockAddress ==_proBlockAddress) {
                 return i;  // 
@@ -413,7 +414,7 @@ contract StructAndModifiers{
         return 0; // 
     }
 
-    function getProfessorNameByAddress(address _profAddr) public view returns(string memory){
+    function getProfessorNameByAddress(address _profAddr) internal view returns(string memory){
         for(uint i=1; i<=professorCounts; i++){
             if(professorSelfs[i].proBlockAddress == _profAddr) {
                 return professorSelfs[i].proName; 
@@ -463,7 +464,7 @@ contract StructAndModifiers{
 // getter about student
 
     // 通过 address 找到student中的index  ,Find the index in the student by ID
-    function getStudentIndexByAddress(address _stuBlockAddress) public view returns(uint){
+    function getStudentIndexByAddress(address _stuBlockAddress) internal view returns(uint){
         for(uint i=1;i<=studentCounts;i++){
             if(studentSelfs[i].stuBlockAddress ==_stuBlockAddress) {
                 return i;  // 
@@ -581,29 +582,45 @@ contract StructAndModifiers{
     }
 
     // 通过course id 得到此课程的course name
-    function getCourseNameByCourseId(uint _courseId) public view returns(string memory){
+    function getCourseNameStatusById(uint _courseId) public view returns(string memory, bool){
         // 先找到该门课程  Find the course first
         uint indexOfCourseID = getIndexByCourseId(_courseId);
-        return courseInfs[indexOfCourseID].courseName;
+        bool isCourseEnded= false;
+
+        if(courseInfs[indexOfCourseID].courseStudentCounts != 0 && (courseInfs[indexOfCourseID].courseStudentCounts == courseInfs[indexOfCourseID].gotStudentGradeCounts)){
+                isCourseEnded = true;
+        }
+
+        return (courseInfs[indexOfCourseID].courseName, isCourseEnded);
     }
 
 
-    // 返回当前所有的course id
-    function getAllCourseId() public view returns(uint[] memory, bool[] memory){
+    // function getAllCourseId() public view returns(uint[] memory, bool[] memory){
+    //     uint [] memory allCourseId_ = new uint[](courseCounts);
+    //     bool [] memory isCourseEnded = new bool[](courseCounts);
+
+    //     for(uint i=1; i<=courseCounts; i++){
+    //         allCourseId_[i-1] = courseInfs[i].courseId;
+    //         isCourseEnded[i-1] = false;
+
+    //         if(courseInfs[i].courseStudentCounts != 0 && (courseInfs[i].courseStudentCounts == courseInfs[i].gotStudentGradeCounts)){
+    //             isCourseEnded[i-1] = true;
+    //         }
+    //     }
+
+    //     return (allCourseId_, isCourseEnded);
+    // }
+
+    function getAllCourseId() public view returns(uint[] memory){
         uint [] memory allCourseId_ = new uint[](courseCounts);
-        bool [] memory isCourseEnded = new bool[](courseCounts);
 
         for(uint i=1; i<=courseCounts; i++){
             allCourseId_[i-1] = courseInfs[i].courseId;
-            isCourseEnded[i-1] = false;
-
-            if(courseInfs[i].courseStudentCounts != 0 && (courseInfs[i].courseStudentCounts == courseInfs[i].gotStudentGradeCounts)){
-                isCourseEnded[i-1] = true;
-            }
         }
 
-        return (allCourseId_, isCourseEnded);
+        return allCourseId_;
     }
+
 
 
     // 得到course id的学生人数  Number of students who get course ID
@@ -637,17 +654,18 @@ contract StructAndModifiers{
 
 
     // 得到指定course id下的所有信息
-    function getCourseInfByCourseId(uint _courseid) public view returns(uint,string memory,address,uint){
+    function getCourseInfByCourseId(uint _courseid) public view returns(uint,string memory, string memory, address,uint){
         // 先得到课程的索引
         uint courseIndex = getIndexByCourseId(_courseid);
 
         // courseId_, courseName_,proBlockAddress_,courseStudentCounts_
         uint courseId_ = courseInfs[courseIndex].courseId;          
         string memory courseName_ = courseInfs[courseIndex].courseName;      
+        string memory profName_ = courseInfs[courseIndex].profName;      
         address proBlockAddress_ = courseInfs[courseIndex].proBlockAddress;
         uint courseStudentCounts_ = courseInfs[courseIndex].courseStudentCounts;  
 
-        return (courseId_,courseName_,proBlockAddress_, courseStudentCounts_);
+        return (courseId_,courseName_, profName_, proBlockAddress_, courseStudentCounts_);
     }
 
     // 得到指定course id下的学生所有信息
@@ -752,25 +770,18 @@ contract StructAndModifiers{
 
 
     // 通过proAddress获得某个教师开的所有课程id的数组   Get an array of all course IDs opened by a teacher through proAddress
-    function getCourseIdByProAddress(address _proBlockAddress) public view returns(uint[] memory, bool[] memory){
+    function getCourseIdByProAddress(address _proBlockAddress) public view returns(uint[] memory){
         // 得到proIndex
         uint proIndex = getProfessorIndexByAddress(_proBlockAddress);
         // 得到开了多少门课
         uint courseLens = professorSelfs[proIndex].myProCourses.length;
         // 创建个临时数组
         uint[] memory myProCoursesTemp = new uint[](courseLens); 
-        bool[] memory isCourseEnded = new bool[](courseLens);
 
         for(uint i=0;i<courseLens;i++){
             myProCoursesTemp[i] = professorSelfs[proIndex].myProCourses[i];
-            uint courseIdx = getIndexByCourseId(myProCoursesTemp[i]);
-
-            isCourseEnded[i] = false;
-            if(courseInfs[courseIdx].courseStudentCounts != 0 && (courseInfs[courseIdx].courseStudentCounts == courseInfs[courseIdx].gotStudentGradeCounts)){
-                isCourseEnded[i] = true;
-            }
         }
-        return (myProCoursesTemp, isCourseEnded);
+        return myProCoursesTemp;
     }
 
     

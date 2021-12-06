@@ -89,15 +89,15 @@ App = {
 
             // 先获得所有的地址
             return instance_.getCourseInfByCourseId(show_course_id,{from: account, gas: 300000});
-        }).then(async function(courseInf_) { 
+        }).then(function(courseInf_) { 
             console.log('when courseId ===> : ' + courseInf_[0]);
             if(courseInf_[0] == 0){
                 alert("과정이 존재하지 않습니다 ❌")
             }
             else{
-                var proAddressLength = courseInf_[2].length;
-                var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
-                let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
+                var proAddressLength = courseInf_[3].length;
+                var proAddress = courseInf_[3].slice(0,6) + '..' + courseInf_[3].slice(proAddressLength-4,proAddressLength);
+                // let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
 
                 // 展示课程基本信息
                 var courInfHead_ =  '<caption><h2>Course Information</h2></caption'+
@@ -108,9 +108,9 @@ App = {
                                                 '<th>Total Students</th></tr></thead>';
                 var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
-                                        '<td>' + proName + '</td>' + 
+                                        '<td>' + courseInf_[2] + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
-                                        '<td>' + courseInf_[3] + '</td></tr>';
+                                        '<td>' + courseInf_[4] + '</td></tr>';
                                     //+ '----myStuCourses: ' + studentInf[4] + '<br>';
                 document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_;
                 return instance_.getAllStudentAddress({from: account, gas: 300000});
@@ -128,7 +128,7 @@ App = {
                                                 '<thead><tr><th>ID</th>' +
                                                     '<th>Name</th>' +
                                                     '<th>Wallet\'s Address</th>' + 
-                                                    '<th>Authorization</th>' +
+                                                    // '<th>Authorization</th>' +
                                                     '<th>Related Course</th>' +     
                                                     '<th></th></tr></thead>';
                 document.getElementById("allStuInf").innerHTML = allStudentInfHead_;
@@ -149,7 +149,7 @@ App = {
                         var allStudentInf_ =    '<tr><td>' + studentInf[0] + '</td>' + 
                                                     '<td>' + studentInf[1] + '</td>' + 
                                                     '<td id="apply_student_address'+i_+'">' + studentInf[2] + '</td>' + 
-                                                    '<td>' + studentInf[3] + '</td>' +
+                                                    // '<td>' + studentInf[3] + '</td>' +
                                                     '<td>' + studentInf[4] + '</td>' +
                                                     '<td><button onclick="App.ApplyCourse('+studentInf[0]+')" >add</button></td></tr>';
                         $("#allStuInf").append(allStudentInf_);
@@ -194,7 +194,7 @@ App = {
         }).then(function(res) { 
             // 赋值展示
 
-            alert("학생이 성공적으로 참여되었습니다. ✅");
+            // alert("학생이 성공적으로 참여되었습니다. ✅");
             // 修改成功后自动刷新页面显示新成绩
             window.location.reload();
             console.log('when res ==> account===> : ' + account);

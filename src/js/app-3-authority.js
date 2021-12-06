@@ -113,32 +113,55 @@ App = {
     },
 
     // 实现权限取消的函数
-    RemovePermission: function() {
-        console.log('enter ==> RemovePermission()');
+    RemovePermission: async function() {
+        try {
+            console.log('enter ==> RemovePermission()');
 
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
-        var nowAuthorization = 0;
-        // 获取到元素值
-        var remove_address= $('#remove_address').val();
+            var account = web3.eth.accounts[0]; // msg.sender
+            console.log('account===> : ' + account);
+            var nowAuthorization = 0;
+            // 获取到元素值
+            var remove_address= $('#remove_address').val();
+            console.log('remove_address: ' + remove_address);
 
-        console.log('remove_address: ' + remove_address);
+            let canRemove = true;
 
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('RemovePermission start.....');
-            return instance.removePermission(remove_address,{from: account, gas: 300000});
-        }).then(function(res) { 
-            alert("권한이 성공적으로 제거되었습니다. ✅")
-            // 修改成功后自动刷新页面显示新成绩
-            window.location.reload();
-            console.log('account ===> : ' + account);
-            console.log('SetPermission ==> res = '+ res);
-        }).catch(function(err) { 
-            alert("권한 제거 실패했습니다 ><. ❌")
-            console.log(err);
-        });
+            let instance = await App.contracts.Professor.deployed();
 
+            let profCourses = await instance.getCourseIdByProAddress(remove_address,{from: account, gas: 300000});
+
+            for(let i=0; i<profCourses.length; i++){
+                let course = await instance.getCourseNameStatusById(profCourses[i].c[0]);
+
+                let isCourseEnded = course[1];
+                if(!isCourseEnded){
+                    canRemove = false;
+                    break;
+                }
+            }
+            console.log(canRemove);
+
+            if(canRemove){
+                App.contracts.Professor.deployed().then(function(instance) {
+                    console.log('RemovePermission start.....');
+                    return instance.removePermission(remove_address,{from: account, gas: 300000});
+                }).then(function(res) { 
+                    alert("권한이 성공적으로 제거되었습니다. ✅")
+                    // 修改成功后自动刷新页面显示新成绩
+                    window.location.reload();
+                    console.log('account ===> : ' + account);
+                    console.log('SetPermission ==> res = '+ res);
+                }).catch(function(err) { 
+                    alert("Cannot Remove This Person At The Moment! ❌");
+                });
+            }
+            else{
+                throw("");
+            }
+
+        } catch (error) {
+            alert("Cannot Remove This Person At The Moment! ❌");
+        }
     },
 
 

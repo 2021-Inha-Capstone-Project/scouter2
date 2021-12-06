@@ -8,11 +8,6 @@ body{
     align-items: center;
     flex-direction: column;
 }
-.search{
-    margin-top: 10px;
-    right: 220px;
-    position: absolute;
-}
 /* ///////////////////////////    */
 
 .bordered1 { 
@@ -27,9 +22,9 @@ body{
     width: 70%;    
 } 
 
-table {
+/* table {
     empty-cells: hide;
-}
+} */
 
 th {  
     background-color: #dce9f9;
@@ -49,13 +44,6 @@ td {
 tr:hover {  
     background: #fbf8e9;  
 } 
-
-#change_student_grade{
-    background-color: #fbf8e9;
-    border: none;
-    text-align: center;
-    font-size: 1em;
-}
 
 .fa, .fas{
     margin-left: 5px;

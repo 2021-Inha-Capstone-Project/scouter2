@@ -101,7 +101,7 @@ App = {
                 return instance_.createCourseGrade(grade_courseId,account,grade_stuBlockAddress,grade_stuGrade,{from: account, gas: 300000});
             }).then(function(res) { 
                 // 赋值展示
-                alert("✅ Successfully Update Grade")
+                // alert("✅ Successfully Update Grade")
                 // 修改成功后自动刷新页面显示新成绩
                 window.location.reload();
 
@@ -134,15 +134,15 @@ App = {
             
             // 先获得所有的地址
             return instance_.getCourseInfByCourseId(show_course_id,{from: account, gas: 300000});
-        }).then(async function(courseInf_) { 
+        }).then(function(courseInf_) { 
             console.log('when courseId ===> : ' + courseInf_[0]);
             if(courseInf_[0] == 0){
                 alert("과정이 존재하지 않습니다 ❌")
             }
             else{
-                var proAddressLength = courseInf_[2].length;
-                var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
-                let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
+                var proAddressLength = courseInf_[3].length;
+                var proAddress = courseInf_[3].slice(0,6) + '..' + courseInf_[3].slice(proAddressLength-4,proAddressLength);
+                // let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
 
                 // 展示课程基本信息
                 var courInfHead_ =  '<caption><h2>Course Information</h2></caption'+
@@ -153,9 +153,9 @@ App = {
                                                 '<th>Total Students</th></tr></thead>';
                 var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
-                                        '<td>' + proName + '</td>' + 
+                                        '<td>' + courseInf_[2] + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
-                                        '<td>' + courseInf_[3] + '</td></tr>';
+                                        '<td>' + courseInf_[4] + '</td></tr>';
                                     //+ '----myStuCourses: ' + studentInf[4] + '<br>';
                 document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_;
                 return instance_.getCourseStudentInfByCourseId(show_course_id,{from: account, gas: 300000});
@@ -174,7 +174,7 @@ App = {
                                                 '<th>Name</th>' +
                                                 '<th>Address</th>' +
                                                 '<th>Grade</th>' +
-                                                '<th><input type="text" id="change_student_grade" maxlength="3" placeholder="Enter student grade"></th>'
+                                                '<th><input type="text" id="change_student_grade" maxlength="3" placeholder="Input grade"></th>'
                                             '</tr></thead>';
             document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
             

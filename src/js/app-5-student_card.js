@@ -137,20 +137,25 @@ App = {
                                         '<thead><tr><th>Student ID</th>' +
                                                 '<th>Name</th>' +
                                                 '<th>Address</th>' +    
-                                                '<th>Authorization</th></tr></thead>';
+                                                // '<th>Authorization</th>' +
+                                                '</tr></thead>';
             let tHeadTd =      '<tr><td>' + studentInf[0] + '</td>' + 
                                     '<td>' + studentInf[1] + '</td>' + 
                                     '<td>' + address + '</td>' + 
-                                    '<td>' + studentInf[3] + '</td></tr>';
+                                    // '<td>' + studentInf[3] + '</td>'+
+                                    '</tr>';
                                                 
             document.getElementById("studentInfo").innerHTML = studentInfoThead + tHeadTd;
 
 
             // 展示课程基本信息
             let allStudentInfHead_ =    '<caption><h2>Related Courses</h2></caption'+
-                                        '<thead><th>Course ID</th>' + 
-                                                '<th>Course Name</th>' +
-                                                '<th>Grade</th></tr>' +
+                                        '<thead><tr>' +
+                                                    '<th>Course ID</th>' + 
+                                                    '<th>Course Name</th>' +
+                                                    '<th>Grade</th>' +
+                                                    '<th>Status</th>' +
+                                                '</tr>' +
                                                 '</thead>';
 
             document.getElementById("courseStudentInf").innerHTML = allStudentInfHead_;
@@ -160,11 +165,21 @@ App = {
 
             console.log(studentInf)
             for(let i = 0; i < studentInf[4].length; i++){
-                let courseName = await instance_.getCourseNameByCourseId(studentInf[4][i].c[0], {from: account, gas: 300000});
+                let course = await instance_.getCourseNameStatusById(studentInf[4][i].c[0], {from: account, gas: 300000});
+                let courseName = course[0];
+                let isCourseEnded = course[1];
+                let courseStatus = "ONGOING";
+                let cssStyle = 'style="background-color: #799767"'
+
+                if(isCourseEnded == true){
+                    courseStatus = "FINISHED";
+                    cssStyle = 'style="background-color: #af4f4f"'
+                }
             
                 let allStudentInf_ =    '<tr><td>' + studentInf[4][i] +  '</td>' +
                                             '<td>' + courseName + '</td>' +
                                             '<td>' + studentInf[5][i] + '</td>' +
+                                            '<td ' + cssStyle + '>' + courseStatus + '</td>' +
                                             '</tr>';
 
                 $("#courseStudentInf").append(allStudentInf_);

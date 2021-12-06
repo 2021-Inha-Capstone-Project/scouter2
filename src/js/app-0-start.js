@@ -77,21 +77,22 @@ App = {
             console.log(allCoursesId_)
             // console.log("when allCoursesId_ ===> " + allCoursesId_);
             // console.log("when allCoursesId_.length ===> " + allCoursesId_.length);
-            if(allCoursesId_[0].length == 0){
+            if(allCoursesId_.length == 0){
                 alert("죄송합니다\n아직 수업을 시작하신 교수님이 없습니다 ❌");
             }
             else{
-                for(var i=0;i<allCoursesId_[0].length;i++){
-                    let courseName = await _instance.getCourseNameByCourseId(allCoursesId_[0][i].c[0]);
-                    let isCourseEnded = allCoursesId_[1][i];
+                for(var i=0;i<allCoursesId_.length;i++){
+                    let course = await _instance.getCourseNameStatusById(allCoursesId_[i].c[0]);
+                    let courseName = course[0];
+                    let isCourseEnded = course[1];
 
                     //If course has ended, it is prioritized to display first
                     if(isCourseEnded == true){
                         var allCourseCards =   '<div class="shell">' +
-                            '<div class="main-top" id="' + allCoursesId_[0][i] + '">' +
+                            '<div class="main-top" id="' + allCoursesId_[i] + '">' +
                                 '<h2>'+ "Course ID:" +'</h2>' +
-                                '<h2>'+ allCoursesId_[0][i] +'</h2>' +
-                                '<div class="ball"><a href="2-recommend_students.html?recommend_course_id='+ allCoursesId_[0][i] +'"><img src="./img/2.6.png"></a></div>' +
+                                '<h2>'+ allCoursesId_[i] +'</h2>' +
+                                '<div class="ball"><a href="2-recommend_students.html?recommend_course_id='+ allCoursesId_[i] +'"><img src="./img/2.6.png"></a></div>' +
                                 '<div class="line"></div>' +
                             '</div>' + 
                             '<div class="main-bottom">' +
@@ -101,14 +102,14 @@ App = {
                         '</div>';
 
                         $("#allCourses").prepend(allCourseCards);
-                        document.getElementById(""+allCoursesId_[0][i]).style.backgroundColor = 'rgba(' + 69 + ',' + 0 + ',' + 0 + ',' + 1 + ')';;
+                        document.getElementById(""+allCoursesId_[i]).style.backgroundColor = 'rgba(' + 69 + ',' + 0 + ',' + 0 + ',' + 1 + ')';;
                     }
                     else{
                         var allCourseCards =   '<div class="shell">' +
-                            '<div class="main-top" id="' + allCoursesId_[0][i] + '">' +
+                            '<div class="main-top" id="' + allCoursesId_[i] + '">' +
                                 '<h2>'+ "Course ID:" +'</h2>' +
-                                '<h2>'+ allCoursesId_[0][i] +'</h2>' +
-                                '<div class="ball"><a href="2-recommend_students.html?recommend_course_id='+ allCoursesId_[0][i] +'" class="disabled"><img src="./img/2.6.png"></a></div>' +
+                                '<h2>'+ allCoursesId_[i] +'</h2>' +
+                                '<div class="ball"><a href="2-recommend_students.html?recommend_course_id='+ allCoursesId_[i] +'" class="disabled"><img src="./img/2.6.png"></a></div>' +
                                 '<div class="line"></div>' +
                             '</div>' + 
                             '<div class="main-bottom">' +

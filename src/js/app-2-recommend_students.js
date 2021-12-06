@@ -142,15 +142,14 @@ App = {
 
             // 先获得所有的地址
             return instance_.getCourseInfByCourseId(recommend_course_id,{from: account, gas: 300000});
-        }).then(async function(courseInf_) { 
-            // console.log(courseInf_);
+        }).then(function(courseInf_) { 
+            console.log(courseInf_);
             if(courseInf_[0] == 0){
                 alert("과정이 존재하지 않습니다 ❌")
             }
             else{
-                var proAddressLength = courseInf_[2].length;
-                var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
-                let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
+                var proAddressLength = courseInf_[3].length;
+                var proAddress = courseInf_[3].slice(0,6) + '..' + courseInf_[3].slice(proAddressLength-4,proAddressLength);
 
                 // 展示课程基本信息
                 let courInfHead_ =  '<caption><h2>Course Information</h2></caption'+
@@ -161,9 +160,9 @@ App = {
                                                 '<th>Total Students</th></tr></thead>';
                 let courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
-                                        '<td>' + proName + '</td>' + 
+                                        '<td>' + courseInf_[2] + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
-                                        '<td>' + courseInf_[3] + '</td></tr>';
+                                        '<td>' + courseInf_[4] + '</td></tr>';
 
                                     //+ '----myStuCourses: ' + studentInf[4] + '<br>';
                 document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_; 
