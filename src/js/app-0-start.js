@@ -16,7 +16,7 @@ App = {
     initWeb3: function() {
       // TODO: refactor conditional
        if (typeof web3 !== 'undefined') {
-          console.log('enter ==> initWeb3()  if........');
+        //   console.log('enter ==> initWeb3()  if........');
            // If a web3 instance is already provided by Meta Mask.
            // 当前有Meta Mask私有链, 则返回Meta Mask私有链的信息
            App.web3Provider = web3.currentProvider;
@@ -25,12 +25,13 @@ App = {
            // 实时监听meta mask的地址切换
            ethereum.on('accountsChanged', function (accounts) {
                 console.log(accounts[0]);
+                location.reload();
                 App.ShowAddressInf();
            })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
        } else {
-          console.log('enter ==> initWeb3()  else........');
+        //   console.log('enter ==> initWeb3()  else........');
            // Specify default instance if no web3 instance provided
            // 否则手动指定要连接的Meta Mask私有链地址
            App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
@@ -51,25 +52,15 @@ App = {
   
     // 初始化智能合约
     initContract: function() {
-        console.log('enter ==> initContract()');
+        // console.log('enter ==> initContract()');
         // $.getJSON用来获取json格式的文件
         $.getJSON("Professor.json", function(data) {
-            console.log('data ==> ' + data);
             App.contracts.Professor = TruffleContract(data);
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
     
         }).done(App.ShowAddressInf,App.ShowAllCourses);
-        
-        return App.bindEvents();
-    },
-  
-  
-    // 绑定事件， 点击按钮出发授权函数
-    bindEvents: function() {
-      //$(document).on('click', '#ShowAllCourses', App.ShowAllCourses);
-      //$(document).on('click', '#ShowAddressInf', App.ShowAddressInf);
-        
+    
     },
   
 
@@ -77,50 +68,77 @@ App = {
     ShowAllCourses: function() {
         console.log('enter ==> ShowAllCourses()');
         var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
  
         // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('getAllCourseId start.....');      
+        App.contracts.Professor.deployed().then(function(instance) {  
             // 先获得所有的course id
+            _instance = instance;
             return instance.getAllCourseId({from: account, gas: 300000});
-        }).then(function(allCoursesId_) { 
-            console.log("when allCoursesId_ ===> " + allCoursesId_);
-            console.log("when allCoursesId_.length ===> " + allCoursesId_.length);
+        }).then(async function(allCoursesId_) { 
+            console.log(allCoursesId_)
+            // console.log("when allCoursesId_ ===> " + allCoursesId_);
+            // console.log("when allCoursesId_.length ===> " + allCoursesId_.length);
             if(allCoursesId_.length == 0){
-                alert("죄송합니다\n아직 수업을 시작하신 교수님이 없습니다");
+                alert("죄송합니다\n아직 수업을 시작하신 교수님이 없습니다 ❌");
             }
             else{
                 for(var i=0;i<allCoursesId_.length;i++){
-                    var allCourseCards =   '<div class="shell">' +
-                                            '<div class="main-top">' +
-                                                '<h2>'+ allCoursesId_[i] +'</h2>' +
-                                                '<div class="ball"><a href="2-recommend_students.html?recommend_course_id='+ allCoursesId_[i] +'"><img src="./img/2.6.png"></a></div>' +
-                                                '<div class="line"></div>' +
-                                                '<span>I\'m a professor</span>' +
-                                            '</div>' + 
-                                            '<div class="main-bottom">' +
-                                                '<h2>Professor function</h2>'+
-                                                '<span></span>'+
-                                            '</div>' +
-                                        '</div>';
-                    
-                    $("#allCourses").append(allCourseCards);
-                }
-            
+                    let course = await _instance.getCourseNameStatusById(allCoursesId_[i].c[0]);
+                    let courseName = course[0];
+                    let isCourseEnded = course[1];
 
-                console.log("when res ===> " + allCourseCards.length);
-                console.log("when res ===> " + allCourseCards[0]);
-                console.log("when res ===> " + allCourseCards[1]);
+                    //If course has ended, it is prioritized to display first
+                    if(isCourseEnded == true){
+                        var allCourseCards =   '<div class="shell">' +
+                            '<div class="main-top" id="' + allCoursesId_[i] + '">' +
+                                '<h2>'+ "Course ID:" +'</h2>' +
+                                '<h2>'+ allCoursesId_[i] +'</h2>' +
+                                '<div class="ball"><a href="2-recommend_students.html?recommend_course_id='+ allCoursesId_[i] +'"><img src="./img/2.6.png"></a></div>' +
+                                '<div class="line"></div>' +
+                            '</div>' + 
+                            '<div class="main-bottom">' +
+                                '<h2>'+ courseName +'</h2>' +
+                                '<span></span>'+
+                            '</div>' +
+                        '</div>';
+
+                        $("#allCourses").prepend(allCourseCards);
+                        document.getElementById(""+allCoursesId_[i]).style.backgroundColor = 'rgba(' + 69 + ',' + 0 + ',' + 0 + ',' + 1 + ')';;
+                    }
+                    else{
+                        var allCourseCards =   '<div class="shell">' +
+                            '<div class="main-top" id="' + allCoursesId_[i] + '">' +
+                                '<h2>'+ "Course ID:" +'</h2>' +
+                                '<h2>'+ allCoursesId_[i] +'</h2>' +
+                                '<div class="ball"><a href="2-recommend_students.html?recommend_course_id='+ allCoursesId_[i] +'" class="disabled"><img src="./img/2.6.png"></a></div>' +
+                                '<div class="line"></div>' +
+                            '</div>' + 
+                            '<div class="main-bottom">' +
+                                '<h2>'+ courseName +'</h2>' +
+                                '<span></span>'+
+                            '</div>' +
+                        '</div>';    
+
+                        $("#allCourses").append(allCourseCards);
+                    }
+                }
+
+                var footer_ = '<footer>' +
+                                    '<img class="footer-logo" src="./img/login1.png">' +
+                                    '© Humble and bold All rights reserved<br>' +
+                                    '&nbsp;&nbsp;&nbsp; Team Name: Humble and bold<br>' +
+                                    '&nbsp;&nbsp;&nbsp; Members: KY SOPHOT<br>' +
+                                    '&nbsp;&nbsp;&nbsp; SHEN BAOLEI, CAO WANGZE' +
+                                '</footer>';
+                $("#allCourses").append(footer_);
+
+
                 // 只能查看一次
                 var button_ = document.getElementById("ShowAllCourses");
-                button_.style.display = "none";
             }
 
-
         }).catch(function(err) { 
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAllCourses ==> error = '+ err);
+            console.log(err);
         });
 
     },
@@ -129,9 +147,8 @@ App = {
 
     // 实现的函数
     ShowAddressInf: function() {
-        console.log('enter ==> ShowAddressInf()');
+        // console.log('enter ==> ShowAddressInf()');
         var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
         
         // 权限值
         var nowID = 0;
@@ -139,7 +156,6 @@ App = {
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowAddressInf1 start.....');
             nowID = instance.getIdByAddress(account,{from: account, gas: 300000});
             return nowID;
         }).then(function(nowID) { 
@@ -157,42 +173,45 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             //alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowAddressInf2 start.....');
             nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
             return nowAuthorization;
         }).then(function(nowAuthorization) { 
             // 赋值展示
             var nowAut = '';
+            let nav = document.getElementsByClassName("nav-menu");
+
             if(nowAuthorization == 1){
                 nowAut = 'student';
+                nav[1].removeChild(nav[1].children[2])      // Prof
+                nav[1].removeChild(nav[1].children[1])      // Admin
             }
             else if(nowAuthorization == 2){
                 nowAut = 'professor';
+                nav[1].removeChild(nav[1].children[1])      //Admin
             }
             else if(nowAuthorization == 3){
                 nowAut = 'admin';
+                nav[1].removeChild(nav[1].children[2])      // Professor
             }
             else{
                 nowAut = 'null';
+                nav[1].removeChild(nav[1].children[2])      //Professor
+                nav[1].removeChild(nav[1].children[1])      //Admin
             }
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             //alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         var accountLength = account.length;
         var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
         document.getElementById("nowAddress").innerHTML = acc;
-        console.log('ShowAddressInf ==> acc = '+ acc);
-        
     },
  
 

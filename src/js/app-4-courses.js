@@ -59,7 +59,7 @@ App = {
             // 配置合约关联的私有链
             App.contracts.Professor.setProvider(App.web3Provider);
     
-        }).done(App.ShowAddressInf,App.ShowMyCourses);
+        }).done(App.ShowAddressInf, App.ShowMyCourses);
         
         return App.bindEvents();
     },
@@ -76,6 +76,80 @@ App = {
     },
 
 
+    // 实现的show
+    ShowAddressInf: function() {
+        console.log('enter ==> ShowAddressInf()');
+        var account = web3.eth.accounts[0]; // msg.sender
+        console.log('account===> : ' + account);
+        
+        // 权限值
+        var nowID = 0;
+        var nowAuthorization = 0;
+
+        // Professor已经得到合约的名称, 实例化智能合约 deployed
+        App.contracts.Professor.deployed().then(function(instance) {
+            console.log('ShowAddressInf1 start.....');
+            nowID = instance.getIdByAddress(account,{from: account, gas: 300000});
+            return nowID;
+        }).then(function(nowID) { 
+            // 赋值展示
+            var nowId = '';
+            if(nowID == 1){
+                nowId = '1(root)';
+            }
+            else if(nowID == 0){
+                nowId = 'null';
+            }
+            else{
+                nowId = nowID;
+            }
+            document.getElementById("nowID").innerHTML = "ID: "+nowId;
+        }).catch(function(err) { 
+            alert('failed!!! ❌');
+            // console.log('when error ==> account===> : ' + account);
+            console.log(err);
+        });
+
+        // Professor已经得到合约的名称, 实例化智能合约 deployed
+        App.contracts.Professor.deployed().then(function(instance) {
+            console.log('ShowAddressInf2 start.....');
+            nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
+            return nowAuthorization;
+        }).then(function(nowAuthorization) { 
+            if(nowAuthorization != 2){
+                alert("Only Professors Have Access To This Page.\n Redirecting to Main Page.")
+                location.replace("index.html")
+            }
+            // 赋值展示
+            var nowAut = '';
+            if(nowAuthorization == 1){
+                nowAut = 'student';
+            }
+            else if(nowAuthorization == 2){
+                nowAut = 'professor';
+            }
+            else if(nowAuthorization == 3){
+                nowAut = 'admin';
+            }
+            else{
+                nowAut = 'null';
+            }
+            document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
+        }).catch(function(err) { 
+            alert('failed!!! ❌');
+            // console.log('when error ==> account===> : ' + account);
+            console.log(err);
+        });
+
+
+        var accountLength = account.length;
+        var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
+        document.getElementById("nowAddress").innerHTML = acc;
+        console.log('ShowAddressInf ==> acc = '+ acc);
+
+    },
+
+
     // 
     ShowMyCourses: function() {
         console.log('enter ==> ShowMyCourses()');
@@ -84,46 +158,57 @@ App = {
  
         // Professor已经得到合约的名称, 实例化智能合约 deployed
         App.contracts.Professor.deployed().then(function(instance) {
-            instance_ = instance;
+            _instance = instance;
             console.log('ShowCourseId start.....');      
 
             // 先获得所有的地址
-            return instance_.getCourseIdByProAddress(account,{from: account, gas: 300000});
-        }).then(function(myCoursesId_) { 
+            return _instance.getCourseIdByProAddress(account,{from: account, gas: 300000});
+        }).then(async function(myCoursesId_) { 
             if(myCoursesId_.length == 0){
-                alert("죄송합니다\n아직 교수가 수업을 시작하지 않았습니다");
+                alert("죄송합니다\n아직 교수가 수업을 시작하지 않았습니다 ❌");
             }
             else{
                 for(var i=0;i<myCoursesId_.length;i++){
+                    let course = await _instance.getCourseNameStatusById(myCoursesId_[i].c[0]);
+                    console.log(course);
+                    let courseName = course[0]
+                    let isCourseEnded = course[1];
+
                     var courseCards =   '<div class="shell">' +
-                                            '<div class="main-top">' +
+                                            '<div class="main-top"  id="' + myCoursesId_[i] + '">' +
                                                 '<h2>'+ myCoursesId_[i] +'</h2>' +
                                                 '<div class="ball"><a href="4-2-show_mycourses.html?show_course_id='+ myCoursesId_[i] +'"><img src="./img/2.2.png"></a></div>' +
                                                 '<div class="line"></div>' +
                                                 '<span>I\'m a professor</span>' +
                                             '</div>' + 
                                             '<div class="main-bottom">' +
-                                                '<h2>Professor function</h2>'+
+                                                '<h2>' + courseName + '</h2>'+
                                                 '<span></span>'+
                                             '</div>' +
                                         '</div>';
-                    
-                    $("#myCoursesId").append(courseCards);
+                
+
+                    //If course hasn't ended, it is prioritized to display first
+                    if(isCourseEnded){
+                        $("#myCoursesId").append(courseCards);
+                        document.getElementById(""+myCoursesId_[i]).style.backgroundColor = 'rgba(' + 69 + ',' + 0 + ',' + 0 + ',' + 1 + ')';
+                    }else{
+                        $("#myCoursesId").prepend(courseCards);
+                    }
                 }
-
-                // 只能查看一次
-                //var button_ = document.getElementById("ShowMyCourses");
-                //button_.disabled = true;
-
-                console.log("when res ===> " + myCoursesId_.length);
-                console.log("when res ===> " + myCoursesId_[0]);
-                console.log("when res ===> " + myCoursesId_[1]);
-
+                var footer_ = '<footer>' +
+                                    '<img class="footer-logo" src="./img/login1.png">' +
+                                    '© Humble and bold All rights reserved<br>' +
+                                    '&nbsp;&nbsp;&nbsp; Team Name: Humble and bold<br>' +
+                                    '&nbsp;&nbsp;&nbsp; Members: KY SOPHOT<br>' +
+                                    '&nbsp;&nbsp;&nbsp; SHEN BAOLEI, CAO WANGZE' +
+                                '</footer>';
+                
+                $("#myCoursesId").append(footer_);
             }
 
         }).catch(function(err) { 
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowMyCourses ==> error = '+ err);
+            console.log(err);
         });
 
     },
@@ -234,77 +319,6 @@ App = {
     },
 
 */
-
-
-    // 实现的show
-    ShowAddressInf: function() {
-        console.log('enter ==> ShowAddressInf()');
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
-        
-        // 权限值
-        var nowID = 0;
-        var nowAuthorization = 0;
-
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowAddressInf1 start.....');
-            nowID = instance.getIdByAddress(account,{from: account, gas: 300000});
-            return nowID;
-        }).then(function(nowID) { 
-            // 赋值展示
-            var nowId = '';
-            if(nowID == 1){
-                nowId = '1(root)';
-            }
-            else if(nowID == 0){
-                nowId = 'null';
-            }
-            else{
-                nowId = nowID;
-            }
-            document.getElementById("nowID").innerHTML = "ID: "+nowId;
-        }).catch(function(err) { 
-            alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
-        });
-
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ShowAddressInf2 start.....');
-            nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
-            return nowAuthorization;
-        }).then(function(nowAuthorization) { 
-            // 赋值展示
-            var nowAut = '';
-            if(nowAuthorization == 1){
-                nowAut = 'student';
-            }
-            else if(nowAuthorization == 2){
-                nowAut = 'professor';
-            }
-            else if(nowAuthorization == 3){
-                nowAut = 'admin';
-            }
-            else{
-                nowAut = 'null';
-            }
-            document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
-        }).catch(function(err) { 
-            alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
-        });
-
-
-        var accountLength = account.length;
-        var acc = account.slice(0,6) + '..' + account.slice(accountLength-4,accountLength);
-        document.getElementById("nowAddress").innerHTML = acc;
-        console.log('ShowAddressInf ==> acc = '+ acc);
-
-    },
- 
 
  
   };

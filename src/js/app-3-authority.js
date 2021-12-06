@@ -100,47 +100,68 @@ App = {
             return instance.setPermission(set_address,set_name,setAuthority,{from: account, gas: 300000});
         }).then(function(res) { 
             // 赋值展示
-            alert("권한이 성공적으로 설정되었습니다.")
+            alert("권한이 성공적으로 설정되었습니다. ✅")
             // 修改成功后自动刷新页面显示新成绩
             window.location.reload();
             console.log('account ===> : ' + account);
             console.log('SetPermission ==> res = '+ res);
         }).catch(function(err) { 
-            alert("권한 설정 실패했습니다 ><.")
-            console.log(' account ===> : ' + account);
-            console.log('SetPermission ==> error = '+ err);
+            alert("권한 설정 실패했습니다 ><. ❌")
+            console.log(err);
         });
 
     },
 
     // 实现权限取消的函数
-    RemovePermission: function() {
-        console.log('enter ==> RemovePermission()');
+    RemovePermission: async function() {
+        try {
+            console.log('enter ==> RemovePermission()');
 
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
-        var nowAuthorization = 0;
-        // 获取到元素值
-        var remove_address= $('#remove_address').val();
+            var account = web3.eth.accounts[0]; // msg.sender
+            console.log('account===> : ' + account);
+            var nowAuthorization = 0;
+            // 获取到元素值
+            var remove_address= $('#remove_address').val();
+            console.log('remove_address: ' + remove_address);
 
-        console.log('remove_address: ' + remove_address);
+            let canRemove = true;
 
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('RemovePermission start.....');
-            return instance.removePermission(remove_address,{from: account, gas: 300000});
-        }).then(function(res) { 
-            alert("권한이 성공적으로 제거되었습니다.")
-            // 修改成功后自动刷新页面显示新成绩
-            window.location.reload();
-            console.log('account ===> : ' + account);
-            console.log('SetPermission ==> res = '+ res);
-        }).catch(function(err) { 
-            alert("권한 제거 실패했습니다 ><.")
-            console.log('account ===> : ' + account);
-            console.log('SetPermission ==> error = '+ err);
-        });
+            let instance = await App.contracts.Professor.deployed();
 
+            let profCourses = await instance.getCourseIdByProAddress(remove_address,{from: account, gas: 300000});
+
+            for(let i=0; i<profCourses.length; i++){
+                let course = await instance.getCourseNameStatusById(profCourses[i].c[0]);
+
+                let isCourseEnded = course[1];
+                if(!isCourseEnded){
+                    canRemove = false;
+                    break;
+                }
+            }
+            console.log(canRemove);
+
+            if(canRemove){
+                App.contracts.Professor.deployed().then(function(instance) {
+                    console.log('RemovePermission start.....');
+                    return instance.removePermission(remove_address,{from: account, gas: 300000});
+                }).then(function(res) { 
+                    alert("권한이 성공적으로 제거되었습니다. ✅")
+                    // 修改成功后自动刷新页面显示新成绩
+                    window.location.reload();
+                    console.log('account ===> : ' + account);
+                    console.log('SetPermission ==> res = '+ res);
+                }).catch(function(err) { 
+                    alert("Cannot Remove This Person At The Moment! ❌");
+                });
+            }
+            else{
+                throw("");
+            }
+
+        } catch (error) {
+            alert("Cannot Remove This Person At The Moment! ❌");
+        }
     },
 
 
@@ -174,8 +195,7 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
@@ -184,6 +204,10 @@ App = {
             nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
             return nowAuthorization;
         }).then(function(nowAuthorization) { 
+            if(nowAuthorization != 3){
+                alert("Only Admins Have Access To This Page.\n Redirecting to Main Page.")
+                location.replace("index.html")
+            }
             // 赋值展示
             var nowAut = '';
             if(nowAuthorization == 1){
@@ -201,8 +225,7 @@ App = {
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
 

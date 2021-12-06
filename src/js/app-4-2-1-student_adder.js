@@ -92,22 +92,25 @@ App = {
         }).then(function(courseInf_) { 
             console.log('when courseId ===> : ' + courseInf_[0]);
             if(courseInf_[0] == 0){
-                alert("과정이 존재하지 않습니다")
+                alert("과정이 존재하지 않습니다 ❌")
             }
             else{
-                var proAddressLength = courseInf_[2].length;
-                var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
+                var proAddressLength = courseInf_[3].length;
+                var proAddress = courseInf_[3].slice(0,6) + '..' + courseInf_[3].slice(proAddressLength-4,proAddressLength);
+                // let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
 
                 // 展示课程基本信息
-                var courInfHead_ =  '<thead><tr><th>courseId</th>' +
-                                                '<th>courseName</th>' +
-                                                '<th>proAddress</th>' +    
-                                                '<th>courseStuCounts</th></tr></thead>';
+                var courInfHead_ =  '<caption><h2>Course Information</h2></caption'+
+                                    '<thead><tr><th>ID</th>' +
+                                                '<th>Name</th>' +
+                                                '<th>Professor Name</th>' +    
+                                                '<th>Professor Address</th>' +    
+                                                '<th>Total Students</th></tr></thead>';
                 var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
+                                        '<td>' + courseInf_[2] + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
-                                        '<td>' + courseInf_[3] + '</td></tr>';
-
+                                        '<td>' + courseInf_[4] + '</td></tr>';
                                     //+ '----myStuCourses: ' + studentInf[4] + '<br>';
                 document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_;
                 return instance_.getAllStudentAddress({from: account, gas: 300000});
@@ -117,16 +120,17 @@ App = {
             var sum = allStudentAddress_.length;
             console.log('sum = '+ sum);
             if(sum == 0){
-                alert("현재 학생이 없습니다.");
+                alert("현재 학생이 없습니다. ❌");
             }
             else{
                 // 展示课程基本信息
-                var allStudentInfHead_ = '<thead><tr><th>stuId</th>' +
-                                                    '<th>stuName</th>' +
-                                                    '<th>stuBlockAddress</th>' + 
-                                                    '<th>stuAuthorization</th>' +
-                                                    '<th>myStuCourseIds</th>' +     
-                                                    '<th>addCourse</th></tr></thead>';
+                var allStudentInfHead_ = '<caption><h2>Students to ADD</h2></caption'+
+                                                '<thead><tr><th>ID</th>' +
+                                                    '<th>Name</th>' +
+                                                    '<th>Wallet\'s Address</th>' + 
+                                                    // '<th>Authorization</th>' +
+                                                    '<th>Related Course</th>' +     
+                                                    '<th></th></tr></thead>';
                 document.getElementById("allStuInf").innerHTML = allStudentInfHead_;
                 var i_ = 0;
                 for(var i=0;i<sum;i++){
@@ -145,7 +149,7 @@ App = {
                         var allStudentInf_ =    '<tr><td>' + studentInf[0] + '</td>' + 
                                                     '<td>' + studentInf[1] + '</td>' + 
                                                     '<td id="apply_student_address'+i_+'">' + studentInf[2] + '</td>' + 
-                                                    '<td>' + studentInf[3] + '</td>' +
+                                                    // '<td>' + studentInf[3] + '</td>' +
                                                     '<td>' + studentInf[4] + '</td>' +
                                                     '<td><button onclick="App.ApplyCourse('+studentInf[0]+')" >add</button></td></tr>';
                         $("#allStuInf").append(allStudentInf_);
@@ -157,8 +161,7 @@ App = {
                 }           
             }
         }).catch(function(err) { 
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAllStudents ==> error = '+ err);
+            console.log(err);   
         });
 
         
@@ -191,15 +194,14 @@ App = {
         }).then(function(res) { 
             // 赋值展示
 
-            alert("학생이 성공적으로 참여되었습니다.");
+            // alert("학생이 성공적으로 참여되었습니다. ✅");
             // 修改成功后自动刷新页面显示新成绩
             window.location.reload();
             console.log('when res ==> account===> : ' + account);
             console.log('ApplyCourse ==> res = ' + res);
         }).catch(function(err) { 
-            alert("학생이 참여하지 못했습니다.")
-            console.log('when error ==> account===> : ' + account);
-            console.log('ApplyCourse ==> error = '+ err);
+            alert("학생이 참여하지 못했습니다. ❌")
+            console.log(err);
         });
 
     },
@@ -236,8 +238,7 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
@@ -246,6 +247,10 @@ App = {
             nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
             return nowAuthorization;
         }).then(function(nowAuthorization) { 
+            if(nowAuthorization != 2){
+                alert("Only Professors Have Access To This Page.\n Redirecting to Main Page.")
+                location.replace("index.html")
+            }
             // 赋值展示
             var nowAut = '';
             if(nowAuthorization == 1){
@@ -263,8 +268,7 @@ App = {
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
 

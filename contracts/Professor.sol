@@ -34,7 +34,7 @@ contract Professor is Admin {
         bool isExisted = checkCourseExisted(_courseId); 
         require(isExisted == false,">>>_courseId already existed!!!");
         
-        // 由于onlyProfessor所以不用检查proBlockAddress的真实性了
+        string memory _profName = getProfessorNameByAddress(_proBlockAddress);
         
         // 自增 Self increasing
         courseCounts ++;
@@ -42,8 +42,10 @@ contract Professor is Admin {
         // 创建  初始化没有学生和成绩 Create initialization without students and grades
         courseInfs[courseCounts].courseId = _courseId;
         courseInfs[courseCounts].courseName = _courseName;
+        courseInfs[courseCounts].profName = _profName;
         courseInfs[courseCounts].proBlockAddress = _proBlockAddress;
         courseInfs[courseCounts].canApply = true;
+        courseInfs[courseCounts].gotStudentGradeCounts = 0;
         
         // 创建成功之后需要将此course ID放到对应的教授的档案中
         // After successful creation, you need to put this course ID into the corresponding professor's file
@@ -174,6 +176,10 @@ contract Professor is Admin {
         for(uint j=1;j<=courseStudentCounts_;j++){
             if(courseInfs[indexOfCourseID].courseStudents[j].stuBlockAddress==_stuBlockAddress){
                 // 信息匹配 ， 赋予成绩   Information matching, giving results
+                if(courseInfs[indexOfCourseID].courseStudents[j].stuGrade == 0){
+                    courseInfs[indexOfCourseID].gotStudentGradeCounts++;
+                }
+
                 courseInfs[indexOfCourseID].courseStudents[j].stuGrade = _stuGrade;
                 
                 // 更新老师和学生的状态数  Update the status number of teachers and students
@@ -188,7 +194,6 @@ contract Professor is Admin {
                     // isLearning--
                     studentSelfs[studentIndex].isLearningSum--;
                 }
-                
                 
                 // 记录自己的成绩信息
                 //studentSelfs[studentIndex].myStuCoursesGrades.push(_stuGrade);

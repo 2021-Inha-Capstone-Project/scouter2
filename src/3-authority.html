@@ -7,6 +7,7 @@
     <link href="./css/0-header.css" rel="stylesheet" type="text/css"> 
     <link href="./css/3-authority.css" rel="stylesheet" type="text/css"> 
     <script src="./js/jquery.min.js"></script>
+    <script src="./js/header_hide.js"></script>
     <title>3-authority</title>
     <script> 
         console.log("进入 3-authority page .....");
@@ -36,24 +37,24 @@
 
     <div class="shell">
         <div class="main-top2">
-            <p class="login_">권한 설정</p>
+            <p class="login_">Register New</p>
 
-            <input type="text" class="input_" id="set_address" placeholder="input address">
-            <input type="text" class="input_" id="set_name" placeholder="input name">
+            <input type="text" class="input_" id="set_address" placeholder="Enter Wallet's Address">
+            <input type="text" class="input_" id="set_name" placeholder="Enter Name">
             <!-- <input type="text" class="input_" id="input_authorization" placeholder="input authorization"> -->
  
             <div class="main-top-radio">
                 <!-- 单选框选择权限 -->
                 <label>
-                        <input type="radio" name="authority"  value="1" checked>학생
+                        <input type="radio" name="authority"  value="1" checked>Student
                 </label>
             
                 <label>
-                        <input type="radio" name="authority"  value="2">교수
+                        <input type="radio" name="authority"  value="2">Professor
                 </label>
             
                 <label>
-                        <input type="radio" name="authority" value="3">권리자
+                        <input type="radio" name="authority" value="3">Admin
                 </label>
             </div>
 
@@ -65,9 +66,9 @@
 
     <div class="shell">
         <div class="main-top2">
-            <p class="login_">권한 제거</p>
+            <p class="login_">Remove</p>
 
-            <input type="text" class="input_" id="remove_address" placeholder="input address">
+            <input type="text" class="input_" id="remove_address" placeholder="Enter Wallet's Address">
 
             <!--弹窗提示创建-->
             <input type="button" class="go-button" id="RemovePermission" value="OK">

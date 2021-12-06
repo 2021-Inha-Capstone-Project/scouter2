@@ -24,6 +24,7 @@
     height: 100px;
     background-color: rgba(113, 130, 184, 0.8);
     box-shadow:0 8px 29px rgba(0, 0, 0, 0.8);
+    transition: .8s;
     z-index: 1;
   }
   
@@ -33,7 +34,7 @@
     display: flex;
     justify-content: space-between;
     /* 最宽550px */
-    max-width: 550px;
+    max-width: 700px;
   }
   
   .nav-menu li {
@@ -116,6 +117,13 @@
     height: auto;
   }
 
+
+/* 隐藏效果 */  
+  .hide{  
+    transition: .8s;
+    top: -100px;  
+  }  
+
 /* header-button  */
 
 
@@ -153,7 +161,7 @@
 /*   header-choose     */
 
   .header-choose{
-    width: 200px;
+    width: 230px;
     height: 80px;
     text-align: center;
     line-height: 80px;

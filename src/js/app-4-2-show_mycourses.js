@@ -74,43 +74,44 @@ App = {
     CreateCourseGrade: function(grade_stuId) {
         console.log('enter ==> CreateCourseGrade()');
         var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
+        // console.log('account===> : ' + account);
         //var nowAuthorization = 0;
         // 获取到元素值
         var grade_courseId= $('#show_course_id').val();
-        //var grade_stuBlockAddress= $('#change_student_address').val();
-        
-        // 找到对应记录成绩的id
-        var grade_stuGrade= $("#change_student_grade").val();
-        
-        // 判断输入的成绩是否符合要求
-        // Determine whether the entered score meets the requirements
+        // var grade_stuBlockAddress= $('#change_student_address').val();
+        var grade_stuGrade= $('#change_student_grade').val();
 
-        console.log('grade_courseId: ' + grade_courseId + '\ngrade_professor_address: ' + account);
-        console.log('grade_stuId: ' + grade_stuId + ' \ngrade_stuGrade: ' + grade_stuGrade);
+        try {
+            if(grade_stuGrade == ""){
+                throw("Input fields can't be empty")
+            }
+            if(grade_stuGrade > 100 || grade_stuGrade < 0){
+                throw("Input grade from 1 to 100")
+            }
 
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            // 先通过stuId找到stuAddress
-            instance_ = instance;
-            return instance_.getStuAddressByStuId(grade_stuId);
-        }).then(function(grade_stuBlockAddress){
-            console.log('grade_stuBlockAddress: ' + grade_stuBlockAddress);
-            console.log('CreateCourseGrade start.....');
-            return instance_.createCourseGrade(grade_courseId,account,grade_stuBlockAddress,grade_stuGrade,{from: account, gas: 300000});
-        }).then(function(res) { 
-            // 赋值展示
-            alert("성공적인 점수 입력되었습니다.")
-            // 修改成功后自动刷新页面显示新成绩
-            window.location.reload();
-            console.log('when res ==> account===> : ' + account);
-            console.log('CreateCourseGrade ==> res = '+ res);
-        }).catch(function(err) {
-            alert("점수 입력 실패. >< ") 
-            console.log('when error ==> account===> : ' + account);
-            console.log('CreateCourseGrade ==> error = '+ err);
-        });
-    
+            // console.log('grade_courseId: ' + grade_courseId + ' ==> grade_professor_address: ' + account);
+            // console.log('grade_stuBlockAddress: ' + grade_stuBlockAddress + ' ==> grade_stuGrade: ' + grade_stuGrade);
+
+            App.contracts.Professor.deployed().then(function(instance) {
+                // 先通过stuId找到stuAddress
+                instance_ = instance;
+                return instance_.getStuAddressByStuId(grade_stuId);
+            }).then(function(grade_stuBlockAddress){
+
+                return instance_.createCourseGrade(grade_courseId,account,grade_stuBlockAddress,grade_stuGrade,{from: account, gas: 300000});
+            }).then(function(res) { 
+                // 赋值展示
+                // alert("✅ Successfully Update Grade")
+                // 修改成功后自动刷新页面显示新成绩
+                window.location.reload();
+
+            }).catch(function(err) {
+                alert("❌ Please Input Again") 
+            });
+
+        } catch (error) {
+            alert(error)
+        }
     },
 
 
@@ -130,28 +131,31 @@ App = {
         App.contracts.Professor.deployed().then(function(instance) {
             instance_ = instance;
             console.log('ShowCourseInf start.....');      
-
+            
             // 先获得所有的地址
             return instance_.getCourseInfByCourseId(show_course_id,{from: account, gas: 300000});
         }).then(function(courseInf_) { 
             console.log('when courseId ===> : ' + courseInf_[0]);
             if(courseInf_[0] == 0){
-                alert("과정이 존재하지 않습니다")
+                alert("과정이 존재하지 않습니다 ❌")
             }
             else{
-                var proAddressLength = courseInf_[2].length;
-                var proAddress = courseInf_[2].slice(0,6) + '..' + courseInf_[2].slice(proAddressLength-4,proAddressLength);
+                var proAddressLength = courseInf_[3].length;
+                var proAddress = courseInf_[3].slice(0,6) + '..' + courseInf_[3].slice(proAddressLength-4,proAddressLength);
+                // let proName = await instance_.getProfessorNameByAddress(courseInf_[2], {from: account, gas: 300000});
 
                 // 展示课程基本信息
-                var courInfHead_ =  '<thead><tr><th>courseId</th>' +
-                                                '<th>courseName</th>' +
-                                                '<th>proAddress</th>' +    
-                                                '<th>courseStuCounts</th></tr></thead>';
+                var courInfHead_ =  '<caption><h2>Course Information</h2></caption'+
+                                    '<thead><tr><th>Course ID</th>' +
+                                                '<th>Course Name</th>' +
+                                                '<th>Professor Name</th>' +    
+                                                '<th>Professor Address</th>' +    
+                                                '<th>Total Students</th></tr></thead>';
                 var courInf_ =      '<tr><td>' + courseInf_[0] + '</td>' + 
                                         '<td>' + courseInf_[1] + '</td>' + 
+                                        '<td>' + courseInf_[2] + '</td>' + 
                                         '<td>' + proAddress + '</td>' + 
-                                        '<td>' + courseInf_[3] + '</td></tr>';
-
+                                        '<td>' + courseInf_[4] + '</td></tr>';
                                     //+ '----myStuCourses: ' + studentInf[4] + '<br>';
                 document.getElementById("courseInf").innerHTML = courInfHead_ + courInf_;
                 return instance_.getCourseStudentInfByCourseId(show_course_id,{from: account, gas: 300000});
@@ -163,18 +167,20 @@ App = {
             var stuAddrSum = courseAllStudentsInf_[0].length;
             console.log('when stuAddrSum ===> : ' + stuAddrSum);  // 2个
             
-            // 展示学生信息头部
+            // 展示学生基本信息
             // 学生table head
-            var courseStudentInfHead_ =  '<thead><tr><th>courseStuId</th>' +
-                                                    '<th>courseStuName</th>' +
-                                                    '<th>courseStuAddress</th>' +
-                                                    '<th>courseStuGrade</th>' +
-                                                    '<th>addStuGrade</th></tr></thead>';
-            $("#courseStudentInf").append(courseStudentInfHead_);
-            // 展示学生信息
+            var courseStudentInfHead_ = '<caption><h2>Enrolled Students</h2></caption'+    
+                                        '<thead><tr><th>Student ID</th>' +
+                                                '<th>Name</th>' +
+                                                '<th>Address</th>' +
+                                                '<th>Grade</th>' +
+                                                '<th><input type="text" id="change_student_grade" maxlength="3" placeholder="Input grade"></th>'
+                                            '</tr></thead>';
+            document.getElementById("courseStudentInf").innerHTML = courseStudentInfHead_;
+            
             for(var i=0;i<stuAddrSum;i++){
                 // 得到每个地址的长度
-                stuAddrLength = courseAllStudentsInf_[1][i].length;
+                let stuAddrLength = courseAllStudentsInf_[1][i].length;
                 var courseStuAddr_ = courseAllStudentsInf_[1][i].slice(0,6) + '..' + courseAllStudentsInf_[1][i].slice(stuAddrLength-4,stuAddrLength);
                 // 学生table data
                 // 异步调用 上面函数要标记async
@@ -187,15 +193,14 @@ App = {
                                             '<td>' + courseStuAddr_ + '</td>' + 
                                             '<td>' + courseAllStudentsInf_[2][i] + '</td>' + 
                                             '<td><button onclick="App.CreateCourseGrade('+courseAllStudentsInf_[0][i]+')" >add</button></td></tr>';
-                $("#courseStudentInf").append(courseStudentInf_);    
+                $("#courseStudentInf").append(courseStudentInf_);   
+                
             }
-            
             console.log('when res ==> account===> : ' + account);
             console.log('ShowCourseInf ==> res = '+ courseAllStudentsInf_);
 
         }).catch(function(err) { 
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowCourseInf ==> error = '+ err);
+            console.log(err);
         });
 
     },
@@ -233,8 +238,7 @@ App = {
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
         // Professor已经得到合约的名称, 实例化智能合约 deployed
@@ -243,6 +247,10 @@ App = {
             nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
             return nowAuthorization;
         }).then(function(nowAuthorization) { 
+            if(nowAuthorization != 2){
+                alert("Only Professors Have Access To This Page.\n Redirecting to Main Page.")
+                location.replace("index.html")
+            }
             // 赋值展示
             var nowAut = '';
             if(nowAuthorization == 1){
@@ -260,8 +268,7 @@ App = {
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
             alert('failed!!! ❌');
-            console.log('when error ==> account===> : ' + account);
-            console.log('ShowAddressInf ==> error = '+ err);
+            console.log(err);
         });
 
 

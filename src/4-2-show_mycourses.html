@@ -6,15 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
   <script src="./js/jquery.min.js"></script>
   <script src="./js/getUrl.js"></script>
+  <script src="./js/header_hide.js"></script>
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
   <link href="./css/0-header.css" rel="stylesheet" type="text/css"> 
-  <link href="./css/0-show_course_table2.css" rel="stylesheet" type="text/css"> 
+  <link href="./css/0-show_course_table.css" rel="stylesheet" type="text/css"> 
   <link href="./css/css_input.css" rel="stylesheet" type="text/css"> 
-  <link href="./css/css_button.css" rel="stylesheet" type="text/css"> 
+  <link href="./css/css_button.css" rel="stylesheet" type="text/css">
+  
   <script> 
     console.log("进入 4-2-show_mycourses page .....");
   </script> 
-  <style>
-  </style>
+ 
 </head>
 <body>
 
@@ -54,12 +56,12 @@
         <ul class="nav-menu">
 
             <li class="header-choose">
-               <a href="" id="goStudentAdderPage" onclick="GoStudentAdderPage()"><div id="header-font">학생 추가</div></button></a>
+               <a href="" id="goStudentAdderPage" onclick="GoStudentAdderPage()"><div id="header-font">Add Student <i class="fas fa-user-plus"></i></div></button></a>
             </li> 
 
     <!--코스 관리 -->
             <li class="header-choose">
-                <a href="4-courses.html"><div id="header-font">교수의 집</div></a>   
+                <a href="4-courses.html"><div id="header-font">Go to Professor page</div></a>   
             </li>  
 
              
@@ -68,15 +70,14 @@
         
     <!-- header -->
 
+    
+
+
     <!--此课程的课程信息 -->
     <table class="bordered1" id="courseInf"> </table>
-
-    <!--此课程的学生信息-->
-    <table class="bordered2" id="courseStudentInf"> </table>
-
-    <input type="text" id="change_student_grade" placeholder="input grade">
-
     
+    <!--此课程的学生信息-->
+    <table class="bordered2" id="courseStudentInf"></table>
 
     <!-- start-cards-->
 

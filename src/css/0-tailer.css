@@ -1,0 +1,25 @@
+  footer {
+    width: 100%;
+    position:relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* 左右padding */
+    margin-top: 100px;
+    margin-bottom: -45px;
+    height: 100px;
+    background-color: rgba(113, 130, 184, 0.8);
+    font-weight: 800;
+    font-size: medium;
+    color: rgb(255, 255, 255);
+  }
+
+  .footer-logo{
+    width: 300px;
+    height: 80px;
+    margin-left: 50px;
+  }
+

@@ -9,74 +9,68 @@
   <script src="./js/header_hide.js"></script>
   <link href="./css/0-header.css" rel="stylesheet" type="text/css"> 
   <link href="./css/0-show_course_table.css" rel="stylesheet" type="text/css"> 
-
-<style>
-    .bordered2 tr:hover {
-      cursor: pointer;
+  <script>
+    var course_id_ = $.getUrlParam('courseId');
+    function GoShowMyCoursesPage(){
+        document.getElementById("goShowMyCoursesPage").href="2-recommend_students.html?recommend_course_id="+ course_id_;
     }
-  </style>
- 
+</script>
 </head>
 <body>
     
+        <!-- header -->
+        <nav id="header_index">    
+            <!--우리 팀 -->         
+            <ul class="nav-menu">
+                <a href="0-start.html">
+                <li class="header-logo">
+                    <ul class="logo-information">
+                        <li id="nowID" class="now-font"></li>
+                        <li id="nowPrefession" class="now-font"></li>
+                        <li id="nowAddress" class="now-font"></li>
+                    </ul>
+                </li>
+                </a>
+            </ul>
+    
+            
+    
+            <ul class="nav-menu">
+                <li class="header-choose"> 
+                    <a href="" id="goShowMyCoursesPage" onclick="GoShowMyCoursesPage()"><div id="header-font"> <-Back To Course</div></a>
+                </li>
+
+    <!--권한 관리 -->            
+            <li class="header-choose"> 
+                <a href="3-authority.html"><div id="header-font">Go to Admin page</div></a>
+            </li>
+    
+    <!--코스 관리 -->
+            <li class="header-choose">
+                <a href="4-courses.html"><div id="header-font">Go to Professor page</div></a>   
+            </li>  
+    
+            </ul>
+        </nav>
+            
+
     <!-- 通过js获得地址栏参数得到要展示的course_id-->
     <script>
-        var recommend_course_id_ = $.getUrlParam('recommend_course_id');
+        var addr = $.getUrlParam('addr');
 		window.onload = function(){
-			$("#recommend_course_id").val(recommend_course_id_);
+			$("#student-address").val(addr);
 		}
     </script>
 
     <!--用div接收值--> 
-    <div id="recommend_course_id"></div>
-
-
-    
-    <!-- header -->
-    <nav id="header_index">    
-        <!--우리 팀 -->         
-        <ul class="nav-menu">
-            <a href="0-start.html">
-            <li class="header-logo">
-                <ul class="logo-information">
-                    <li id="nowID" class="now-font"></li>
-                    <li id="nowPrefession" class="now-font"></li>
-                    <li id="nowAddress" class="now-font"></li>
-                </ul>
-            </li>
-            </a>
-        </ul>
-
-
-
-        <ul class="nav-menu">
-<!--권한 관리 -->            
-        <li class="header-choose"> 
-            <a href="3-authority.html"><div id="header-font">Go to Admin page</div></a>
-        </li>
-
-<!--코스 관리 -->
-        <li class="header-choose">
-            <a href="4-courses.html"><div id="header-font">Go to Professor page</div></a>   
-        </li>  
-
-        </ul>
-    </nav>
-        
-    <!-- header -->
-
-    
+    <div id="student-address"></div>
 
 
     <!--此课程的课程信息 -->
-    <table class="bordered1" id="courseInf"> </table>
+    <table class="bordered1" id="studentInfo"> </table>
     
     <!--此课程的学生信息-->
     <table class="bordered2" id="courseStudentInf">
-        <!-- <tr>
-            <td onclick="tdclick('addr');">courseStuAddress</td>
-            <td>90</td>
-        </tr> -->
     </table>
      
     
@@ -109,7 +103,7 @@
 <!-- truffle: 提供了solidity封装, 实现了合约的开发,测试,部署的解决方案 -->
 <script src="js/truffle-contract.js"></script>
 <!-- xxx.js: 自己编写业务罗技的js文件 -->
-<script src="js/app-2-recommend_students.js"></script> 
+<script src="js/app-5-student_card.js"></script> 
 
     
 </body>
