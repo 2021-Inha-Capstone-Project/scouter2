@@ -22,6 +22,11 @@ App = {
            App.web3Provider = web3.currentProvider;
            // ethereum.enable()方法请求用户授权应用访问MetaMask中的用户账号信息。 
            ethereum.request({ method: 'eth_requestAccounts' });
+            ethereum.on('accountsChanged', function (accounts) {
+                console.log(accounts[0]);
+                location.reload();
+                App.ShowAddressInf();
+            })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
        } else {
@@ -92,17 +97,26 @@ App = {
         }).then(function(nowAuthorization) { 
             // 赋值展示
             let nowAut = '';
+            let nav = document.getElementsByClassName("nav-menu");
+            // nav[1].removeChild(nav[1].children[nav.length-1])
+
             if(nowAuthorization == 1){
                 nowAut = 'student';
+                nav[1].removeChild(nav[1].children[2])  // Prof
+                nav[1].removeChild(nav[1].children[1])  // Admin
             }
             else if(nowAuthorization == 2){
                 nowAut = 'professor';
+                nav[1].removeChild(nav[1].children[1])  // Admin
             }
             else if(nowAuthorization == 3){
                 nowAut = 'admin';
+                nav[1].removeChild(nav[1].children[2])  // Prof
             }
             else{
                 nowAut = 'null';
+                nav[1].removeChild(nav[1].children[2])  // Prof
+                nav[1].removeChild(nav[1].children[1])  // Admin
             }
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 

@@ -204,6 +204,10 @@ App = {
             nowAuthorization = instance.getAuthorizationByAddress(account,{from: account, gas: 300000});
             return nowAuthorization;
         }).then(function(nowAuthorization) { 
+            if(nowAuthorization != 3){
+                alert("Only Admins Have Access To This Page.\n Redirecting to Main Page.")
+                location.replace("index.html")
+            }
             // 赋值展示
             var nowAut = '';
             if(nowAuthorization == 1){

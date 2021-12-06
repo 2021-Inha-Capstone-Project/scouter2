@@ -25,6 +25,7 @@ App = {
            // 实时监听meta mask的地址切换
            ethereum.on('accountsChanged', function (accounts) {
                 console.log(accounts[0]);
+                location.reload();
                 App.ShowAddressInf();
            })
            // 创建一个web3的对象, 才能调用web3的api
@@ -171,17 +172,25 @@ App = {
         }).then(function(nowAuthorization) { 
             // 赋值展示
             var nowAut = '';
+            let nav = document.getElementsByClassName("nav-menu");
+
             if(nowAuthorization == 1){
                 nowAut = 'student';
+                nav[1].removeChild(nav[1].children[2])      // Prof
+                nav[1].removeChild(nav[1].children[1])      // Admin
             }
             else if(nowAuthorization == 2){
                 nowAut = 'professor';
+                nav[1].removeChild(nav[1].children[1])      //Admin
             }
             else if(nowAuthorization == 3){
                 nowAut = 'admin';
+                nav[1].removeChild(nav[1].children[2])      // Professor
             }
             else{
                 nowAut = 'null';
+                nav[1].removeChild(nav[1].children[2])      //Professor
+                nav[1].removeChild(nav[1].children[1])      //Admin
             }
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
