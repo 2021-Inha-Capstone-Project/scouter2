@@ -1,3 +1,19 @@
+function filterCourse(courseName){
+    let cards = document.querySelectorAll(".shell");
+    console.log(courseName.value);
+
+    cards.forEach(card => {
+        if(courseName.value == "all"){
+            card.style.display = "block";
+        } else if(card.children[1].innerText != courseName.value) {
+            // Hide cards that are not <course name>        
+            card.style.display = "none";
+        } else {
+            card.style.display = "block";
+        }
+    });
+}
+
 App = {    
 
     // 定义三个变量
@@ -82,9 +98,12 @@ App = {
                 alert("죄송합니다\n아직 수업을 시작하신 교수님이 없습니다 ❌");
             }
             else{
+                let courseTitles = [];
+
                 for(var i=0;i<allCoursesId_.length;i++){
                     let course = await _instance.getCourseNameStatusById(allCoursesId_[i].c[0]);
                     let courseName = course[0];
+                    courseTitles.push(courseName);
                     let isCourseEnded = course[1];
 
                     //If course has ended, it is prioritized to display first
@@ -102,7 +121,7 @@ App = {
                             '</div>' +
                         '</div>';
 
-                        $("#allCourses").prepend(allCourseCards);
+                        $("body").prepend(allCourseCards);
                         document.getElementById(""+allCoursesId_[i]).style.backgroundColor = 'rgba(' + 69 + ',' + 0 + ',' + 0 + ',' + 1 + ')';;
                     }
                     else{
@@ -119,11 +138,15 @@ App = {
                             '</div>' +
                         '</div>';    
 
-                        $("#allCourses").append(allCourseCards);
+                        $("body").append(allCourseCards);
                     }
                 }
-                // 只能查看一次
-                var button_ = document.getElementById("ShowAllCourses");
+
+                courseTitles = courseTitles.sort();
+                courseTitles.forEach(element => {
+                    let newOption = '<option value="' + element +'">' + element + '</option>'
+                    $("#course").append(newOption)
+                });
             }
 
         }).catch(function(err) { 
@@ -176,21 +199,21 @@ App = {
 
             if(nowAuthorization == 1){
                 nowAut = 'student';
-                nav[1].removeChild(nav[1].children[2])      // Prof
-                nav[1].removeChild(nav[1].children[1])      // Admin
+                nav[2].removeChild(nav[2].children[2])      // Prof
+                nav[2].removeChild(nav[2].children[1])      // Admin
             }
             else if(nowAuthorization == 2){
                 nowAut = 'professor';
-                nav[1].removeChild(nav[1].children[1])      //Admin
+                nav[2].removeChild(nav[2].children[1])      //Admin
             }
             else if(nowAuthorization == 3){
                 nowAut = 'admin';
-                nav[1].removeChild(nav[1].children[2])      // Professor
+                nav[2].removeChild(nav[2].children[2])      // Professor
             }
             else{
                 nowAut = 'null';
-                nav[1].removeChild(nav[1].children[2])      //Professor
-                nav[1].removeChild(nav[1].children[1])      //Admin
+                nav[2].removeChild(nav[2].children[2])      //Professor
+                nav[2].removeChild(nav[2].children[1])      //Admin
             }
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 

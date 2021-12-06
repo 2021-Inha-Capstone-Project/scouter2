@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./css/0-header.css" rel="stylesheet" type="text/css">
     <link href="./css/4-courses.css" rel="stylesheet" type="text/css"> 
+    <link href="./css/select.css" rel="stylesheet" type="text/css" />
     <script src="./js/jquery.min.js"></script>
     <title>0-start</title>
 
 </head>
-<body id="allCourses">
+<body>
     <!-- header -->
     <nav id="header_index">
         
@@ -26,7 +27,13 @@
             </li>
             </a>
         </ul>
-
+        
+        <div class="nav-menu">
+              <select id="course" onchange="filterCourse(this)">
+                <option value="all">All Courses</option>
+                <option value="C2">C2</option>
+              </select>
+        </div>
 
         <ul class="nav-menu">
 <!--모든 학생 -->            
@@ -49,17 +56,6 @@
     </nav>
 
       <!-- header -->
-
-
-
-
-<!-- 
-    <div class="card-button">
-        <input type="button" class="view-css" id="ShowAllCourses" value="View" >
-
-    </div>
--->
-
 
 
 
