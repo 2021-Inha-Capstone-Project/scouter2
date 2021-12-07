@@ -196,6 +196,16 @@ App = {
                         $("#myCoursesId").prepend(courseCards);
                     }
                 }
+
+                // var footer_ = '<footer>' +
+                //                     '<img class="footer-logo" src="./img/login1.png">' +
+                //                     '© Humble and bold All rights reserved<br>' +
+                //                     '&nbsp;&nbsp;&nbsp; Team Name: Humble and bold<br>' +
+                //                     '&nbsp;&nbsp;&nbsp; Members: KY SOPHOT<br>' +
+                //                     '&nbsp;&nbsp;&nbsp; SHEN BAOLEI, CAO WANGZE' +
+                //                 '</footer>';
+                
+                // $("#myCoursesId").append(footer_);
             }
 
         }).catch(function(err) { 

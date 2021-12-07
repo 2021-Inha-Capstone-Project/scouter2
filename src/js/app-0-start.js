@@ -147,6 +147,15 @@ App = {
                     let newOption = '<option value="' + element +'">' + element + '</option>'
                     $("#course").append(newOption)
                 });
+
+                var footer_ = '<footer>' +
+                                    '<img class="footer-logo" src="./img/login1.png">' +
+                                    '© Humble and bold All rights reserved<br>' +
+                                    '&nbsp;&nbsp;&nbsp; Team Name: Humble and bold<br>' +
+                                    '&nbsp;&nbsp;&nbsp; Members: KY SOPHOT<br>' +
+                                    '&nbsp;&nbsp;&nbsp; SHEN BAOLEI, CAO WANGZE' +
+                                '</footer>';
+                $("body").append(footer_);
             }
 
         }).catch(function(err) { 
