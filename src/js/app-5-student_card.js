@@ -25,7 +25,6 @@ App = {
             ethereum.on('accountsChanged', function (accounts) {
                 console.log(accounts[0]);
                 location.reload();
-                App.ShowAddressInf();
             })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);

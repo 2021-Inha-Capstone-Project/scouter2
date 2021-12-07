@@ -42,7 +42,6 @@ App = {
            ethereum.on('accountsChanged', function (accounts) {
                 console.log(accounts[0]);
                 location.reload();
-                App.ShowAddressInf();
            })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
@@ -95,7 +94,8 @@ App = {
             // console.log("when allCoursesId_ ===> " + allCoursesId_);
             // console.log("when allCoursesId_.length ===> " + allCoursesId_.length);
             if(allCoursesId_.length == 0){
-                alert("죄송합니다\n아직 수업을 시작하신 교수님이 없습니다 ❌");
+                $("body").append("<h1>NO &nbsp;COURSE &nbsp;HAS	&nbsp; BEEN	&nbsp; CREATED &nbsp; AT &nbsp; THE &nbsp; MOMENT!</h1>")
+                // alert("죄송합니다\n아직 수업을 시작하신 교수님이 없습니다 ❌");
             }
             else{
                 let courseTitles = [];
@@ -143,6 +143,7 @@ App = {
                 }
 
                 courseTitles = courseTitles.sort();
+                courseTitles = [...new Set(courseTitles)];
                 courseTitles.forEach(element => {
                     let newOption = '<option value="' + element +'">' + element + '</option>'
                     $("#course").append(newOption)

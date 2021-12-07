@@ -26,7 +26,6 @@ App = {
            ethereum.on('accountsChanged', function (accounts) {
                 console.log(accounts[0]);
                 location.reload();
-                App.ShowAddressInf();
            })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
@@ -90,16 +89,17 @@ App = {
             var sum = allStudentAddress_.length;
             console.log('sum = '+ sum);
             if(sum == 0){
-                alert("현재 학생이 없습니다. ❌");
+                $("body").append("<h1>THERE &nbsp;IS &nbsp;NO &nbsp;STUDENT &nbsp;AT &nbsp;THE &nbsp;MOMENT</h1>")
+                // alert("현재 학생이 없습니다. ❌");
             }
             else{
                 // 展示课程基本信息
                 var allStudentInfHead_ = '<caption><h1>All Students Information</h1></caption'+
                                             '<thead><tr><th>ID</th>' +
-                                                    '<th>Name</th>' +
-                                                    '<th>Wallet Address</th>' + 
+                                            '<th>Wallet Address</th>' + 
+                                            '<th>Name</th>' +
                                                     // '<th>Authorization</th>' +    
-                                                    '<th>Related Course</th></tr></thead>';
+                                                    '<th>Related Course ID</th></tr></thead>';
                 document.getElementById("allStuInf").innerHTML = allStudentInfHead_;
                 for(var i=0;i<sum;i++){
                     instance_.getStudentInfByStuAddress(allStudentAddress_[i],{from: account, gas: 300000})
@@ -111,8 +111,8 @@ App = {
 
                         // 通过div添加到页面中  
                         var allStudentInf_ =    '<tr><td>' + studentInf[0] + '</td>' + 
-                                                    '<td>' + studentInf[1] + '</td>' + 
                                                     '<td>' + address + '</td>' + 
+                                                    '<td>' + studentInf[1] + '</td>' + 
                                                     // '<td>' + studentInf[3] + '</td>' +
                                                     '<td>' + studentInf[4] + '</td></tr>';
                         

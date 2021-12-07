@@ -137,7 +137,7 @@ App = {
         }).then(function(courseInf_) { 
             console.log('when courseId ===> : ' + courseInf_[0]);
             if(courseInf_[0] == 0){
-                alert("과정이 존재하지 않습니다 ❌")
+                alert("FAILED ❌")
             }
             else{
                 var proAddressLength = courseInf_[3].length;
@@ -171,8 +171,8 @@ App = {
             // 学生table head
             var courseStudentInfHead_ = '<caption><h2>Enrolled Students</h2></caption'+    
                                         '<thead><tr><th>Student ID</th>' +
-                                                '<th>Name</th>' +
                                                 '<th>Address</th>' +
+                                                '<th>Name</th>' +
                                                 '<th>Grade</th>' +
                                                 '<th><input type="text" id="change_student_grade" maxlength="3" placeholder="Input grade"></th>'
                                             '</tr></thead>';
@@ -189,8 +189,8 @@ App = {
                 console.log(courseAllStudentsInf_[0][i]);
                 console.log(courseStuName_);
                 var courseStudentInf_ = '<tr><td>' + courseAllStudentsInf_[0][i] + '</td>' + 
-                                            '<td>' + courseStuName_ + '</td>' + 
                                             '<td>' + courseStuAddr_ + '</td>' + 
+                                            '<td>' + courseStuName_ + '</td>' + 
                                             '<td>' + courseAllStudentsInf_[2][i] + '</td>' + 
                                             '<td><button onclick="App.CreateCourseGrade('+courseAllStudentsInf_[0][i]+')" >add</button></td></tr>';
                 $("#courseStudentInf").append(courseStudentInf_);   

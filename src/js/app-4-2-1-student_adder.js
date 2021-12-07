@@ -93,7 +93,7 @@ App = {
       .then(function (courseInf_) {
         console.log("when courseId ===> : " + courseInf_[0]);
         if (courseInf_[0] == 0) {
-          alert("과정이 존재하지 않습니다 ❌");
+          alert("FAILED ❌");
         } else {
           var proAddressLength = courseInf_[3].length;
           var proAddress =
@@ -137,16 +137,16 @@ App = {
         var sum = allStudentAddress_.length;
         console.log("sum = " + sum);
         if (sum == 0) {
-          alert("현재 학생이 없습니다. ❌");
+          $("body").append("<h1>THERE &nbsp;IS &nbsp;NO &nbsp;STUDENT &nbsp;AT &nbsp;THE &nbsp;MOMENT</h1>")
         } else {
           // 展示课程基本信息
           var allStudentInfHead_ =
             "<caption><h2>Students to ADD</h2></caption" +
             "<thead><tr><th>ID</th>" +
+            "<th>Wallet Address</th>" +
             "<th>Name</th>" +
-            "<th>Wallet's Address</th>" +
             // '<th>Authorization</th>' +
-            "<th>Related Course</th>" +
+            "<th>Related Course ID</th>" +
             "<th></th></tr></thead>";
           document.getElementById("allStuInf").innerHTML = allStudentInfHead_;
           var i_ = 0;
@@ -172,24 +172,12 @@ App = {
                   studentInf[2].slice(accountLength - 4, accountLength);
 
                 var allStudentInf_ =
-                  "<tr><td>" +
-                  studentInf[0] +
-                  "</td>" +
-                  "<td>" +
-                  studentInf[1] +
-                  "</td>" +
-                  '<td id="apply_student_address' +
-                  i_ +
-                  '">' +
-                  accountTemp +
-                  "</td>" +
+                  "<tr><td>" + studentInf[0] + "</td>" +
+                  '<td id="apply_student_address' + i_ + '">' + accountTemp + "</td>" +
+                  "<td>" + studentInf[1] + "</td>" +
                   // '<td>' + studentInf[3] + '</td>' +
-                  "<td>" +
-                  studentInf[4] +
-                  "</td>" +
-                  '<td><button onclick="App.ApplyCourse(' +
-                  studentInf[0] +
-                  ')" >add</button></td></tr>';
+                  "<td>" + studentInf[4] + "</td>" +
+                  '<td><button onclick="App.ApplyCourse(' + studentInf[0] + ')" >add</button></td></tr>';
                 $("#allStuInf").append(allStudentInf_);
               })
               .then(function () {
@@ -247,7 +235,7 @@ App = {
         console.log("ApplyCourse ==> res = " + res);
       })
       .catch(function (err) {
-        alert("학생이 참여하지 못했습니다. ❌");
+        alert("UNSUCCESSFUL ❌");
         console.log(err);
       });
   },

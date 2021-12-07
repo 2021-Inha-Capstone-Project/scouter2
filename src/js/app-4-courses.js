@@ -25,7 +25,7 @@ App = {
            // 实时监听meta mask的地址切换
            ethereum.on('accountsChanged', function (accounts) {
                 console.log(accounts[0]);
-                App.ShowAddressInf();
+                location.reload();
            })
            // 创建一个web3的对象, 才能调用web3的api
            web3 = new Web3(web3.currentProvider);
@@ -165,7 +165,7 @@ App = {
             return _instance.getCourseIdByProAddress(account,{from: account, gas: 300000});
         }).then(async function(myCoursesId_) { 
             if(myCoursesId_.length == 0){
-                alert("죄송합니다\n아직 교수가 수업을 시작하지 않았습니다 ❌");
+                $("body").append("<h1>YOU &nbsp;DON'T &nbsp;HAVE &nbsp;ANY &nbsp;COURSE  &nbsp;AT &nbsp;THE &nbsp;MOMENT</h1>")
             }
             else{
                 for(var i=0;i<myCoursesId_.length;i++){
@@ -176,10 +176,10 @@ App = {
 
                     var courseCards =   '<div class="shell">' +
                                             '<div class="main-top"  id="' + myCoursesId_[i] + '">' +
+                                                '<h2>'+ "Course ID:" +'</h2>' +
                                                 '<h2>'+ myCoursesId_[i] +'</h2>' +
                                                 '<div class="ball"><a href="4-2-show_mycourses.html?show_course_id='+ myCoursesId_[i] +'"><img src="./img/2.2.png"></a></div>' +
                                                 '<div class="line"></div>' +
-                                                '<span>I\'m a professor</span>' +
                                             '</div>' + 
                                             '<div class="main-bottom">' +
                                                 '<h2>' + courseName + '</h2>'+
@@ -213,114 +213,6 @@ App = {
         });
 
     },
-
-
-
-    
-/*
-  
-    // 实现创建课程
-    CreateCourse: function() {
-        console.log('enter ==> CreateCourse()');
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
-        //var nowAuthorization = 0;
-        
-        // 获取到元素值
-        var create_course_id= $('#create_course_id').val();
-        var create_course_name= $('#create_course_name').val();
-
-
-        console.log('create_course_id: ' + create_course_id + ' ==> create_course_name: ' + create_course_name);
-        console.log('create_professor_address: ' + account);
-
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('CreateCourse start.....');              
-            return instance.createCourse(create_course_id,create_course_name,account,{from: account, gas: 300000});
-        }).then(function(res) { 
-            // 赋值展示
-            alert("코스가 성공적으로 생성되었습니다.")
-            // 成功后自动刷新页面显示新成绩
-            window.location.reload();
-            console.log('when res ==> account===> : ' + account);
-            console.log('CreateCourse ==> res = '+ res);
-        }).catch(function(err) { 
-            alert("코스 생성 실패 ><.")
-            console.log('when error ==> account===> : ' + account);
-            console.log('CreateCourse ==> error = '+ err);
-        });
-
-    },
-
-
-    // 实现课程加入学生
-    ApplyCourse: function() {
-        console.log('enter ==> ApplyCourse()');
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
-        //var nowAuthorization = 0;
-        // 获取到元素值
-        var apply_course_id= $('#apply_course_id').val();
-        var apply_student_address= $('#apply_student_address').val();
-
-        console.log('apply_course_id: ' + apply_course_id + ' ==> apply_professor_address: ' + account);
-        console.log('apply_student_address: ' + apply_student_address);
-
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ApplyCourse start.....');
-            
-            return instance.applyCourse(apply_course_id,account,apply_student_address,{from: account, gas: 300000});
-        }).then(function(res) { 
-            // 赋值展示
-            var applyStudentName = res[1];
-            alert("학생이 성공적으로 참여되었습니다." + applyStudentName);
-            console.log('when res ==> account===> : ' + account);
-            console.log('ApplyCourse ==> res = ' + res);
-            console.log('ApplyCourse ==> res[1] = '+ res[1]);
-        }).catch(function(err) { 
-            alert("학생이 참여하지 못했습니다.")
-            console.log('when error ==> account===> : ' + account);
-            console.log('ApplyCourse ==> error = '+ err);
-        });
-
-    },
-
-    // 实现课程赋予学生成绩
-    CreateCourseGrade: function() {
-        console.log('enter ==> CreateCourseGrade()');
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
-        //var nowAuthorization = 0;
-        // 获取到元素值
-        var grade_courseId= $('#grade_courseId').val();
-        var grade_stuBlockAddress= $('#grade_stuBlockAddress').val();
-        var grade_stuGrade= $('#grade_stuGrade').val();
-
-        console.log('grade_courseId: ' + grade_courseId + ' ==> grade_professor_address: ' + account);
-        console.log('grade_stuBlockAddress: ' + grade_stuBlockAddress + ' ==> grade_stuGrade: ' + grade_stuGrade);
-
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('CreateCourseGrade start.....');
-            
-            return instance.createCourseGrade(grade_courseId,account,grade_stuBlockAddress,grade_stuGrade,{from: account, gas: 300000});
-        }).then(function(res) { 
-            // 赋值展示
-            alert("성공적인 점수 입력되었습니다.")
-            console.log('when res ==> account===> : ' + account);
-            console.log('CreateCourseGrade ==> res = '+ res);
-        }).catch(function(err) {
-            alert("점수 입력 실패. >< ") 
-            console.log('when error ==> account===> : ' + account);
-            console.log('CreateCourseGrade ==> error = '+ err);
-        });
-
-    },
-
-*/
-
  
   };
   

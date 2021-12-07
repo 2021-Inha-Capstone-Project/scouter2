@@ -97,85 +97,18 @@ App = {
             return instance.createCourse(create_course_id,create_course_name,account,{from: account, gas: 300000});
         }).then(function(res) { 
             // 赋值展示
-            alert("코스가 성공적으로 생성되었습니다. ✅")
+            alert("SUCCESSFUL ✅")
             // 成功后自动刷新页面显示新成绩
             window.location.reload();
             console.log('when res ==> account===> : ' + account);
             console.log('CreateCourse ==> res = '+ res);
         }).catch(function(err) { 
-            alert("코스 생성 실패 ><. ❌")
+            alert("UNSUCCESSFUL ❌")
             console.log(err);
         });
 
     },
 
-/*
-    // 实现课程加入学生
-    ApplyCourse: function() {
-        console.log('enter ==> ApplyCourse()');
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
-        //var nowAuthorization = 0;
-        // 获取到元素值
-        var apply_course_id= $('#apply_course_id').val();
-        var apply_student_address= $('#apply_student_address').val();
-
-        console.log('apply_course_id: ' + apply_course_id + ' ==> apply_professor_address: ' + account);
-        console.log('apply_student_address: ' + apply_student_address);
-
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('ApplyCourse start.....');
-            
-            return instance.applyCourse(apply_course_id,account,apply_student_address,{from: account, gas: 300000});
-        }).then(function(res) { 
-            // 赋值展示
-            var applyStudentName = res[1];
-            alert("학생이 성공적으로 참여되었습니다." + applyStudentName);
-            console.log('when res ==> account===> : ' + account);
-            console.log('ApplyCourse ==> res = ' + res);
-            console.log('ApplyCourse ==> res[1] = '+ res[1]);
-        }).catch(function(err) { 
-            alert("학생이 참여하지 못했습니다.")
-            console.log('when error ==> account===> : ' + account);
-            console.log('ApplyCourse ==> error = '+ err);
-        });
-
-    },
-
-    // 实现课程赋予学生成绩
-    CreateCourseGrade: function() {
-        console.log('enter ==> CreateCourseGrade()');
-        var account = web3.eth.accounts[0]; // msg.sender
-        console.log('account===> : ' + account);
-        //var nowAuthorization = 0;
-        // 获取到元素值
-        var grade_courseId= $('#grade_courseId').val();
-        var grade_stuBlockAddress= $('#grade_stuBlockAddress').val();
-        var grade_stuGrade= $('#grade_stuGrade').val();
-
-        console.log('grade_courseId: ' + grade_courseId + ' ==> grade_professor_address: ' + account);
-        console.log('grade_stuBlockAddress: ' + grade_stuBlockAddress + ' ==> grade_stuGrade: ' + grade_stuGrade);
-
-        // Professor已经得到合约的名称, 实例化智能合约 deployed
-        App.contracts.Professor.deployed().then(function(instance) {
-            console.log('CreateCourseGrade start.....');
-            
-            return instance.createCourseGrade(grade_courseId,account,grade_stuBlockAddress,grade_stuGrade,{from: account, gas: 300000});
-        }).then(function(res) { 
-            // 赋值展示
-            alert("성공적인 점수 입력되었습니다.")
-            console.log('when res ==> account===> : ' + account);
-            console.log('CreateCourseGrade ==> res = '+ res);
-        }).catch(function(err) {
-            alert("점수 입력 실패. >< ") 
-            console.log('when error ==> account===> : ' + account);
-            console.log('CreateCourseGrade ==> error = '+ err);
-        });
-
-    },
-
-*/
 
 
     // 实现的show
@@ -207,7 +140,7 @@ App = {
             }
             document.getElementById("nowID").innerHTML = "ID: "+nowId;
         }).catch(function(err) { 
-            alert('failed!!! ❌');
+            alert('Failure ❌');
             console.log(err);
         });
 
@@ -237,7 +170,7 @@ App = {
             }
             document.getElementById("nowPrefession").innerHTML = "권한: "+nowAut;
         }).catch(function(err) { 
-            alert('failed!!! ❌');
+            alert('Failure ❌');
             console.log(err);
         });
 

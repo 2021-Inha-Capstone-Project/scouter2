@@ -100,13 +100,13 @@ App = {
             return instance.setPermission(set_address,set_name,setAuthority,{from: account, gas: 300000});
         }).then(function(res) { 
             // 赋值展示
-            alert("권한이 성공적으로 설정되었습니다. ✅")
+            alert("SUCCESSFUL ✅")
             // 修改成功后自动刷新页面显示新成绩
             window.location.reload();
             console.log('account ===> : ' + account);
             console.log('SetPermission ==> res = '+ res);
         }).catch(function(err) { 
-            alert("권한 설정 실패했습니다 ><. ❌")
+            alert("UNSUCCESSFUL ❌")
             console.log(err);
         });
 
@@ -146,13 +146,13 @@ App = {
                     console.log('RemovePermission start.....');
                     return instance.removePermission(remove_address,{from: account, gas: 300000});
                 }).then(function(res) { 
-                    alert("권한이 성공적으로 제거되었습니다. ✅")
+                    alert("SUCCESSFUL ✅")
                     // 修改成功后自动刷新页面显示新成绩
                     window.location.reload();
                     console.log('account ===> : ' + account);
                     console.log('SetPermission ==> res = '+ res);
                 }).catch(function(err) { 
-                    alert("Cannot Remove This Person At The Moment! ❌");
+                    alert("UNSUCCESSFUL ❌")
                 });
             }
             else{
